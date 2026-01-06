@@ -10,8 +10,8 @@
 mod token_store;
 
 use oauth2::{
-    basic::BasicClient, AuthUrl, AuthorizationCode, ClientId, CsrfToken, PkceCodeChallenge,
-    PkceCodeVerifier, RedirectUrl, Scope, TokenUrl,
+    basic::BasicClient, AuthUrl, ClientId, CsrfToken, PkceCodeChallenge, RedirectUrl, Scope,
+    TokenUrl,
 };
 use serde::{Deserialize, Serialize};
 use std::io::{Read, Write};
@@ -48,13 +48,15 @@ pub struct PendingAuth {
 pub struct AuthState {
     pub pending: Arc<Mutex<Option<PendingAuth>>>,
     pub client_id: String,
+    pub client_secret: String,
 }
 
 impl AuthState {
-    pub fn new(client_id: String) -> Self {
+    pub fn new(client_id: String, client_secret: String) -> Self {
         Self {
             pending: Arc::new(Mutex::new(None)),
             client_id,
+            client_secret,
         }
     }
 }
@@ -122,6 +124,7 @@ pub async fn start_google_auth(state: State<'_, AuthState>) -> Result<String, St
         redirect_port: port,
     });
 
+    println!("Generated auth URL for port {}", port);
     Ok(auth_url.to_string())
 }
 
@@ -131,6 +134,7 @@ struct GoogleTokenResponse {
     access_token: String,
     refresh_token: Option<String>,
     expires_in: Option<u64>,
+    #[allow(dead_code)]
     token_type: String,
 }
 
@@ -149,18 +153,126 @@ pub async fn wait_for_oauth_callback(
     let port = pending.redirect_port;
     let expected_state = pending.csrf_token.clone();
     let pkce_verifier = pending.pkce_verifier.clone();
+    let client_id = state.client_id.clone();
+    let client_secret = state.client_secret.clone();
     drop(pending_guard);
 
+    println!("Starting OAuth callback server on port {}...", port);
+
+    // Run the blocking TCP server in a separate thread
+    let callback_result = tokio::task::spawn_blocking(move || {
+        wait_for_callback_sync(port)
+    })
+    .await
+    .map_err(|e| format!("Task join error: {}", e))?
+    .map_err(|e| format!("Callback error: {}", e))?;
+
+    let (code, received_state) = callback_result;
+    
+    println!("Received OAuth callback with code");
+
+    // Verify CSRF token
+    if expected_state != received_state {
+        return Err("CSRF token mismatch - possible attack".into());
+    }
+
+    // Clear pending state
+    let mut pending_guard = state.pending.lock().await;
+    *pending_guard = None;
+    drop(pending_guard);
+
+    // Exchange code for tokens using reqwest with timeout
+    let redirect_uri = format!("http://127.0.0.1:{}", port);
+    
+    let http_client = reqwest::Client::builder()
+        .timeout(std::time::Duration::from_secs(30))
+        .build()
+        .map_err(|e| format!("Failed to create HTTP client: {}", e))?;
+
+    println!("Exchanging code for tokens at {}...", GOOGLE_TOKEN_URL);
+    println!("  redirect_uri: {}", redirect_uri);
+    println!("  client_id: {}...", &client_id[..20.min(client_id.len())]);
+
+    let form_data = [
+        ("client_id", client_id.as_str()),
+        ("client_secret", client_secret.as_str()),
+        ("code", &code),
+        ("code_verifier", &pkce_verifier),
+        ("grant_type", "authorization_code"),
+        ("redirect_uri", &redirect_uri),
+    ];
+
+    let token_response = http_client
+        .post(GOOGLE_TOKEN_URL)
+        .form(&form_data)
+        .send()
+        .await
+        .map_err(|e| {
+            eprintln!("Token exchange request failed: {:?}", e);
+            format!("Failed to exchange code: {}", e)
+        })?;
+
+    println!("Token response status: {}", token_response.status());
+
+    if !token_response.status().is_success() {
+        let error_text = token_response.text().await.unwrap_or_default();
+        eprintln!("Token exchange error: {}", error_text);
+        return Err(format!("Token exchange failed: {}", error_text));
+    }
+
+    let response_text = token_response.text().await
+        .map_err(|e| format!("Failed to read token response: {}", e))?;
+    
+    println!("Token response received, length: {} bytes", response_text.len());
+
+    let tokens: GoogleTokenResponse = serde_json::from_str(&response_text)
+        .map_err(|e| {
+            eprintln!("Failed to parse: {}", &response_text[..200.min(response_text.len())]);
+            format!("Failed to parse token response: {}", e)
+        })?;
+
+    println!("Token exchange successful, fetching user info...");
+
+    // Get user info from Google
+    let user_info = fetch_user_info(&tokens.access_token).await?;
+
+    // Calculate expiration
+    let expires_at = tokens
+        .expires_in
+        .map(|d| chrono::Utc::now().timestamp() + d as i64);
+
+    // Store tokens
+    let stored = token_store::StoredTokens {
+        access_token: tokens.access_token,
+        refresh_token: tokens.refresh_token,
+        expires_at: expires_at.unwrap_or(0),
+        user_info: user_info.clone(),
+    };
+    token_store.store_tokens(stored).await?;
+
+    println!("Authentication complete for: {}", user_info.email);
+
+    Ok(AuthStatus {
+        is_authenticated: true,
+        user: Some(user_info),
+        expires_at,
+    })
+}
+
+/// Synchronous function to wait for OAuth callback (runs in spawn_blocking)
+fn wait_for_callback_sync(port: u16) -> Result<(String, String), String> {
     // Start a simple HTTP server to receive the callback
     let listener = TcpListener::bind(format!("127.0.0.1:{}", port))
-        .map_err(|e| format!("Failed to start callback server: {}", e))?;
+        .map_err(|e| format!("Failed to start callback server on port {}: {}", port, e))?;
 
-    println!("Waiting for OAuth callback on port {}...", port);
+    println!("Listening on 127.0.0.1:{}...", port);
 
-    // Accept one connection
-    let (mut stream, _) = listener
+    // Accept one connection (blocking)
+    let (mut stream, addr) = listener
         .accept()
         .map_err(|e| format!("Failed to accept connection: {}", e))?;
+
+    println!("Received connection from {}", addr);
 
     // Read the request
     let mut buffer = [0; 4096];
@@ -171,7 +283,6 @@ pub async fn wait_for_oauth_callback(
     let request = String::from_utf8_lossy(&buffer[..n]);
 
     // Parse the authorization code from the request
-    // Request looks like: GET /?code=xxx&state=yyy HTTP/1.1
     let code = extract_param(&request, "code").ok_or("No authorization code in callback")?;
     let received_state =
         extract_param(&request, "state").ok_or("No state parameter in callback")?;
@@ -202,68 +313,8 @@ Connection: close
 
     stream.write_all(response.as_bytes()).ok();
     stream.flush().ok();
-    drop(stream);
-    drop(listener);
 
-    // Verify CSRF token
-    if expected_state != received_state {
-        return Err("CSRF token mismatch - possible attack".into());
-    }
-
-    // Clear pending state
-    let mut pending_guard = state.pending.lock().await;
-    *pending_guard = None;
-    drop(pending_guard);
-
-    // Exchange code for tokens using reqwest
-    let redirect_uri = format!("http://127.0.0.1:{}", port);
-    let http_client = reqwest::Client::new();
-
-    let token_response = http_client
-        .post(GOOGLE_TOKEN_URL)
-        .form(&[
-            ("client_id", state.client_id.as_str()),
-            ("code", &code),
-            ("code_verifier", &pkce_verifier),
-            ("grant_type", "authorization_code"),
-            ("redirect_uri", &redirect_uri),
-        ])
-        .send()
-        .await
-        .map_err(|e| format!("Failed to exchange code: {}", e))?;
-
-    if !token_response.status().is_success() {
-        let error_text = token_response.text().await.unwrap_or_default();
-        return Err(format!("Token exchange failed: {}", error_text));
-    }
-
-    let tokens: GoogleTokenResponse = token_response
-        .json()
-        .await
-        .map_err(|e| format!("Failed to parse token response: {}", e))?;
-
-    // Get user info from Google
-    let user_info = fetch_user_info(&tokens.access_token).await?;
-
-    // Calculate expiration
-    let expires_at = tokens
-        .expires_in
-        .map(|d| chrono::Utc::now().timestamp() + d as i64);
-
-    // Store tokens
-    let stored = token_store::StoredTokens {
-        access_token: tokens.access_token,
-        refresh_token: tokens.refresh_token,
-        expires_at: expires_at.unwrap_or(0),
-        user_info: user_info.clone(),
-    };
-    token_store.store_tokens(stored).await?;
-
-    Ok(AuthStatus {
-        is_authenticated: true,
-        user: Some(user_info),
-        expires_at,
-    })
+    Ok((code, received_state))
 }
 
 /// Fetch user info from Google
