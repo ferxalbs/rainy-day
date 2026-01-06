@@ -1,31 +1,25 @@
-# Changelog
+# CHANGELOG
 
-Todos los cambios notables de este proyecto serán documentados en este archivo.
+All notable changes to this project will be documented in this file.
 
-El formato está basado en [Keep a Changelog](https://keepachangelog.com/es/1.1.0/),
-y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
-
----
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
----
-
-## Building
-
 ### [v0.1.0] - 2026-01-06
 
-Primera versión de desarrollo de Rainy Day - Tu inbox convertido en un plan accionable.
+First development version of Rainy Day - Your inbox converted into an actionable plan.
 
 #### Added
 
 **Backend (Rust - Tauri v2)**
 
-- Configuración inicial de Tauri v2 con React 19 + Vite
-- Módulo de autenticación OAuth2 con PKCE para Google Sign-In
-  - `src-tauri/src/auth/mod.rs` - Flujo OAuth2 completo
-  - `src-tauri/src/auth/token_store.rs` - Almacenamiento seguro de tokens
-- Clientes API de Google con tipos completos
+- Initial Tauri v2 configuration with React 19 + Vite
+- OAuth2 authentication module with PKCE for Google Sign-In
+  - `src-tauri/src/auth/mod.rs` - Complete OAuth2 flow
+  - `src-tauri/src/auth/token_store.rs` - Secure token storage
+- Google API clients with complete types
   - `src-tauri/src/google/gmail.rs` - `threads.list`, `threads.get`
   - `src-tauri/src/google/calendar.rs` - `events.list` para hoy
   - `src-tauri/src/google/tasks.rs` - CRUD completo (create, update, complete, delete)
@@ -33,58 +27,47 @@ Primera versión de desarrollo de Rainy Day - Tu inbox convertido en un plan acc
 - Deep-link `rainyday://callback` para manejo de OAuth callback
 - Content Security Policy para conexiones seguras a googleapis.com
 
-**Plugins de Tauri**
+**Tauri plugins**
 
-- `tauri-plugin-deep-link` - Manejo de esquema custom URI
-- `tauri-plugin-stronghold` - Almacenamiento encriptado (macOS Keychain)
-- `tauri-plugin-store` - Persistencia de datos local
-- `tauri-plugin-http` - Requests HTTP autenticados
+- `tauri-plugin-deep-link` - Custom URI schema handling
+- `tauri-plugin-stronghold` - Encrypted storage (macOS Keychain)
+- `tauri-plugin-store` - Local data persistence
+- `tauri-plugin-http` - Authenticated HTTP requests
 
 **Frontend (React + TypeScript)**
 
-- Sistema de tipos TypeScript (`src/types/index.ts`)
-  - `AuthStatus`, `UserInfo` - Tipos de autenticación
-  - `ThreadSummary`, `GmailThreadDetail` - Tipos de Gmail
-  - `ProcessedEvent`, `CalendarEvent` - Tipos de Calendar
-  - `Task`, `TaskList`, `NewTask`, `TaskUpdate` - Tipos de Tasks
-- Servicios de API (`src/services/`)
+- TypeScript type system (`src/types/index.ts`)
+  - `AuthStatus`, `UserInfo` - Authentication types
+  - `ThreadSummary`, `GmailThreadDetail` - Gmail types
+  - `ProcessedEvent`, `CalendarEvent` - Calendar types
+  - `Task`, `TaskList`, `NewTask`, `TaskUpdate` - Task types
+- API services (`src/services/`)
   - `auth.ts` - Google OAuth wrapper
-  - `gmail.ts` - Fetching de threads
-  - `calendar.ts` - Fetching de eventos
-  - `tasks.ts` - CRUD completo de tareas
-- Contexto de autenticación (`src/contexts/AuthContext.tsx`)
-- Componentes UI
-  - `GoogleSignIn` - Pantalla de sign-in con branding premium
-  - `DailyPlan` - Vista principal con 3 bloques (Agenda, Inbox, Tasks)
+  - `gmail.ts` - Fetching threads
+  - `calendar.ts` - Fetching events
+  - `tasks.ts` - CRUD complete tasks
+- Authentication context (`src/contexts/AuthContext.tsx`)
+- UI components
+  - `GoogleSignIn` - Sign-in screen with premium branding
+  - `DailyPlan` - Main view with 3 blocks (Agenda, Inbox, Tasks)
 
 **Design System**
 
-- `src/styles/globals.css` - Tokens de diseño completos
-  - Dark theme con colores curados
+- `src/styles/globals.css` - Complete design tokens
+  - Dark theme with curated colors
   - Glassmorphism effects
-  - Micro-animaciones
+  - Micro-animations
   - Soporte para title bar de macOS
 
 **Configuración**
 
-- `src-tauri/tauri.conf.json` - Configuración de app y plugins
-- `src-tauri/capabilities/default.json` - Permisos de plugins
-- `src-tauri/capabilities/google-api.json` - Permisos para Stronghold
+- `src-tauri/tauri.conf.json` - App and plugins configuration
+- `src-tauri/capabilities/default.json` - Plugin permissions
+- `src-tauri/capabilities/google-api.json` - Stronghold permissions
 
 #### Security
 
-- OAuth2 con PKCE (sin client secret en el binario)
-- Scopes mínimos: `gmail.readonly`, `calendar.readonly`, `tasks`
-- Tokens almacenados en Stronghold (respaldado por Keychain de macOS)
-- CSP configurado para conexiones solo a Google APIs
-
----
-
-## Production
-
-> _Esta sección contendrá releases de producción cuando el proyecto esté listo para uso público._
-
----
-
-[Unreleased]: https://github.com/enosislabs/rainy-day/compare/v0.1.0...HEAD
-[v0.1.0]: https://github.com/enosislabs/rainy-day/releases/tag/v0.1.0
+- OAuth2 with PKCE (no client secret in the binary)
+- Minimum scopes: `gmail.readonly`, `calendar.readonly`, `tasks`
+- Tokens stored in Stronghold (backed by macOS Keychain)
+- CSP configured for connections only to Google APIs
