@@ -1,0 +1,235 @@
+.daily-plan {
+  min-height: 100vh;
+  padding: var(--spacing-md);
+  padding-top: 44px; /* Account for macOS title bar */
+  background: radial-gradient(
+      ellipse at top left,
+      rgba(59, 130, 246, 0.08),
+      transparent 40%
+    ),
+    radial-gradient(
+      ellipse at bottom right,
+      rgba(139, 92, 246, 0.06),
+      transparent 40%
+    ),
+    var(--color-bg-primary);
+}
+
+.daily-plan.loading,
+.daily-plan.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  color: var(--color-text-secondary);
+}
+
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Header */
+.plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-md);
+}
+
+.greeting h1 {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  margin-bottom: var(--spacing-xs);
+}
+
+.date {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}
+
+.refresh-btn {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.refresh-btn:hover {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+}
+
+/* Content */
+.plan-content {
+  display: grid;
+  gap: var(--spacing-lg);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Blocks */
+.plan-block {
+  padding: var(--spacing-lg);
+}
+
+.block-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  margin-bottom: var(--spacing-md);
+}
+
+.block-icon {
+  font-size: var(--text-xl);
+}
+
+.empty-state {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-sm);
+  text-align: center;
+  padding: var(--spacing-lg);
+}
+
+/* Event List */
+.event-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.event-item {
+  display: flex;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.event-item:last-child {
+  border-bottom: none;
+}
+
+.event-time {
+  color: var(--color-accent-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  min-width: 80px;
+}
+
+.event-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.event-title {
+  font-weight: var(--font-medium);
+}
+
+.event-location {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-sm);
+}
+
+.meeting-link {
+  color: var(--color-accent-primary);
+  font-size: var(--text-sm);
+  text-decoration: none;
+}
+
+.meeting-link:hover {
+  text-decoration: underline;
+}
+
+/* Thread List */
+.thread-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.thread-item {
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.thread-item:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.thread-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.thread-subject {
+  font-weight: var(--font-medium);
+  font-size: var(--text-sm);
+}
+
+.thread-snippet {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-xs);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Task List */
+.task-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.task-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) 0;
+}
+
+.task-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-accent-primary);
+  margin-top: 2px;
+}
+
+.task-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.task-title {
+  font-size: var(--text-sm);
+}
+
+.task-due {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-xs);
+}

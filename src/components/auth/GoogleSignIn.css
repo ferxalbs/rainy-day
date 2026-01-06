@@ -1,0 +1,102 @@
+.google-signin-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  background: radial-gradient(
+      ellipse at top,
+      rgba(59, 130, 246, 0.15),
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at bottom right,
+      rgba(139, 92, 246, 0.1),
+      transparent 50%
+    ),
+    var(--color-bg-primary);
+}
+
+.signin-card {
+  width: 100%;
+  max-width: 420px;
+  padding: var(--spacing-2xl);
+  text-align: center;
+}
+
+.signin-header {
+  margin-bottom: var(--spacing-xl);
+}
+
+.logo {
+  margin-bottom: var(--spacing-md);
+}
+
+.signin-title {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  background: var(--color-accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--spacing-sm);
+}
+
+.signin-subtitle {
+  color: var(--color-text-secondary);
+  font-size: var(--text-lg);
+}
+
+.signin-content {
+  margin-bottom: var(--spacing-xl);
+}
+
+.signin-description {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  margin-bottom: var(--spacing-lg);
+}
+
+.google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-text-primary);
+  color: var(--color-bg-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.google-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.google-button:active {
+  transform: translateY(0);
+}
+
+.google-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.signin-footer {
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-border);
+}
+
+.privacy-note {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  line-height: 1.6;
+}
