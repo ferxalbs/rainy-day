@@ -5,8 +5,9 @@
 //! - Starts a local HTTP server to receive the OAuth callback
 //! - Generates the authorization URL with PKCE
 //! - Exchanges the code for tokens
-//! - Stores tokens securely
+//! - Stores tokens securely in the OS keychain
 
+mod keychain;
 mod token_store;
 
 use oauth2::{

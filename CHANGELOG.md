@@ -7,14 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.1.2] - 2026-01-06
+
+#### Added
+
+- Native OS Keychain storage for refresh tokens
+  - macOS: Keychain (AES-256-GCM encrypted)
+  - Windows: Credential Manager
+  - Linux: Secret Service
+- `keychain.rs` module using cross-platform `keyring` crate
+- Automatic migration from old `auth_session.json` to secure storage
+
+#### Improvements
+
+- Session metadata (email, expires_at) now separate from secrets
+- Removed `tauri-plugin-stronghold` (not needed with native keychain)
+- Hardened capabilities (removed google-api.json capability file)
+
+#### Security
+
+- `refresh_token` stored in OS keychain (encrypted by OS, no user password)
+- `access_token` kept only in memory (not persisted)
+- JSON file (`session_metadata.json`) contains only non-sensitive metadata
+
+---
+
 ### [v0.1.1] - 2026-01-06
 
 #### Improvements
 
 - Session persistence: authentication now survives app restarts
-  - Tokens stored securely in app data directory (`auth_session.json`)
-  - Auto-refresh expired tokens on startup using refresh_token
-  - Graceful handling of corrupted or expired sessions
 
 #### Fixes
 
