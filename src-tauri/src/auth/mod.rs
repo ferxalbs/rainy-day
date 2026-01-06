@@ -24,7 +24,7 @@ pub use token_store::TokenStore;
 
 /// Google OAuth2 configuration
 const GOOGLE_AUTH_URL: &str = "https://accounts.google.com/o/oauth2/v2/auth";
-const GOOGLE_TOKEN_URL: &str = "https://oauth2.googleapis.com/token";
+pub const GOOGLE_TOKEN_URL: &str = "https://oauth2.googleapis.com/token";
 
 /// OAuth scopes for Google APIs (minimal, read-only where possible)
 pub const SCOPES: &[&str] = &[
@@ -318,7 +318,7 @@ Connection: close
 }
 
 /// Fetch user info from Google
-async fn fetch_user_info(access_token: &str) -> Result<UserInfo, String> {
+pub async fn fetch_user_info(access_token: &str) -> Result<UserInfo, String> {
     let client = reqwest::Client::new();
     let response = client
         .get("https://www.googleapis.com/oauth2/v2/userinfo")

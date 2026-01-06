@@ -8,6 +8,7 @@ mod google;
 
 use auth::{AuthState, TokenStore};
 use google::GoogleClient;
+use tauri::Manager;
 
 /// Environment variable for Google Client ID
 const GOOGLE_CLIENT_ID_ENV: &str = "GOOGLE_CLIENT_ID";
@@ -52,6 +53,10 @@ pub fn run() {
         );
     }
 
+    // Clone credentials for setup hook
+    let client_id_for_setup = client_id.clone();
+    let client_secret_for_setup = client_secret.clone();
+
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_store::Builder::default().build())
@@ -59,6 +64,24 @@ pub fn run() {
         .manage(AuthState::new(client_id, client_secret))
         .manage(TokenStore::new())
         .manage(GoogleClient::new())
+        .setup(move |app| {
+            // Initialize TokenStore with app data directory
+            let token_store = app.state::<TokenStore>();
+            let app_data_dir = app.path().app_data_dir()
+                .expect("Failed to get app data directory");
+            
+            // Use tokio runtime to run async initialization
+            let client_id = client_id_for_setup.clone();
+            let client_secret = client_secret_for_setup.clone();
+            
+            tauri::async_runtime::block_on(async {
+                if let Err(e) = token_store.initialize(app_data_dir, client_id, client_secret).await {
+                    eprintln!("Failed to initialize token store: {}", e);
+                }
+            });
+            
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             auth::start_google_auth,
             auth::wait_for_oauth_callback,

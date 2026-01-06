@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.1.1] - 2026-01-06
+
+#### Improvements
+
+- Session persistence: authentication now survives app restarts
+  - Tokens stored securely in app data directory (`auth_session.json`)
+  - Auto-refresh expired tokens on startup using refresh_token
+  - Graceful handling of corrupted or expired sessions
+
+#### Fixes
+
+- Fixed session loss on app restart (tokens were only stored in memory)
+
+---
+
 ### [v0.1.0] - 2026-01-06
 
 First development version of Rainy Day - Your inbox converted into an actionable plan.
