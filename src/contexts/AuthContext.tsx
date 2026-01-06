@@ -11,6 +11,7 @@ import type { AuthStatus, UserInfo } from "../types";
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
+  isLoggingIn: boolean;
   user: UserInfo | null;
   login: () => Promise<void>;
   logout: () => Promise<void>;
@@ -21,6 +22,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [authStatus, setAuthStatus] = useState<AuthStatus>({
     is_authenticated: false,
     user: null,
@@ -37,13 +39,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const handleLogin = async () => {
+    setIsLoggingIn(true);
     try {
-      await startGoogleAuth();
-      // The OAuth callback will handle setting the tokens
-      // We'll need to poll or listen for the callback
+      // This will open browser and wait for callback
+      const status = await startGoogleAuth();
+      setAuthStatus(status);
     } catch (error) {
-      console.error("Failed to start login:", error);
+      console.error("Failed to complete login:", error);
       throw error;
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -74,6 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         isAuthenticated: authStatus.is_authenticated,
         isLoading,
+        isLoggingIn,
         user: authStatus.user,
         login: handleLogin,
         logout: handleLogout,

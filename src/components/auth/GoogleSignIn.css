@@ -90,6 +90,39 @@
   transform: none;
 }
 
+.button-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-top-color: #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.signin-hint {
+  color: var(--color-accent-primary);
+  font-size: var(--text-sm);
+  text-align: center;
+  margin-top: var(--spacing-md);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
 .signin-footer {
   padding-top: var(--spacing-lg);
   border-top: 1px solid var(--color-border);

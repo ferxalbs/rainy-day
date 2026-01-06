@@ -7,14 +7,22 @@ import type { AuthStatus } from '../types';
 
 /**
  * Start the Google OAuth2 flow
- * Opens the user's browser to Google sign-in
+ * Opens the user's browser to Google sign-in and waits for callback
  */
-export async function startGoogleAuth(): Promise<void> {
+export async function startGoogleAuth(): Promise<AuthStatus> {
   try {
+    // Get the OAuth URL (this also sets up the callback server info)
     const authUrl = await invoke<string>('start_google_auth');
+    
+    // Open the URL in the user's browser
     await openUrl(authUrl);
+    
+    // Wait for the OAuth callback (blocks until user completes auth)
+    const status = await invoke<AuthStatus>('wait_for_oauth_callback');
+    
+    return status;
   } catch (error) {
-    console.error('Failed to start Google auth:', error);
+    console.error('Failed to complete Google auth:', error);
     throw error;
   }
 }
