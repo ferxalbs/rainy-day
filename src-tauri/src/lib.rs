@@ -5,6 +5,7 @@
 
 mod auth;
 mod google;
+mod theme;
 
 use auth::{AuthState, TokenStore};
 use google::GoogleClient;
@@ -45,7 +46,10 @@ pub fn run() {
 
     if client_id.is_empty() || client_secret.is_empty() {
         eprintln!("ERROR: Missing Google OAuth credentials in .env file.");
-        eprintln!("Required: {} and {}", GOOGLE_CLIENT_ID_ENV, GOOGLE_CLIENT_SECRET_ENV);
+        eprintln!(
+            "Required: {} and {}",
+            GOOGLE_CLIENT_ID_ENV, GOOGLE_CLIENT_SECRET_ENV
+        );
     } else {
         println!(
             "Starting Rainy Day with client ID: {}...",
@@ -67,19 +71,24 @@ pub fn run() {
         .setup(move |app| {
             // Initialize TokenStore with app data directory
             let token_store = app.state::<TokenStore>();
-            let app_data_dir = app.path().app_data_dir()
+            let app_data_dir = app
+                .path()
+                .app_data_dir()
                 .expect("Failed to get app data directory");
-            
+
             // Use tokio runtime to run async initialization
             let client_id = client_id_for_setup.clone();
             let client_secret = client_secret_for_setup.clone();
-            
+
             tauri::async_runtime::block_on(async {
-                if let Err(e) = token_store.initialize(app_data_dir, client_id, client_secret).await {
+                if let Err(e) = token_store
+                    .initialize(app_data_dir, client_id, client_secret)
+                    .await
+                {
                     eprintln!("Failed to initialize token store: {}", e);
                 }
             });
-            
+
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -99,6 +108,10 @@ pub fn run() {
             google::tasks::complete_task,
             google::tasks::reopen_task,
             google::tasks::delete_task,
+            theme::get_theme,
+            theme::set_theme,
+            theme::get_system_theme,
+            theme::reset_theme,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

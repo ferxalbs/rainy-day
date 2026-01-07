@@ -1,6 +1,8 @@
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import { GoogleSignIn } from "./components/auth/GoogleSignIn";
 import { MainLayout } from "./components/layout/MainLayout";
+import { CommandPalette } from "./components/CommandPalette";
 import "./App.css";
 
 function AppContent() {
@@ -18,14 +20,21 @@ function AppContent() {
     return <GoogleSignIn />;
   }
 
-  return <MainLayout />;
+  return (
+    <>
+      <MainLayout />
+      <CommandPalette />
+    </>
+  );
 }
 
 function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.1.9] - 2026-01-07
+
+#### Added
+
+- **Theme System**: Complete theme management with day, night, and automatic modes
+  - Persistent theme storage using Tauri Store plugin
+  - Automatic theme detection based on system preferences
+  - Smooth transitions between themes with CSS animations
+- **Command Palette**: Global command palette accessible via `Cmd+K` (macOS) or `Ctrl+K` (Windows/Linux)
+  - Theme switching commands (Switch to Day/Night/Automatic Theme)
+  - Dynamic glassmorphism background with `backdrop-blur-xl`
+  - Theme-aware transparency (`bg-black/10` for dark, `bg-white/10` for light)
+  - Rounded blue borders (`border-2 border-blue-500/20 rounded-2xl`)
+- **Theme Switcher**: Dropdown component in topbar for quick theme switching
+  - Icons for each theme mode (Sun, Moon, Monitor)
+  - Glassmorphism styling consistent with app design
+  - Real-time theme preview
+
+#### Improvements
+
+- Enhanced CSS with separate day and night theme variables
+- Updated all components to support dynamic theming
+- Improved glassmorphism effects across the UI
+- Better color contrast and accessibility in both themes
+
+#### Patches
+
+- Fixed unused import warnings in theme components
+- Optimized theme context to prevent unnecessary re-renders
+
 ### [v0.1.8] - 2026-01-07
 
 #### Fixes
