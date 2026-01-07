@@ -144,10 +144,86 @@
   --color-bg-primary: #051923;
 }
 
-/* Cosmic Gold Theme */
+/* Cosmic Gold Specific Backgrounds */
+html.theme-cosmic-gold.theme-night body {
+  background-color: #030100;
+  background-image: 
+    /* Subtle amber glow from top-right */ radial-gradient(
+      circle at 80% 0%,
+      rgba(251, 191, 36, 0.08),
+      transparent 40%
+    ),
+    /* Subtle amber glow from bottom-left */
+      radial-gradient(
+        circle at 20% 100%,
+        rgba(245, 158, 11, 0.05),
+        transparent 40%
+      ),
+    /* Stars layer 1 (small) */
+      radial-gradient(
+        1px 1px at 10% 10%,
+        rgba(255, 255, 255, 0.5) 1px,
+        transparent 0
+      ),
+    radial-gradient(
+      1px 1px at 20% 40%,
+      rgba(255, 255, 255, 0.4) 1px,
+      transparent 0
+    ),
+    radial-gradient(
+      1px 1px at 40% 70%,
+      rgba(255, 255, 255, 0.5) 1px,
+      transparent 0
+    ),
+    radial-gradient(
+      1px 1px at 60% 20%,
+      rgba(255, 255, 255, 0.4) 1px,
+      transparent 0
+    ),
+    radial-gradient(
+      1px 1px at 80% 60%,
+      rgba(255, 255, 255, 0.5) 1px,
+      transparent 0
+    ),
+    /* Stars layer 2 (tiny) */
+      radial-gradient(
+        1px 1px at 55% 5%,
+        rgba(255, 255, 255, 0.3) 1px,
+        transparent 0
+      ),
+    radial-gradient(
+      1px 1px at 25% 85%,
+      rgba(255, 255, 255, 0.3) 1px,
+      transparent 0
+    ),
+    radial-gradient(
+      1px 1px at 75% 35%,
+      rgba(255, 255, 255, 0.3) 1px,
+      transparent 0
+    ),
+    /* Base gradient */ linear-gradient(to bottom, #080400 0%, #030100 100%);
+  background-size: 100% 100%, 100% 100%, 550px 550px, 550px 550px, 550px 550px,
+    550px 550px, 550px 550px, 350px 350px, 350px 350px, 350px 350px, 100% 100%;
+  background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
+  background-repeat: no-repeat, no-repeat, repeat, repeat, repeat, repeat,
+    repeat, repeat, repeat, repeat, no-repeat;
+  background-attachment: fixed;
+}
+
+html.theme-cosmic-gold.theme-day body {
+  background-color: #fffbf5;
+  background-image: radial-gradient(
+      circle at 50% 0%,
+      rgba(251, 191, 36, 0.1),
+      transparent 60%
+    ),
+    linear-gradient(to bottom, #fffbf5 0%, #fff8ec 100%);
+  background-attachment: fixed;
+}
+
 .theme-cosmic-gold {
-  --primary: 45 93% 47%;
-  --color-accent-primary: #eab308;
+  --primary: 43 96% 56%; /* Amber 500 */
+  --color-accent-primary: #f59e0b;
 }
 
 .theme-cosmic-gold.theme-day {
@@ -157,34 +233,35 @@
   --card-foreground: 25 45% 12%;
   --popover: 42 50% 98%;
   --popover-foreground: 25 45% 12%;
-  --border: 45 85% 82%;
+  --border: 45 60% 85%;
   --secondary: 42 40% 92%;
   --secondary-foreground: 25 45% 12%;
   --muted: 42 35% 90%;
   --muted-foreground: 25 35% 40%;
-  --accent: 45 80% 88%;
+  --accent: 43 96% 56%;
   --accent-foreground: 25 45% 12%;
   --color-bg-primary: #fffbf5;
   --primary-foreground: 25 45% 12%;
 }
 
 .theme-cosmic-gold.theme-night {
+  /* HSL values for components to fallback on */
   --background: 25 25% 5%;
-  --foreground: 45 85% 92%;
-  --card: 25 30% 7%;
-  --card-foreground: 45 85% 92%;
-  --popover: 25 30% 7%;
-  --popover-foreground: 45 85% 92%;
-  --border: 45 75% 18%;
-  --primary: 45 93% 52%;
+  --foreground: 43 96% 90%; /* Light Amber/Gold */
+  --card: 25 30% 6%; /* Deep dark */
+  --card-foreground: 43 96% 90%;
+  --popover: 25 30% 6%; /* Deep dark */
+  --popover-foreground: 43 96% 90%;
+  --border: 43 60% 20%; /* Dark Gold Border */
+  --primary: 43 96% 56%; /* Amber 500 */
   --primary-foreground: 25 45% 12%;
   --secondary: 25 30% 10%;
-  --secondary-foreground: 45 85% 92%;
+  --secondary-foreground: 43 96% 90%;
   --muted: 25 20% 12%;
-  --muted-foreground: 45 60% 65%;
-  --accent: 25 25% 15%;
-  --accent-foreground: 45 85% 92%;
-  --color-bg-primary: #0f0a05;
+  --muted-foreground: 43 60% 60%;
+  --accent: 43 96% 56%; /* Amber for accents */
+  --accent-foreground: 25 45% 12%;
+  --color-bg-primary: #050201;
 }
 
 @theme inline {

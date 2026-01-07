@@ -32,7 +32,7 @@ export function MainLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       {/* Native-style Topbar */}
       <Topbar
         title={PAGE_TITLES[activePage]}

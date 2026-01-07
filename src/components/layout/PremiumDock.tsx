@@ -28,7 +28,7 @@ export function PremiumDock({ activePage, onPageChange }: PremiumDockProps) {
           iconSize={48}
           iconMagnification={60}
           iconDistance={120}
-          className="h-16 gap-3 px-3 bg-slate-900/10 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl shadow-black/50"
+          className="h-16 gap-3 px-3 bg-card/40 backdrop-blur-2xl border border-border rounded-2xl shadow-2xl shadow-black/50"
         >
           {pages.map((page) => {
             const Icon = page.icon;
@@ -43,21 +43,21 @@ export function PremiumDock({ activePage, onPageChange }: PremiumDockProps) {
                       relative rounded-xl transition-all duration-200
                       ${
                         isActive
-                          ? "bg-blue-500/10 border border-blue-500/50"
-                          : "bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20"
+                          ? "bg-primary/10 border border-primary/50"
+                          : "bg-secondary border border-border hover:bg-accent hover:border-border/50"
                       }
                     `}
                   >
                     <div className="relative flex flex-col items-center">
                       <Icon
                         className={`w-6 h-6 transition-colors duration-200 ${
-                          isActive ? "text-blue-400" : "text-slate-400"
+                          isActive ? "text-primary" : "text-muted-foreground"
                         }`}
                         strokeWidth={2}
                       />
                       {/* Active indicator dot */}
                       {isActive && (
-                        <span className="absolute -bottom-2 w-1 h-1 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.8)]" />
+                        <span className="absolute -bottom-2 w-1 h-1 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.8)]" />
                       )}
                     </div>
                   </DockIcon>

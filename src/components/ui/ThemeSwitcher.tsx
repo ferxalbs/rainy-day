@@ -23,7 +23,7 @@ export function ThemeSwitcher() {
     <div className="flex items-center gap-2 no-drag">
       {/* Theme Name Selector */}
       <Select value={themeName} onValueChange={handleNameChange}>
-        <SelectTrigger className="w-[130px] h-8 gap-2 border-border bg-secondary/50 backdrop-blur-md hover:bg-secondary transition-all rounded-full px-3">
+        <SelectTrigger className="w-[140px] h-8 gap-2 border-border bg-secondary/50 backdrop-blur-md hover:bg-secondary transition-all rounded-full px-3 text-xs font-medium">
           {themeName === "default" && (
             <MonitorSmartphone className="h-3.5 w-3.5 text-muted-foreground" />
           )}

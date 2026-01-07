@@ -91,11 +91,11 @@ export const COSMIC_GOLD_DAY_THEME: ThemeConfig = {
   mode: 'day',
   colors: {
     background: '42 35% 97%',          // Warm parchment light
-    foreground: '25 45% 12%',          // Rich bronze text (better contrast)
-    border: '45 85% 82%',              // Soft gold border
-    primary: '45 93% 47%',             // Vibrant star gold
+    foreground: '25 45% 12%',          // Rich bronze text
+    border: '45 60% 85%',              // Soft gold border
+    primary: '43 96% 56%',             // Amber 500
     secondary: '42 40% 92%',           // Warm stardust
-    accent: '45 80% 88%',              // Gentle gold glow
+    accent: '43 96% 56%',              // Amber accent
     muted: '42 35% 90%',               // Soft parchment muted
     card: '42 50% 98%',                // Luminous nebula white
     popover: '42 50% 98%',             // Luminous nebula white
@@ -106,15 +106,15 @@ export const COSMIC_GOLD_NIGHT_THEME: ThemeConfig = {
   name: 'cosmic-gold',
   mode: 'night',
   colors: {
-    background: '25 25% 5%',           // Deep cosmic void
-    foreground: '45 85% 92%',          // Bright gold starlight
-    border: '45 75% 18%',              // Visible gold border (improved)
-    primary: '45 93% 52%',             // Brighter star gold for dark mode
+    background: '25 25% 5%',           // Deep cosmic void (Solid fallback)
+    foreground: '43 96% 90%',          // Light Amber/Gold
+    border: '43 60% 20%',              // Dark Gold Border
+    primary: '43 96% 56%',             // Amber 500
     secondary: '25 30% 10%',           // Dark cosmic secondary
-    accent: '25 25% 15%',              // Subtle cosmic glow
+    accent: '43 96% 56%',              // Amber accent
     muted: '25 20% 12%',               // Muted space
-    card: '25 30% 7%',                 // Deep nebula card
-    popover: '25 30% 7%',              // Deep nebula popover
+    card: '25 30% 6%',                 // Deep nebula card
+    popover: '25 30% 6%',              // Deep nebula popover
   },
 };
 
