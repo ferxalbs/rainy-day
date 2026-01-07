@@ -7,6 +7,7 @@ import {
   Sparkles,
   Snowflake,
   RefreshCw,
+  Sunrise,
 } from "lucide-react";
 import {
   CommandDialog,
@@ -106,6 +107,17 @@ export function CommandPalette() {
             <Snowflake className="h-4 w-4" />
             <span>Starry Christmas Theme</span>
             {themeName === "starry-christmas" && (
+              <span className="ml-auto text-xs text-primary">Active</span>
+            )}
+          </CommandItem>
+
+          <CommandItem
+            onSelect={() => handleThemeNameChange("ocean-sunset")}
+            className="gap-2"
+          >
+            <Sunrise className="h-4 w-4" />
+            <span>Ocean Sunset Theme</span>
+            {themeName === "ocean-sunset" && (
               <span className="ml-auto text-xs text-primary">Active</span>
             )}
           </CommandItem>

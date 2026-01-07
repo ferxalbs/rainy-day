@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.1.11] - 2026-01-07
+
+#### Added
+
+- **Starry Christmas Theme**: Festive theme with pine green and Christmas red colors
+  - Day mode: Snow white background with subtle snowflake patterns
+  - Night mode: Deep forest night with stars and festive light glows
+  - Animated stellar backgrounds using CSS radial gradients
+- **Enhanced Command Palette** (`Cmd+K`)
+  - All four theme variants now accessible from palette
+  - Organized into "Theme Colors" and "Appearance Mode" sections
+  - Added "Reload Application" action command with ⌘R indicator
+  - Active theme indicators use `text-primary` for theme consistency
+
+#### Improvements
+
+- **Theme-aware hover states** across all components using `accent-foreground`
+- **Updated Cosmic Gold colors** to Amber 500 (#f59e0b) for better contrast
+- **Cosmic Gold night mode** with stellar background effects and radial star patterns
+- **Removed ThemeSwitcher from Topbar** - accessible via Command Palette
+- All page components (Inbox, Agenda, Task) now use theme variables for hover effects
+- Improved component modularity - easier to add new themes
+
 ### [v0.1.10] - 2026-01-07
 
 - Added

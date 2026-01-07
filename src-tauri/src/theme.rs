@@ -48,10 +48,16 @@ pub async fn set_theme(app: AppHandle, mode: String, name: String) -> Result<(),
     }
 
     // Validate theme name
-    let valid_names = ["default", "sky-blue", "cosmic-gold", "starry-christmas"];
+    let valid_names = [
+        "default",
+        "sky-blue",
+        "cosmic-gold",
+        "starry-christmas",
+        "ocean-sunset",
+    ];
     if !valid_names.contains(&name.as_str()) {
         return Err(format!(
-            "Invalid theme name: {}. Must be one of: default, sky-blue, cosmic-gold, starry-christmas",
+            "Invalid theme name: {}. Must be one of: default, sky-blue, cosmic-gold, starry-christmas, ocean-sunset",
             name
         ));
     }

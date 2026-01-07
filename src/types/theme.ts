@@ -2,7 +2,7 @@
 
 export type ThemeAppearance = 'day' | 'night';
 export type ThemeMode = 'day' | 'night' | 'automatic';
-export type ThemeName = 'default' | 'sky-blue' | 'cosmic-gold' | 'starry-christmas';
+export type ThemeName = 'default' | 'sky-blue' | 'cosmic-gold' | 'starry-christmas' | 'ocean-sunset';
 
 export interface ThemeColors {
   background: string;
@@ -147,6 +147,38 @@ export const STARRY_CHRISTMAS_NIGHT_THEME: ThemeConfig = {
     muted: '142 30% 15%',              // Muted forest
     card: '142 40% 8%',                // Forest card
     popover: '142 40% 8%',             // Forest popover
+  },
+};
+
+export const OCEAN_SUNSET_DAY_THEME: ThemeConfig = {
+  name: 'ocean-sunset',
+  mode: 'day',
+  colors: {
+    background: '39 100% 97%',         // Light peachy sand
+    foreground: '200 30% 20%',         // Deep ocean blue text
+    border: '14 100% 75%',             // Soft coral border
+    primary: '14 91% 60%',             // Coral (Coral 500)
+    secondary: '39 100% 94%',          // Pale sunset
+    accent: '25 95% 53%',              // Orange sunset
+    muted: '39 50% 92%',               // Muted sand
+    card: '39 100% 98%',               // Almost white sand
+    popover: '39 100% 98%',            // Almost white sand
+  },
+};
+
+export const OCEAN_SUNSET_NIGHT_THEME: ThemeConfig = {
+  name: 'ocean-sunset',
+  mode: 'night',
+  colors: {
+    background: '200 40% 8%',          // Deep midnight ocean
+    foreground: '39 90% 95%',          // Soft coral glow
+    border: '14 70% 30%',              // Dark coral border
+    primary: '14 91% 60%',             // Coral (Coral 500)
+    secondary: '200 40% 12%',          // Dark ocean secondary
+    accent: '25 95% 53%',              // Orange glow
+    muted: '200 30% 15%',              // Muted ocean
+    card: '200 40% 10%',               // Ocean depths card
+    popover: '200 40% 10%',            // Ocean depths popover
   },
 };
 
