@@ -1,4 +1,11 @@
-import { Sun, Moon, MonitorSmartphone, Cloud, Sparkles } from "lucide-react";
+import {
+  Sun,
+  Moon,
+  MonitorSmartphone,
+  Cloud,
+  Sparkles,
+  Snowflake,
+} from "lucide-react";
 import { useTheme } from "../../contexts/ThemeContext";
 import {
   Select,
@@ -23,7 +30,7 @@ export function ThemeSwitcher() {
     <div className="flex items-center gap-2 no-drag">
       {/* Theme Name Selector */}
       <Select value={themeName} onValueChange={handleNameChange}>
-        <SelectTrigger className="w-[140px] h-8 gap-2 border-border bg-secondary/50 backdrop-blur-md hover:bg-secondary transition-all rounded-full px-3 text-xs font-medium">
+        <SelectTrigger className="w-[150px] h-8 gap-2 border-border bg-secondary/50 backdrop-blur-md hover:bg-secondary transition-all rounded-full px-3 text-xs font-medium">
           {themeName === "default" && (
             <MonitorSmartphone className="h-3.5 w-3.5 text-muted-foreground" />
           )}
@@ -32,6 +39,9 @@ export function ThemeSwitcher() {
           )}
           {themeName === "cosmic-gold" && (
             <Sparkles className="h-3.5 w-3.5 text-primary" />
+          )}
+          {themeName === "starry-christmas" && (
+            <Snowflake className="h-3.5 w-3.5 text-primary" />
           )}
           <SelectValue />
         </SelectTrigger>
@@ -61,6 +71,15 @@ export function ThemeSwitcher() {
             <div className="flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-primary" />
               <span>Cosmic Gold</span>
+            </div>
+          </SelectItem>
+          <SelectItem
+            value="starry-christmas"
+            className="rounded-lg focus:bg-accent focus:text-accent-foreground transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <Snowflake className="h-4 w-4 text-primary" />
+              <span>Starry Christmas</span>
             </div>
           </SelectItem>
         </SelectContent>

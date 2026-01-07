@@ -2,7 +2,7 @@
 
 export type ThemeAppearance = 'day' | 'night';
 export type ThemeMode = 'day' | 'night' | 'automatic';
-export type ThemeName = 'default' | 'sky-blue' | 'cosmic-gold';
+export type ThemeName = 'default' | 'sky-blue' | 'cosmic-gold' | 'starry-christmas';
 
 export interface ThemeColors {
   background: string;
@@ -115,6 +115,38 @@ export const COSMIC_GOLD_NIGHT_THEME: ThemeConfig = {
     muted: '25 20% 12%',               // Muted space
     card: '25 30% 6%',                 // Deep nebula card
     popover: '25 30% 6%',              // Deep nebula popover
+  },
+};
+
+export const STARRY_CHRISTMAS_DAY_THEME: ThemeConfig = {
+  name: 'starry-christmas',
+  mode: 'day',
+  colors: {
+    background: '0 0% 98%',            // Snow white
+    foreground: '142 76% 18%',         // Pine green text
+    border: '0 84% 60%',               // Christmas red border
+    primary: '142 70% 45%',            // Pine green
+    secondary: '0 0% 94%',             // Light snow secondary
+    accent: '0 84% 60%',               // Red accent
+    muted: '142 30% 90%',              // Muted pine
+    card: '0 0% 100%',                 // White snow card
+    popover: '0 0% 100%',              // White snow popover
+  },
+};
+
+export const STARRY_CHRISTMAS_NIGHT_THEME: ThemeConfig = {
+  name: 'starry-christmas',
+  mode: 'night',
+  colors: {
+    background: '142 40% 6%',          // Deep forest night
+    foreground: '0 0% 95%',            // Snow white text
+    border: '0 70% 35%',               // Dark red border
+    primary: '142 70% 45%',            // Pine green
+    secondary: '142 40% 10%',          // Dark forest secondary
+    accent: '48 96% 53%',              // Gold accent (lights)
+    muted: '142 30% 15%',              // Muted forest
+    card: '142 40% 8%',                // Forest card
+    popover: '142 40% 8%',             // Forest popover
   },
 };
 

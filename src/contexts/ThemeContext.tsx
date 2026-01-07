@@ -14,6 +14,8 @@ import {
   SKY_BLUE_NIGHT_THEME,
   COSMIC_GOLD_DAY_THEME,
   COSMIC_GOLD_NIGHT_THEME,
+  STARRY_CHRISTMAS_DAY_THEME,
+  STARRY_CHRISTMAS_NIGHT_THEME,
 } from "../types/theme";
 
 interface ThemeContextType {
@@ -60,6 +62,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
           ? COSMIC_GOLD_DAY_THEME
           : COSMIC_GOLD_NIGHT_THEME;
       }
+      if (name === "starry-christmas") {
+        return actualAppearance === "day"
+          ? STARRY_CHRISTMAS_DAY_THEME
+          : STARRY_CHRISTMAS_NIGHT_THEME;
+      }
       return actualAppearance === "day" ? DAY_THEME : NIGHT_THEME;
     },
     [getSystemThemePreference]
@@ -77,6 +84,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         "dark",
         "theme-sky-blue",
         "theme-cosmic-gold",
+        "theme-starry-christmas",
         "theme-default"
       );
 
