@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.1.6] - 2026-01-07
+
+#### Improvements
+
+- Enhanced dock tooltips with native macOS glassmorphism and refined aesthetics
+- Refined dock and icon styling for a more premium experience
+- Adjusted tooltip positioning and delays for better responsiveness
+
 ### [v0.1.5] - 2026-01-07
 
 #### Added
