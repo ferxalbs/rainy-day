@@ -1,7 +1,7 @@
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { GoogleSignIn } from "./components/auth/GoogleSignIn";
 import { MainLayout } from "./components/layout/MainLayout";
-import "./styles/globals.css";
+import "./App.css";
 
 function AppContent() {
   const { isAuthenticated, isLoading } = useAuth();
