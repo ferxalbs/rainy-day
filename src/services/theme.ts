@@ -1,21 +1,24 @@
 // Theme service - handles communication with Tauri backend
 
 import { invoke } from '@tauri-apps/api/core';
-import type { ThemeMode } from '../types/theme';
+import type { ThemeMode, ThemeName } from '../types/theme';
 
-export async function getTheme(): Promise<ThemeMode> {
+export async function getTheme(): Promise<{ mode: ThemeMode, name: ThemeName }> {
   try {
-    const mode = await invoke<string>('get_theme');
-    return mode as ThemeMode;
+    const result = await invoke<{ mode: string, name: string }>('get_theme');
+    return {
+      mode: result.mode as ThemeMode,
+      name: result.name as ThemeName
+    };
   } catch (error) {
     console.error('Failed to get theme:', error);
-    return 'automatic';
+    return { mode: 'automatic', name: 'default' };
   }
 }
 
-export async function setTheme(mode: ThemeMode): Promise<void> {
+export async function setTheme(mode: ThemeMode, name: ThemeName): Promise<void> {
   try {
-    await invoke('set_theme', { mode });
+    await invoke('set_theme', { mode, name });
   } catch (error) {
     console.error('Failed to set theme:', error);
     throw error;

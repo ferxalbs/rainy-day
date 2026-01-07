@@ -1,4 +1,5 @@
 import { RefreshCw } from "lucide-react";
+import { ThemeSwitcher } from "../ui/ThemeSwitcher";
 
 interface TopbarProps {
   title: string;
@@ -18,12 +19,13 @@ export function Topbar({ title, onRefresh, isRefreshing }: TopbarProps) {
       </div>
 
       {/* Right: Actions */}
-      <div className="flex items-center gap-2 pr-4 no-drag">
+      <div className="flex items-center gap-4 pr-4 no-drag">
+        <ThemeSwitcher />
         {onRefresh && (
           <button
             onClick={onRefresh}
             disabled={isRefreshing}
-            className="p-2 rounded-lg bg-slate-800/10 hover:bg-slate-700/10 transition-all duration-200 group disabled:opacity-50"
+            className="p-2 rounded-lg bg-background-800/10 hover:bg-slate-700/10 transition-all duration-200 group disabled:opacity-50"
             aria-label="Refresh"
           >
             <RefreshCw

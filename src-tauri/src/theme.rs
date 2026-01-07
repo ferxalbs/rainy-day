@@ -6,30 +6,38 @@ use tauri::AppHandle;
 use tauri_plugin_store::StoreExt;
 
 const THEME_STORE_FILE: &str = "theme.json";
-const THEME_KEY: &str = "mode";
+const THEME_MODE_KEY: &str = "mode";
+const THEME_NAME_KEY: &str = "name";
+
+#[derive(serde::Serialize, serde::Deserialize)]
+pub struct ThemePreference {
+    pub mode: String,
+    pub name: String,
+}
 
 /// Get the saved theme preference
 #[tauri::command]
-pub async fn get_theme(app: AppHandle) -> Result<String, String> {
+pub async fn get_theme(app: AppHandle) -> Result<ThemePreference, String> {
     let store = app
         .store(THEME_STORE_FILE)
         .map_err(|e| format!("Failed to access theme store: {}", e))?;
 
-    match store.get(THEME_KEY) {
-        Some(value) => {
-            if let Some(mode) = value.as_str() {
-                Ok(mode.to_string())
-            } else {
-                Ok("automatic".to_string())
-            }
-        }
-        None => Ok("automatic".to_string()),
-    }
+    let mode = match store.get(THEME_MODE_KEY) {
+        Some(value) => value.as_str().unwrap_or("automatic").to_string(),
+        None => "automatic".to_string(),
+    };
+
+    let name = match store.get(THEME_NAME_KEY) {
+        Some(value) => value.as_str().unwrap_or("default").to_string(),
+        None => "default".to_string(),
+    };
+
+    Ok(ThemePreference { mode, name })
 }
 
 /// Save the theme preference
 #[tauri::command]
-pub async fn set_theme(app: AppHandle, mode: String) -> Result<(), String> {
+pub async fn set_theme(app: AppHandle, mode: String, name: String) -> Result<(), String> {
     // Validate theme mode
     let valid_modes = ["day", "night", "automatic"];
     if !valid_modes.contains(&mode.as_str()) {
@@ -39,12 +47,22 @@ pub async fn set_theme(app: AppHandle, mode: String) -> Result<(), String> {
         ));
     }
 
+    // Validate theme name
+    let valid_names = ["default", "sky-blue", "cosmic-gold"];
+    if !valid_names.contains(&name.as_str()) {
+        return Err(format!(
+            "Invalid theme name: {}. Must be one of: default, sky-blue, cosmic-gold",
+            name
+        ));
+    }
+
     let store = app
         .store(THEME_STORE_FILE)
         .map_err(|e| format!("Failed to access theme store: {}", e))?;
 
-    // set() and save() return () in tauri-plugin-store v2
-    store.set(THEME_KEY, serde_json::json!(mode));
+    store.set(THEME_MODE_KEY, serde_json::json!(mode));
+    store.set(THEME_NAME_KEY, serde_json::json!(name));
+
     store
         .save()
         .map_err(|e| format!("Failed to save theme: {}", e))?;
@@ -68,5 +86,5 @@ pub fn get_system_theme() -> String {
 /// Reset theme to default (automatic)
 #[tauri::command]
 pub async fn reset_theme(app: AppHandle) -> Result<(), String> {
-    set_theme(app, "automatic".to_string()).await
+    set_theme(app, "automatic".to_string(), "default".to_string()).await
 }

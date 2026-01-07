@@ -1,6 +1,8 @@
 // Theme types and interfaces
 
+export type ThemeAppearance = 'day' | 'night';
 export type ThemeMode = 'day' | 'night' | 'automatic';
+export type ThemeName = 'default' | 'sky-blue' | 'cosmic-gold';
 
 export interface ThemeColors {
   background: string;
@@ -15,11 +17,13 @@ export interface ThemeColors {
 }
 
 export interface ThemeConfig {
+  name: ThemeName;
   mode: ThemeMode;
   colors: ThemeColors;
 }
 
 export const DAY_THEME: ThemeConfig = {
+  name: 'default',
   mode: 'day',
   colors: {
     background: '0 0% 100%',           // White
@@ -35,6 +39,7 @@ export const DAY_THEME: ThemeConfig = {
 };
 
 export const NIGHT_THEME: ThemeConfig = {
+  name: 'default',
   mode: 'night',
   colors: {
     background: '222.2 84% 4.9%',      // Very dark blue
@@ -48,3 +53,68 @@ export const NIGHT_THEME: ThemeConfig = {
     popover: '222.2 84% 4.9%',         // Very dark blue
   },
 };
+
+export const SKY_BLUE_DAY_THEME: ThemeConfig = {
+  name: 'sky-blue',
+  mode: 'day',
+  colors: {
+    background: '200 100% 98%',        // Crisp sky blue white
+    foreground: '202 95% 12%',         // Deep ocean blue (better contrast)
+    border: '200 85% 88%',             // Soft cloud border
+    primary: '199 89% 48%',            // Vibrant sky blue
+    secondary: '200 95% 94%',          // Light sky secondary
+    accent: '200 90% 90%',             // Gentle sky accent
+    muted: '200 85% 92%',              // Soft muted sky
+    card: '200 100% 99%',              // Nearly white sky card
+    popover: '200 100% 99%',           // Nearly white sky popover
+  },
+};
+
+export const SKY_BLUE_NIGHT_THEME: ThemeConfig = {
+  name: 'sky-blue',
+  mode: 'night',
+  colors: {
+    background: '202 100% 4%',         // Deep midnight sky
+    foreground: '199 85% 96%',         // Bright cloud white  
+    border: '202 95% 14%',             // Dark sky border (more visible)
+    primary: '199 89% 52%',            // Brighter sky blue for dark mode
+    secondary: '202 90% 9%',           // Deep night secondary
+    accent: '202 85% 16%',             // Subtle night accent
+    muted: '202 80% 11%',              // Muted deep night
+    card: '202 95% 6%',                // Midnight card
+    popover: '202 95% 6%',             // Midnight popover
+  },
+};
+
+export const COSMIC_GOLD_DAY_THEME: ThemeConfig = {
+  name: 'cosmic-gold',
+  mode: 'day',
+  colors: {
+    background: '42 35% 97%',          // Warm parchment light
+    foreground: '25 45% 12%',          // Rich bronze text (better contrast)
+    border: '45 85% 82%',              // Soft gold border
+    primary: '45 93% 47%',             // Vibrant star gold
+    secondary: '42 40% 92%',           // Warm stardust
+    accent: '45 80% 88%',              // Gentle gold glow
+    muted: '42 35% 90%',               // Soft parchment muted
+    card: '42 50% 98%',                // Luminous nebula white
+    popover: '42 50% 98%',             // Luminous nebula white
+  },
+};
+
+export const COSMIC_GOLD_NIGHT_THEME: ThemeConfig = {
+  name: 'cosmic-gold',
+  mode: 'night',
+  colors: {
+    background: '25 25% 5%',           // Deep cosmic void
+    foreground: '45 85% 92%',          // Bright gold starlight
+    border: '45 75% 18%',              // Visible gold border (improved)
+    primary: '45 93% 52%',             // Brighter star gold for dark mode
+    secondary: '25 30% 10%',           // Dark cosmic secondary
+    accent: '25 25% 15%',              // Subtle cosmic glow
+    muted: '25 20% 12%',               // Muted space
+    card: '25 30% 7%',                 // Deep nebula card
+    popover: '25 30% 7%',              // Deep nebula popover
+  },
+};
+

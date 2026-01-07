@@ -6,13 +6,22 @@ import React, {
   useCallback,
 } from "react";
 import { getTheme, setTheme as saveTheme } from "../services/theme";
-import type { ThemeMode, ThemeConfig } from "../types/theme";
-import { DAY_THEME, NIGHT_THEME } from "../types/theme";
+import type { ThemeMode, ThemeConfig, ThemeName } from "../types/theme";
+import {
+  DAY_THEME,
+  NIGHT_THEME,
+  SKY_BLUE_DAY_THEME,
+  SKY_BLUE_NIGHT_THEME,
+  COSMIC_GOLD_DAY_THEME,
+  COSMIC_GOLD_NIGHT_THEME,
+} from "../types/theme";
 
 interface ThemeContextType {
   mode: ThemeMode;
+  themeName: ThemeName;
   currentTheme: ThemeConfig;
   setMode: (mode: ThemeMode) => Promise<void>;
+  setThemeName: (name: ThemeName) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -20,6 +29,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mode, setModeState] = useState<ThemeMode>("automatic");
+  const [themeName, setThemeNameState] = useState<ThemeName>("default");
   const [currentTheme, setCurrentTheme] = useState<ThemeConfig>(NIGHT_THEME);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -33,14 +43,24 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     return "night";
   }, []);
 
-  // Compute the actual theme based on mode
+  // Compute the actual theme based on mode and name
   const computeTheme = useCallback(
-    (themeMode: ThemeMode): ThemeConfig => {
-      if (themeMode === "automatic") {
-        const systemPreference = getSystemThemePreference();
-        return systemPreference === "day" ? DAY_THEME : NIGHT_THEME;
+    (themeMode: ThemeMode, name: ThemeName): ThemeConfig => {
+      const systemPreference = getSystemThemePreference();
+      const actualAppearance =
+        themeMode === "automatic" ? systemPreference : themeMode;
+
+      if (name === "sky-blue") {
+        return actualAppearance === "day"
+          ? SKY_BLUE_DAY_THEME
+          : SKY_BLUE_NIGHT_THEME;
       }
-      return themeMode === "day" ? DAY_THEME : NIGHT_THEME;
+      if (name === "cosmic-gold") {
+        return actualAppearance === "day"
+          ? COSMIC_GOLD_DAY_THEME
+          : COSMIC_GOLD_NIGHT_THEME;
+      }
+      return actualAppearance === "day" ? DAY_THEME : NIGHT_THEME;
     },
     [getSystemThemePreference]
   );
@@ -51,11 +71,20 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       const root = document.documentElement;
 
       // Remove existing theme classes
-      root.classList.remove("theme-day", "theme-night", "dark");
+      root.classList.remove(
+        "theme-day",
+        "theme-night",
+        "dark",
+        "theme-sky-blue",
+        "theme-cosmic-gold",
+        "theme-default"
+      );
 
-      // Add new theme class
+      // Add new theme classes
       const actualMode =
         theme.mode === "automatic" ? getSystemThemePreference() : theme.mode;
+
+      root.classList.add(`theme-${theme.name}`);
       root.classList.add(`theme-${actualMode}`);
 
       // Add 'dark' class for compatibility with existing components
@@ -95,31 +124,49 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const setMode = useCallback(
     async (newMode: ThemeMode) => {
       try {
-        await saveTheme(newMode);
+        await saveTheme(newMode, themeName);
         setModeState(newMode);
-        const theme = computeTheme(newMode);
+        const theme = computeTheme(newMode, themeName);
         setCurrentTheme(theme);
         applyTheme(theme);
       } catch (error) {
-        console.error("Failed to set theme:", error);
+        console.error("Failed to set theme mode:", error);
       }
     },
-    [computeTheme, applyTheme]
+    [computeTheme, applyTheme, themeName]
+  );
+
+  // Set theme name and persist
+  const setThemeName = useCallback(
+    async (newName: ThemeName) => {
+      try {
+        await saveTheme(mode, newName);
+        setThemeNameState(newName);
+        const theme = computeTheme(mode, newName);
+        setCurrentTheme(theme);
+        applyTheme(theme);
+      } catch (error) {
+        console.error("Failed to set theme name:", error);
+      }
+    },
+    [computeTheme, applyTheme, mode]
   );
 
   // Load saved theme on mount
   useEffect(() => {
     async function loadTheme() {
       try {
-        const savedMode = await getTheme();
+        const { mode: savedMode, name: savedName } = await getTheme();
+
         setModeState(savedMode);
-        const theme = computeTheme(savedMode);
+        setThemeNameState(savedName);
+        const theme = computeTheme(savedMode, savedName);
         setCurrentTheme(theme);
         applyTheme(theme);
       } catch (error) {
         console.error("Failed to load theme:", error);
         // Use default theme
-        const theme = computeTheme("automatic");
+        const theme = computeTheme("automatic", "default");
         setCurrentTheme(theme);
         applyTheme(theme);
       } finally {
@@ -137,7 +184,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
     const handleChange = () => {
-      const theme = computeTheme("automatic");
+      const theme = computeTheme("automatic", themeName);
       setCurrentTheme(theme);
       applyTheme(theme);
     };
@@ -150,7 +197,16 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, [mode, computeTheme, applyTheme]);
 
   return (
-    <ThemeContext.Provider value={{ mode, currentTheme, setMode, isLoading }}>
+    <ThemeContext.Provider
+      value={{
+        mode,
+        themeName,
+        currentTheme,
+        setMode,
+        setThemeName,
+        isLoading,
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   );

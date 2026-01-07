@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.1.10] - 2026-01-07
+
+- Added
+
+  - **Sky Blue Theme**: Adaptive light/dark variations with vibrant sky blue accents
+  - **Cosmic Gold Theme**: Adaptive light/dark variations with premium gold/amber accents
+  - High-contrast color palettes for better readability and aesthetics
+
+- Improvements
+
+  - **Theme Selection UI**: Redesigned `ThemeSwitcher` in Topbar with dual selectors for Theme Name and Appearance
+  - Enhanced glassmorphism effects in the theme selectors with `backdrop-blur-2xl`
+  - Improved theme transition smoothness
+
+- Fixes
+  - Persisting theme name alongside mode in the Tauri backend
+  - Updated theme computation to handle named themes and system preferences correctly
+
 ### [v0.1.9] - 2026-01-07
 
 #### Added
