@@ -1,5 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
-import { Sun, Moon, MonitorSmartphone, Palette } from "lucide-react";
+import {
+  Sun,
+  Moon,
+  MonitorSmartphone,
+  Cloud,
+  Sparkles,
+  Snowflake,
+  RefreshCw,
+} from "lucide-react";
 import {
   CommandDialog,
   CommandInput,
@@ -10,11 +18,11 @@ import {
   CommandSeparator,
 } from "./ui/command";
 import { useTheme } from "../contexts/ThemeContext";
-import type { ThemeMode } from "../types/theme";
+import type { ThemeMode, ThemeName } from "../types/theme";
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
-  const { mode, setMode } = useTheme();
+  const { mode, themeName, setMode, setThemeName } = useTheme();
 
   // Handle keyboard shortcut (Cmd+K or Ctrl+K)
   useEffect(() => {
@@ -37,6 +45,14 @@ export function CommandPalette() {
     [setMode]
   );
 
+  const handleThemeNameChange = useCallback(
+    async (newName: ThemeName) => {
+      await setThemeName(newName);
+      setOpen(false);
+    },
+    [setThemeName]
+  );
+
   return (
     <CommandDialog
       open={open}
@@ -49,15 +65,63 @@ export function CommandPalette() {
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
 
-        <CommandGroup heading="Theme">
+        <CommandGroup heading="Theme Colors">
+          <CommandItem
+            onSelect={() => handleThemeNameChange("default")}
+            className="gap-2"
+          >
+            <MonitorSmartphone className="h-4 w-4" />
+            <span>Default Theme</span>
+            {themeName === "default" && (
+              <span className="ml-auto text-xs text-primary">Active</span>
+            )}
+          </CommandItem>
+
+          <CommandItem
+            onSelect={() => handleThemeNameChange("sky-blue")}
+            className="gap-2"
+          >
+            <Cloud className="h-4 w-4" />
+            <span>Sky Blue Theme</span>
+            {themeName === "sky-blue" && (
+              <span className="ml-auto text-xs text-primary">Active</span>
+            )}
+          </CommandItem>
+
+          <CommandItem
+            onSelect={() => handleThemeNameChange("cosmic-gold")}
+            className="gap-2"
+          >
+            <Sparkles className="h-4 w-4" />
+            <span>Cosmic Gold Theme</span>
+            {themeName === "cosmic-gold" && (
+              <span className="ml-auto text-xs text-primary">Active</span>
+            )}
+          </CommandItem>
+
+          <CommandItem
+            onSelect={() => handleThemeNameChange("starry-christmas")}
+            className="gap-2"
+          >
+            <Snowflake className="h-4 w-4" />
+            <span>Starry Christmas Theme</span>
+            {themeName === "starry-christmas" && (
+              <span className="ml-auto text-xs text-primary">Active</span>
+            )}
+          </CommandItem>
+        </CommandGroup>
+
+        <CommandSeparator />
+
+        <CommandGroup heading="Appearance Mode">
           <CommandItem
             onSelect={() => handleThemeChange("day")}
             className="gap-2"
           >
             <Sun className="h-4 w-4" />
-            <span>Switch to Day Theme</span>
+            <span>Day Mode</span>
             {mode === "day" && (
-              <span className="ml-auto text-xs text-blue-500">Active</span>
+              <span className="ml-auto text-xs text-primary">Active</span>
             )}
           </CommandItem>
 
@@ -66,9 +130,9 @@ export function CommandPalette() {
             className="gap-2"
           >
             <Moon className="h-4 w-4" />
-            <span>Switch to Night Theme</span>
+            <span>Night Mode</span>
             {mode === "night" && (
-              <span className="ml-auto text-xs text-blue-500">Active</span>
+              <span className="ml-auto text-xs text-primary">Active</span>
             )}
           </CommandItem>
 
@@ -77,22 +141,26 @@ export function CommandPalette() {
             className="gap-2"
           >
             <MonitorSmartphone className="h-4 w-4" />
-            <span>Switch to Automatic Theme</span>
+            <span>Automatic Mode</span>
             {mode === "automatic" && (
-              <span className="ml-auto text-xs text-blue-500">Active</span>
+              <span className="ml-auto text-xs text-primary">Active</span>
             )}
           </CommandItem>
         </CommandGroup>
 
         <CommandSeparator />
 
-        <CommandGroup heading="Appearance">
-          <CommandItem className="gap-2">
-            <Palette className="h-4 w-4" />
-            <span>Customize Colors</span>
-            <span className="ml-auto text-xs text-muted-foreground">
-              Coming soon
-            </span>
+        <CommandGroup heading="Actions">
+          <CommandItem
+            onSelect={() => {
+              window.location.reload();
+              setOpen(false);
+            }}
+            className="gap-2"
+          >
+            <RefreshCw className="h-4 w-4" />
+            <span>Reload Application</span>
+            <span className="ml-auto text-xs text-muted-foreground">⌘R</span>
           </CommandItem>
         </CommandGroup>
       </CommandList>
