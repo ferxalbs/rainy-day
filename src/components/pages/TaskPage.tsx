@@ -1,5 +1,6 @@
 import type { Task } from "../../types";
-import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
+import { Skeleton } from "../ui/skeleton";
+import { Circle, CheckCircle2 } from "lucide-react";
 
 interface TaskPageProps {
   tasks: Task[];
@@ -9,63 +10,79 @@ interface TaskPageProps {
 export function TaskPage({ tasks, isLoading }: TaskPageProps) {
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="loading-spinner" />
+      <div className="rounded-2xl border-2 border-blue-500/30 bg-slate-900/80 backdrop-blur-xl overflow-hidden">
+        <div className="p-5 border-b border-slate-800">
+          <Skeleton className="h-6 w-24 bg-slate-800" />
+        </div>
+        <div className="divide-y divide-slate-800">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="p-5 flex items-start gap-4">
+              <Skeleton className="h-5 w-5 rounded-full bg-slate-800" />
+              <div className="flex-1 space-y-3">
+                <Skeleton className="h-4 w-3/4 bg-slate-800" />
+                <Skeleton className="h-3 w-28 bg-slate-800/60" />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-6 pb-24">
-      <Card className="bg-background/10 backdrop-blur-md border-blue-500/20">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-xl">
-            <span className="text-2xl">✅</span>
-            Tasks
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {tasks.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">
-              No pending tasks
-            </p>
-          ) : (
-            <ul className="space-y-3">
-              {tasks.map((task) => (
-                <li
-                  key={task.id}
-                  className="p-4 rounded-lg bg-background/5 border border-white/5 hover:bg-background/10 hover:border-blue-500/30 transition-all duration-200 group"
-                >
-                  <div className="flex items-start gap-3">
-                    <input
-                      type="checkbox"
-                      checked={task.status === "completed"}
-                      readOnly
-                      className="mt-0.5 w-4 h-4 rounded border-blue-500/50 bg-background/20 text-blue-500 focus:ring-blue-500 focus:ring-offset-0 cursor-pointer"
-                    />
-                    <div className="flex-1 space-y-1">
-                      <span
-                        className={`font-medium text-sm block ${
-                          task.status === "completed"
-                            ? "line-through text-muted-foreground"
-                            : "text-foreground"
-                        }`}
-                      >
-                        {task.title}
-                      </span>
-                      {task.due && (
-                        <span className="text-xs text-muted-foreground block">
-                          Due: {new Date(task.due).toLocaleDateString()}
-                        </span>
-                      )}
-                    </div>
+    <div className="rounded-2xl border-2 border-blue-500/30 bg-slate-900/80 backdrop-blur-xl overflow-hidden shadow-xl shadow-blue-500/5">
+      {/* Header */}
+      <div className="px-5 py-4 border-b border-slate-800 bg-slate-900/50">
+        <h2 className="text-lg font-semibold text-white flex items-center gap-3">
+          <span className="text-xl">✅</span>
+          Tasks
+        </h2>
+      </div>
+
+      {/* Content */}
+      {tasks.length === 0 ? (
+        <div className="py-20 text-center">
+          <p className="text-slate-400 text-base">No pending tasks</p>
+        </div>
+      ) : (
+        <div className="divide-y divide-slate-800">
+          {tasks.map((task) => {
+            const isCompleted = task.status === "completed";
+            return (
+              <div
+                key={task.id}
+                className="px-5 py-4 hover:bg-slate-800/50 transition-colors group cursor-pointer"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="pt-0.5">
+                    {isCompleted ? (
+                      <CheckCircle2 className="w-5 h-5 text-blue-400" />
+                    ) : (
+                      <Circle className="w-5 h-5 text-slate-500 group-hover:text-blue-400 transition-colors" />
+                    )}
                   </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </CardContent>
-      </Card>
+                  <div className="flex-1 min-w-0">
+                    <p
+                      className={`font-medium transition-colors ${
+                        isCompleted
+                          ? "line-through text-slate-500"
+                          : "text-white group-hover:text-blue-400"
+                      }`}
+                    >
+                      {task.title}
+                    </p>
+                    {task.due && (
+                      <p className="text-sm text-slate-400 mt-1 font-medium">
+                        Due: {new Date(task.due).toLocaleDateString()}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import type { ProcessedEvent } from "../../types";
-import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
+import { Skeleton } from "../ui/skeleton";
+import { ExternalLink } from "lucide-react";
 
 interface AgendaPageProps {
   events: ProcessedEvent[];
@@ -22,77 +23,80 @@ export function AgendaPage({ events, isLoading }: AgendaPageProps) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="loading-spinner" />
+      <div className="rounded-2xl border-2 border-blue-500/30 bg-slate-900/80 backdrop-blur-xl overflow-hidden">
+        <div className="p-5 border-b border-slate-800">
+          <Skeleton className="h-6 w-40 bg-slate-800" />
+        </div>
+        <div className="divide-y divide-slate-800">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="p-5 flex gap-4">
+              <Skeleton className="h-4 w-16 bg-slate-800" />
+              <div className="flex-1 space-y-3">
+                <Skeleton className="h-4 w-3/4 bg-slate-800" />
+                <Skeleton className="h-3 w-32 bg-slate-800/60" />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-6 pb-24">
-      <Card className="bg-background/10 backdrop-blur-md border-blue-500/20">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-xl">
-            <span className="text-2xl">📅</span>
-            Today's Agenda
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {events.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">
-              No events scheduled for today
-            </p>
-          ) : (
-            <ul className="space-y-3">
-              {events.map((event) => (
-                <li
-                  key={event.id}
-                  className="p-4 rounded-lg bg-background/5 border border-white/5 hover:bg-background/10 hover:border-blue-500/30 transition-all duration-200 group"
-                >
-                  <div className="flex gap-4">
-                    <div className="flex-shrink-0 text-xs font-medium text-blue-400 bg-blue-500/10 px-3 py-1 rounded-md h-fit">
-                      {formatTime(event.start_time)}
-                    </div>
-                    <div className="flex-1 space-y-1">
-                      <span className="font-medium text-sm text-foreground block">
-                        {event.title}
-                      </span>
-                      {event.location && (
-                        <span className="text-xs text-muted-foreground block">
-                          📍 {event.location}
-                        </span>
-                      )}
-                      {event.meeting_link && (
-                        <a
-                          href={event.meeting_link}
-                          className="text-xs text-blue-400 hover:text-blue-300 transition-colors inline-flex items-center gap-1 mt-1"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <span>Join meeting</span>
-                          <svg
-                            className="w-3 h-3"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                            />
-                          </svg>
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </CardContent>
-      </Card>
+    <div className="rounded-2xl border-2 border-blue-500/30 bg-slate-900/80 backdrop-blur-xl overflow-hidden shadow-xl shadow-blue-500/5">
+      {/* Header */}
+      <div className="px-5 py-4 border-b border-slate-800 bg-slate-900/50">
+        <h2 className="text-lg font-semibold text-white flex items-center gap-3">
+          <span className="text-xl">📅</span>
+          Today's Agenda
+        </h2>
+      </div>
+
+      {/* Content */}
+      {events.length === 0 ? (
+        <div className="py-20 text-center">
+          <p className="text-slate-400 text-base">
+            No events scheduled for today
+          </p>
+        </div>
+      ) : (
+        <div className="divide-y divide-slate-800">
+          {events.map((event) => (
+            <div
+              key={event.id}
+              className="px-5 py-4 hover:bg-slate-800/50 transition-colors group"
+            >
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-20 text-sm font-semibold text-blue-400 pt-0.5">
+                  {formatTime(event.start_time)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-white group-hover:text-blue-400 transition-colors">
+                    {event.title}
+                  </p>
+                  {event.location && (
+                    <p className="text-sm text-slate-400 mt-1 flex items-center gap-1.5">
+                      <span>📍</span>
+                      <span className="truncate">{event.location}</span>
+                    </p>
+                  )}
+                  {event.meeting_link && (
+                    <a
+                      href={event.meeting_link}
+                      className="inline-flex items-center gap-1.5 text-sm text-blue-400 hover:text-blue-300 font-medium mt-2 transition-colors"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Join meeting
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

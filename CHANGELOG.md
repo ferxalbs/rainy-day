@@ -7,6 +7,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.1.5] - 2026-01-07
+
+#### Added
+
+- New thin topbar component with proper macOS traffic light spacing (78px)
+- macOS-style active indicator dots on dock icons
+- Tooltips on dock icons showing page names
+- Skeleton loading states for all page components
+
+#### Improvements
+
+- Complete UI redesign with premium macOS aesthetic
+- Refined dock styling with enhanced glassmorphism effect
+- Consistent rounded blue borders (`rounded-2xl border-blue-500/20`) across all cards
+- Proper spacing and centering throughout the app
+- Migrated all styling to Tailwind CSS v4 (removed pure CSS)
+- Better responsive design for all screen sizes
+- Greeting section moved inside content area for cleaner layout
+
+#### Fixes
+
+- Fixed header collision with macOS window controls
+- Fixed window drag region not working properly
+- Fixed inconsistent spacing and alignment issues
+
+---
+
+### [v0.1.4] - 2026-01-06
+
+#### Improvements
+
+- **Centered UI Layout**: Refactored the main application container to be more centered (`max-w-3xl`) for better focus and aesthetics on larger screens.
+- **Natural Design**: Simplified the visual density of all pages (Inbox, Agenda, Task) by replacing heavy borders with clean separators and better vertical spacing.
+- **Refined Aesthetics**:
+  - Improved list styling with a "natural" flow using `divide-y`.
+  - Optimized header width to align with page content.
+  - Enhanced item hover states for a more premium, responsive feel.
+  - Adjusted icon and text alignment in events and tasks for better readability.
+
+---
+
 ### [v0.1.3] - 2026-01-06
 
 #### Added
