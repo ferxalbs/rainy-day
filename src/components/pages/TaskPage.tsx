@@ -58,21 +58,21 @@ export function TaskPage({ tasks, isLoading }: TaskPageProps) {
                     {isCompleted ? (
                       <CheckCircle2 className="w-5 h-5 text-primary" />
                     ) : (
-                      <Circle className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <Circle className="w-5 h-5 text-muted-foreground group-hover:text-accent-foreground transition-colors" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p
                       className={`font-medium transition-colors ${
                         isCompleted
-                          ? "line-through text-muted-foreground"
-                          : "text-foreground group-hover:text-primary"
+                          ? "line-through text-muted-foreground group-hover:text-accent-foreground/60"
+                          : "text-foreground group-hover:text-accent-foreground"
                       }`}
                     >
                       {task.title}
                     </p>
                     {task.due && (
-                      <p className="text-sm text-muted-foreground mt-1 font-medium">
+                      <p className="text-sm text-muted-foreground group-hover:text-accent-foreground/80 mt-1 font-medium transition-colors">
                         Due: {new Date(task.due).toLocaleDateString()}
                       </p>
                     )}

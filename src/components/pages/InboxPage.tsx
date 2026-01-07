@@ -47,10 +47,10 @@ export function InboxPage({ threads, isLoading }: InboxPageProps) {
               key={thread.id}
               className="px-5 py-4 hover:bg-accent transition-colors cursor-pointer group"
             >
-              <p className="font-medium text-foreground group-hover:text-primary transition-colors line-clamp-1">
+              <p className="font-medium text-foreground group-hover:text-accent-foreground transition-colors line-clamp-1">
                 {thread.subject || thread.snippet.slice(0, 50)}
               </p>
-              <p className="text-sm text-muted-foreground line-clamp-2 mt-1.5 leading-relaxed">
+              <p className="text-sm text-muted-foreground group-hover:text-accent-foreground/80 line-clamp-2 mt-1.5 leading-relaxed">
                 {thread.snippet}
               </p>
             </div>

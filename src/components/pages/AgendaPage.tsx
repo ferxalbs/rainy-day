@@ -67,15 +67,15 @@ export function AgendaPage({ events, isLoading }: AgendaPageProps) {
               className="px-5 py-4 hover:bg-accent transition-colors group"
             >
               <div className="flex gap-4">
-                <div className="flex-shrink-0 w-20 text-sm font-semibold text-primary pt-0.5">
+                <div className="flex-shrink-0 w-20 text-sm font-semibold text-primary group-hover:text-accent-foreground pt-0.5 transition-colors">
                   {formatTime(event.start_time)}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-foreground group-hover:text-primary transition-colors">
+                  <p className="font-medium text-foreground group-hover:text-accent-foreground transition-colors">
                     {event.title}
                   </p>
                   {event.location && (
-                    <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1.5">
+                    <p className="text-sm text-muted-foreground group-hover:text-accent-foreground/80 mt-1 flex items-center gap-1.5 transition-colors">
                       <span>📍</span>
                       <span className="truncate">{event.location}</span>
                     </p>
@@ -83,7 +83,7 @@ export function AgendaPage({ events, isLoading }: AgendaPageProps) {
                   {event.meeting_link && (
                     <a
                       href={event.meeting_link}
-                      className="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 font-medium mt-2 transition-colors"
+                      className="inline-flex items-center gap-1.5 text-sm text-primary group-hover:text-accent-foreground hover:underline font-medium mt-2 transition-colors"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
