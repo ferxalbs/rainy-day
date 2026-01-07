@@ -135,6 +135,8 @@
 .titlebar-drag-region {
   -webkit-app-region: drag;
   app-region: drag;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .no-drag {

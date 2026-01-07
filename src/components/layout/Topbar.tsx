@@ -8,7 +8,10 @@ interface TopbarProps {
 
 export function Topbar({ title, onRefresh, isRefreshing }: TopbarProps) {
   return (
-    <header className="titlebar-drag-region fixed top-0 left-0 right-0 z-50 h-10 flex items-center justify-between bg-slate-900/10 backdrop-blur-xl border-b border-slate-800">
+    <header
+      data-tauri-drag-region
+      className="titlebar-drag-region fixed top-0 left-0 right-0 z-50 h-10 flex items-center justify-between bg-slate-900/10 backdrop-blur-xl border-b border-slate-800 select-none"
+    >
       {/* Left: Traffic light spacing + Page title */}
       <div className="flex items-center h-full pl-20">
         <span className="text-sm font-medium text-slate-300">{title}</span>

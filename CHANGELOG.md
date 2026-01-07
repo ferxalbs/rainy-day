@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.1.8] - 2026-01-07
+
+#### Fixes
+
+- **[CRITICAL]** Fixed window drag functionality by adding `core:window:allow-start-dragging` permission to capabilities file
+- This was the missing permission required for `data-tauri-drag-region` to work in Tauri v2
+
+### [v0.1.7] - 2026-01-07
+
+#### Fixes
+
+- Restored window drag functionality by adding `data-tauri-drag-region` and refining CSS `app-region` properties
+- Improved titlebar stability and prevented text selection in drag regions
+
 ### [v0.1.6] - 2026-01-07
 
 #### Improvements
