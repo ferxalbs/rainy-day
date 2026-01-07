@@ -1,3 +1,6 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
 /* Design Tokens - Rainy Day */
 
 :root {
@@ -83,6 +86,18 @@
   --z-dropdown: 100;
   --z-modal: 200;
   --z-toast: 300;
+  --z-dock: 50;
+
+  /* Premium Dock */
+  --dock-bg: rgba(15, 23, 42, 0.1);
+  --dock-border: rgba(59, 130, 246, 0.2);
+  --dock-active-glow: rgba(59, 130, 246, 0.3);
+
+  /* Blue Accent Variations */
+  --blue-500-10: rgba(59, 130, 246, 0.1);
+  --blue-500-20: rgba(59, 130, 246, 0.2);
+  --blue-500-30: rgba(59, 130, 246, 0.3);
+  --blue-500-50: rgba(59, 130, 246, 0.5);
 }
 
 /* Global Styles */
@@ -155,4 +170,36 @@ body {
 .no-drag {
   -webkit-app-region: no-drag;
   app-region: no-drag;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* App loading state */
+.app-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--color-bg-primary);
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .dock {
+    transform: scale(0.9);
+  }
 }

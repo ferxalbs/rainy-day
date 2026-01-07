@@ -1,6 +1,6 @@
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { GoogleSignIn } from "./components/auth/GoogleSignIn";
-import { DailyPlan } from "./components/plan/DailyPlan";
+import { MainLayout } from "./components/layout/MainLayout";
 import "./styles/globals.css";
 
 function AppContent() {
@@ -18,7 +18,7 @@ function AppContent() {
     return <GoogleSignIn />;
   }
 
-  return <DailyPlan />;
+  return <MainLayout />;
 }
 
 function App() {

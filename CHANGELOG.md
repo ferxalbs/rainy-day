@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.1.3] - 2026-01-06
+
+#### Added
+
+- Premium macOS-style dock navigation with three pages (INBOX, AGENDA, TASK)
+- Glassmorphism effects throughout the UI with semi-transparent backgrounds and backdrop blur
+- Blue rounded borders with elegant styling (`border-blue-500/20`)
+- Page-based navigation system with smooth transitions
+- Custom `useDailyData` hook for shared data fetching across pages
+- Individual page components:
+  - `InboxPage` - Priority inbox with thread display
+  - `AgendaPage` - Today's calendar events with time formatting
+  - `TaskPage` - Task list with checkboxes and due dates
+- `PremiumDock` component with magnification effects and active state glow
+- `MainLayout` component with routing and shared header
+
+#### Improvements
+
+- Completely redesigned UI for professional and elegant appearance
+- Enhanced responsive design optimized for macOS
+- Smooth hover animations and micro-interactions
+- Separated concerns with modular page components
+- Premium gradient text effects in header
+- Loading states with animated spinner
+- Active dock item highlighting with glow effect
+
+---
+
 ### [v0.1.2] - 2026-01-06
 
 #### Added
