@@ -11,11 +11,13 @@ export function Topbar({ title, onRefresh, isRefreshing }: TopbarProps) {
   return (
     <header
       data-tauri-drag-region
-      className="titlebar-drag-region fixed top-0 left-0 right-0 z-50 h-10 flex items-center justify-between bg-slate-900/10 backdrop-blur-xl border-b border-slate-800 select-none"
+      className="titlebar-drag-region fixed top-0 left-0 right-0 z-50 h-10 flex items-center justify-between bg-card/40 backdrop-blur-xl border-b border-border select-none"
     >
       {/* Left: Traffic light spacing + Page title */}
       <div className="flex items-center h-full pl-20">
-        <span className="text-sm font-medium text-slate-300">{title}</span>
+        <span className="text-sm font-medium text-muted-foreground">
+          {title}
+        </span>
       </div>
 
       {/* Right: Actions */}
@@ -25,11 +27,11 @@ export function Topbar({ title, onRefresh, isRefreshing }: TopbarProps) {
           <button
             onClick={onRefresh}
             disabled={isRefreshing}
-            className="p-2 rounded-lg bg-background-800/10 hover:bg-slate-700/10 transition-all duration-200 group disabled:opacity-50"
+            className="p-2 rounded-lg bg-secondary hover:bg-accent transition-all duration-200 group disabled:opacity-50"
             aria-label="Refresh"
           >
             <RefreshCw
-              className={`w-4 h-4 text-slate-300 group-hover:text-white transition-colors ${
+              className={`w-4 h-4 text-foreground/70 group-hover:text-foreground transition-colors ${
                 isRefreshing ? "animate-spin" : ""
               }`}
               strokeWidth={2}

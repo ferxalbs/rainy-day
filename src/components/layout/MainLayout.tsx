@@ -32,7 +32,7 @@ export function MainLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-background">
       {/* Native-style Topbar */}
       <Topbar
         title={PAGE_TITLES[activePage]}
@@ -45,10 +45,12 @@ export function MainLayout() {
         <div className="max-w-2xl mx-auto">
           {/* Greeting Section */}
           <div className="mb-8 pt-4">
-            <h1 className="text-3xl font-bold text-white">{getGreeting()}</h1>
+            <h1 className="text-3xl font-bold text-foreground">
+              {getGreeting()}
+            </h1>
             <div className="flex items-center gap-2 mt-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-              <p className="text-sm font-medium text-slate-400 uppercase tracking-widest">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              <p className="text-sm font-medium text-muted-foreground uppercase tracking-widest">
                 {formatDate()}
               </p>
             </div>

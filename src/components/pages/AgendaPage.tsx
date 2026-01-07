@@ -23,17 +23,17 @@ export function AgendaPage({ events, isLoading }: AgendaPageProps) {
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl border-2 border-blue-500/30 bg-slate-900/80 backdrop-blur-xl overflow-hidden">
-        <div className="p-5 border-b border-slate-800">
-          <Skeleton className="h-6 w-40 bg-slate-800" />
+      <div className="rounded-2xl border-2 border-border/50 bg-card/80 backdrop-blur-xl overflow-hidden">
+        <div className="p-5 border-b border-border">
+          <Skeleton className="h-6 w-24 bg-muted" />
         </div>
-        <div className="divide-y divide-slate-800">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="p-5 flex gap-4">
-              <Skeleton className="h-4 w-16 bg-slate-800" />
+        <div className="divide-y divide-border">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="p-5 flex items-start gap-4">
+              <Skeleton className="h-5 w-5 rounded-full bg-muted" />
               <div className="flex-1 space-y-3">
-                <Skeleton className="h-4 w-3/4 bg-slate-800" />
-                <Skeleton className="h-3 w-32 bg-slate-800/60" />
+                <Skeleton className="h-4 w-3/4 bg-muted" />
+                <Skeleton className="h-3 w-28 bg-muted/60" />
               </div>
             </div>
           ))}
@@ -43,10 +43,10 @@ export function AgendaPage({ events, isLoading }: AgendaPageProps) {
   }
 
   return (
-    <div className="rounded-2xl border-2 border-blue-500/30 bg-slate-900/80 backdrop-blur-xl overflow-hidden shadow-xl shadow-blue-500/5">
+    <div className="rounded-2xl border-2 border-border/50 bg-card/80 backdrop-blur-xl overflow-hidden shadow-xl shadow-primary/5">
       {/* Header */}
-      <div className="px-5 py-4 border-b border-slate-800 bg-slate-900/50">
-        <h2 className="text-lg font-semibold text-white flex items-center gap-3">
+      <div className="px-5 py-4 border-b border-border bg-card/50">
+        <h2 className="text-lg font-semibold text-foreground flex items-center gap-3">
           <span className="text-xl">📅</span>
           Today's Agenda
         </h2>
@@ -55,27 +55,27 @@ export function AgendaPage({ events, isLoading }: AgendaPageProps) {
       {/* Content */}
       {events.length === 0 ? (
         <div className="py-20 text-center">
-          <p className="text-slate-400 text-base">
+          <p className="text-muted-foreground text-base">
             No events scheduled for today
           </p>
         </div>
       ) : (
-        <div className="divide-y divide-slate-800">
+        <div className="divide-y divide-border">
           {events.map((event) => (
             <div
               key={event.id}
-              className="px-5 py-4 hover:bg-slate-800/50 transition-colors group"
+              className="px-5 py-4 hover:bg-accent transition-colors group"
             >
               <div className="flex gap-4">
-                <div className="flex-shrink-0 w-20 text-sm font-semibold text-blue-400 pt-0.5">
+                <div className="flex-shrink-0 w-20 text-sm font-semibold text-primary pt-0.5">
                   {formatTime(event.start_time)}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-white group-hover:text-blue-400 transition-colors">
+                  <p className="font-medium text-foreground group-hover:text-primary transition-colors">
                     {event.title}
                   </p>
                   {event.location && (
-                    <p className="text-sm text-slate-400 mt-1 flex items-center gap-1.5">
+                    <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1.5">
                       <span>📍</span>
                       <span className="truncate">{event.location}</span>
                     </p>
@@ -83,7 +83,7 @@ export function AgendaPage({ events, isLoading }: AgendaPageProps) {
                   {event.meeting_link && (
                     <a
                       href={event.meeting_link}
-                      className="inline-flex items-center gap-1.5 text-sm text-blue-400 hover:text-blue-300 font-medium mt-2 transition-colors"
+                      className="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 font-medium mt-2 transition-colors"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
