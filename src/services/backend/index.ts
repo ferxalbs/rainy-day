@@ -48,10 +48,11 @@ export {
 export {
   getTodayPlan,
   generatePlan,
+  regeneratePlan,
   submitPlanFeedback,
   getPlanHistory,
   type DailyPlan,
-  type PlanSuggestion,
+  type PlanTask,
   type PlanHistoryItem,
 } from "./plan";
 
@@ -62,7 +63,20 @@ export {
   completeTask,
   deleteTask,
   getActionHistory,
+  type CreateTaskInput,
+  type UpdateTaskInput,
   type CreateTaskRequest,
   type UpdateTaskRequest,
   type ActionResult,
 } from "./actions";
+
+
+// Notifications services
+export {
+  getNotifications,
+  getUnreadCount,
+  markAsRead,
+  markAllAsRead,
+  deleteNotification,
+  type Notification,
+} from "./notifications";

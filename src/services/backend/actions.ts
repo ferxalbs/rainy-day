@@ -1,62 +1,90 @@
 /**
  * Actions Service
  *
- * Handles task, email, and calendar actions via the backend
+ * Handles task, email, and calendar actions via the backend.
+ * Matches the backend ActionResult interface from server/src/services/actions/tasks.ts
  */
 
 import { post, patch, del } from "./api";
 import type { Task } from "./data";
 
-export interface CreateTaskRequest {
+/**
+ * Input for creating a new task
+ */
+export interface CreateTaskInput {
   title: string;
   notes?: string;
   due_date?: string;
   task_list_id?: string;
 }
 
-export interface UpdateTaskRequest {
+/**
+ * Input for updating an existing task
+ */
+export interface UpdateTaskInput {
   title?: string;
   notes?: string;
   due_date?: string;
   task_list_id?: string;
 }
 
+/**
+ * Alias for backward compatibility
+ */
+export type CreateTaskRequest = CreateTaskInput;
+export type UpdateTaskRequest = UpdateTaskInput;
+
+/**
+ * Result of an action execution
+ * Matches backend ActionResult interface
+ */
 export interface ActionResult<T = unknown> {
   success: boolean;
+  action_id: string;
+  message: string;
   data?: T;
-  error?: string;
 }
 
 /**
- * Create a new task
+ * Create a new task in Google Tasks
  */
 export async function createTask(
-  request: CreateTaskRequest
+  input: CreateTaskInput
 ): Promise<ActionResult<Task>> {
-  const response = await post<ActionResult<Task>>("/actions/tasks", request);
-  return response.ok && response.data
-    ? response.data
-    : { success: false, error: response.error || "Failed to create task" };
+  const response = await post<ActionResult<Task>>("/actions/tasks", input);
+  if (response.ok && response.data) {
+    return response.data;
+  }
+  return { 
+    success: false, 
+    action_id: "", 
+    message: response.error || "Failed to create task" 
+  };
 }
 
 /**
- * Update a task
+ * Update an existing task
  */
 export async function updateTask(
   taskId: string,
-  request: UpdateTaskRequest
+  updates: UpdateTaskInput
 ): Promise<ActionResult<Task>> {
   const response = await patch<ActionResult<Task>>(
     `/actions/tasks/${taskId}`,
-    request
+    updates
   );
-  return response.ok && response.data
-    ? response.data
-    : { success: false, error: response.error || "Failed to update task" };
+  if (response.ok && response.data) {
+    return response.data;
+  }
+  return { 
+    success: false, 
+    action_id: "", 
+    message: response.error || "Failed to update task" 
+  };
 }
 
 /**
- * Complete a task
+ * Mark a task as completed
  */
 export async function completeTask(
   taskId: string,
@@ -66,9 +94,14 @@ export async function completeTask(
     ? `/actions/tasks/${taskId}/complete?list_id=${listId}`
     : `/actions/tasks/${taskId}/complete`;
   const response = await post<ActionResult<Task>>(url, {});
-  return response.ok && response.data
-    ? response.data
-    : { success: false, error: response.error || "Failed to complete task" };
+  if (response.ok && response.data) {
+    return response.data;
+  }
+  return { 
+    success: false, 
+    action_id: "", 
+    message: response.error || "Failed to complete task" 
+  };
 }
 
 /**
@@ -82,9 +115,17 @@ export async function deleteTask(
     ? `/actions/tasks/${taskId}?list_id=${listId}`
     : `/actions/tasks/${taskId}`;
   const response = await del<ActionResult>(url);
-  return response.ok
-    ? { success: true }
-    : { success: false, error: response.error || "Failed to delete task" };
+  if (response.ok && response.data) {
+    return response.data;
+  }
+  if (response.ok) {
+    return { success: true, action_id: "", message: "Task deleted" };
+  }
+  return { 
+    success: false, 
+    action_id: "", 
+    message: response.error || "Failed to delete task" 
+  };
 }
 
 /**
