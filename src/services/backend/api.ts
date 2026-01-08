@@ -46,13 +46,30 @@ async function getRefreshToken(): Promise<string | null> {
   return localStorage.getItem(STORAGE_REFRESH_KEY);
 }
 
+// Track last stored tokens to prevent duplicate storage
+let lastStoredAccessToken: string | null = null;
+let lastStoredRefreshToken: string | null = null;
+
 /**
  * Store backend tokens - stores in both keychain and localStorage fallback
+ * Includes deduplication to prevent multiple calls with same tokens
  */
 export async function storeTokens(
   accessToken: string,
   refreshToken: string
 ): Promise<void> {
+  // Skip if tokens haven't changed
+  if (
+    accessToken === lastStoredAccessToken &&
+    refreshToken === lastStoredRefreshToken
+  ) {
+    return;
+  }
+
+  // Update tracking
+  lastStoredAccessToken = accessToken;
+  lastStoredRefreshToken = refreshToken;
+
   // Always store in localStorage as fallback
   localStorage.setItem(STORAGE_ACCESS_KEY, accessToken);
   localStorage.setItem(STORAGE_REFRESH_KEY, refreshToken);

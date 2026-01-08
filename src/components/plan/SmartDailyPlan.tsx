@@ -436,7 +436,7 @@ function MeetingItem({ meeting, onFeedback, formatTime }: MeetingItemProps) {
  * Defer suggestion item component
  */
 interface DeferItemProps {
-  suggestion: string;
+  suggestion: string | PlanTask;
   index: number;
   onFeedback?: (
     itemId: string,
@@ -450,11 +450,15 @@ function DeferItem({ suggestion, index, onFeedback }: DeferItemProps) {
   const [feedbackGiven, setFeedbackGiven] = useState<ItemFeedbackType | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Handle both string and PlanTask types
+  const suggestionText = typeof suggestion === "string" ? suggestion : suggestion.title;
+  const suggestionId = typeof suggestion === "string" ? `defer-${index}` : suggestion.id;
+
   const handleFeedback = async (type: ItemFeedbackType) => {
     if (!onFeedback || isSubmitting) return;
     
     setIsSubmitting(true);
-    const success = await onFeedback(`defer-${index}`, suggestion, type, "defer");
+    const success = await onFeedback(suggestionId, suggestionText, type, "defer");
     if (success) {
       setFeedbackGiven(type);
     }
@@ -463,7 +467,7 @@ function DeferItem({ suggestion, index, onFeedback }: DeferItemProps) {
 
   return (
     <li className="defer-item">
-      <span className="defer-text">{suggestion}</span>
+      <span className="defer-text">{suggestionText}</span>
       <FeedbackButtons
         feedbackGiven={feedbackGiven}
         isSubmitting={isSubmitting}

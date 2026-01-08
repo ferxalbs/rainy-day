@@ -40,7 +40,7 @@ export interface DailyPlan {
   focus_blocks: PlanTask[];
   quick_wins: PlanTask[];
   meetings: PlanTask[];
-  defer_suggestions: string[];
+  defer_suggestions: (string | PlanTask)[];
   generated_at: number;
 }
 
