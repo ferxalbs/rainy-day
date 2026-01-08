@@ -50,10 +50,12 @@ export {
   generatePlan,
   regeneratePlan,
   submitPlanFeedback,
+  submitItemFeedback,
   getPlanHistory,
   type DailyPlan,
   type PlanTask,
   type PlanHistoryItem,
+  type ItemFeedbackType,
 } from "./plan";
 
 // Action services

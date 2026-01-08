@@ -89,6 +89,39 @@ export async function submitPlanFeedback(
 }
 
 /**
+ * Feedback type for plan items (thumbs up/down)
+ */
+export type ItemFeedbackType = "positive" | "negative";
+
+/**
+ * Submit feedback for a specific plan item (task, meeting, etc.)
+ * This stores feedback as episodic memory for AI personalization
+ * @param itemId - The item ID
+ * @param itemTitle - The item title for context
+ * @param feedbackType - "positive" (thumbs up) or "negative" (thumbs down)
+ * @param itemType - The type of item (focus_block, quick_win, meeting, defer)
+ */
+export async function submitItemFeedback(
+  itemId: string,
+  itemTitle: string,
+  feedbackType: ItemFeedbackType,
+  itemType: "focus_block" | "quick_win" | "meeting" | "defer"
+): Promise<boolean> {
+  // Calculate expiration: 30 days from now
+  const expiresAt = Date.now() + 30 * 24 * 60 * 60 * 1000;
+  
+  const response = await post("/memory", {
+    text: `User gave ${feedbackType} feedback on ${itemType}: "${itemTitle}"`,
+    scope: "episodic",
+    kind: "plan_feedback",
+    source: "daily_plan",
+    importance: feedbackType === "negative" ? 0.7 : 0.5,
+    expires_at: expiresAt,
+  });
+  return response.ok;
+}
+
+/**
  * Get plan history
  */
 export async function getPlanHistory(

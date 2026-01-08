@@ -4,7 +4,7 @@
  * This hook provides state management and actions for the daily plan feature,
  * including fetching, regenerating, and submitting feedback on plans.
  *
- * Requirements: 1.1, 1.2, 1.8
+ * Requirements: 1.1, 1.2, 1.8, 5.1, 5.5
  */
 
 import { useState, useEffect, useCallback } from "react";
@@ -12,7 +12,9 @@ import {
   getTodayPlan,
   regeneratePlan,
   submitPlanFeedback,
+  submitItemFeedback,
   type DailyPlan,
+  type ItemFeedbackType,
 } from "../services/backend/plan";
 
 export interface UseDailyPlanReturn {
@@ -28,6 +30,13 @@ export interface UseDailyPlanReturn {
   regenerate: () => Promise<void>;
   /** Submit feedback for the current plan */
   submitFeedback: (score: number, notes?: string) => Promise<void>;
+  /** Submit feedback for a specific plan item (thumbs up/down) */
+  submitItemFeedback: (
+    itemId: string,
+    itemTitle: string,
+    feedbackType: ItemFeedbackType,
+    itemType: "focus_block" | "quick_win" | "meeting" | "defer"
+  ) => Promise<boolean>;
   /** Refresh the plan from the server */
   refresh: () => Promise<void>;
 }
@@ -109,6 +118,36 @@ export function useDailyPlan(): UseDailyPlanReturn {
     [plan]
   );
 
+  /**
+   * Submit feedback for a specific plan item (thumbs up/down)
+   * Requirements: 5.1, 5.5
+   */
+  const handleItemFeedback = useCallback(
+    async (
+      itemId: string,
+      itemTitle: string,
+      feedbackType: ItemFeedbackType,
+      itemType: "focus_block" | "quick_win" | "meeting" | "defer"
+    ): Promise<boolean> => {
+      try {
+        const success = await submitItemFeedback(
+          itemId,
+          itemTitle,
+          feedbackType,
+          itemType
+        );
+        if (!success) {
+          console.error("Failed to submit item feedback");
+        }
+        return success;
+      } catch (err) {
+        console.error("Failed to submit item feedback:", err);
+        return false;
+      }
+    },
+    []
+  );
+
   // Auto-fetch plan on mount
   useEffect(() => {
     fetchPlan();
@@ -121,6 +160,7 @@ export function useDailyPlan(): UseDailyPlanReturn {
     error,
     regenerate,
     submitFeedback,
+    submitItemFeedback: handleItemFeedback,
     refresh: fetchPlan,
   };
 }
