@@ -800,6 +800,22 @@ html.theme-ocean-sunset.theme-night body {
   * {
     @apply border-border outline-ring/50;
   }
+
+  .mica-blur {
+    background-color: hsl(var(--card) / 1) !important;
+    backdrop-filter: blur(60px) saturate(200%) brightness(0.85) !important;
+    -webkit-backdrop-filter: blur(60px) saturate(200%) brightness(0.85) !important;
+    border: 1px solid hsla(var(--border) / 0.7) !important;
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.7) !important;
+  }
+
+  .mica-blur-vibrant {
+    background-color: hsl(var(--card) / 0.5) !important;
+    backdrop-filter: blur(30px) saturate(210%) brightness(1.2) !important;
+    -webkit-backdrop-filter: blur(30px) saturate(210%) brightness(1.2) !important;
+    border: 1px solid hsla(var(--border) / 0.4) !important;
+  }
+
   body {
     @apply bg-background text-foreground;
     transition: background-color 0.3s ease, color 0.3s ease;

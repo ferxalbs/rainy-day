@@ -270,7 +270,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="p-5 rounded-2xl bg-gradient-to-br from-card/30 to-muted/30 border-2 border-border/50 backdrop-blur-3xl shadow-xl shadow-primary/5 transition-all">
+    <section className="p-5 rounded-2xl mica-blur-vibrant border-2 border-border/50 shadow-xl shadow-primary/5 transition-all">
       <h2 className="flex items-center gap-3 text-lg font-semibold text-foreground mb-4 opacity-90">
         <span className="text-2xl filter drop-shadow-sm">{icon}</span>
         {title}
