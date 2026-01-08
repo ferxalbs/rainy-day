@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### [v0.1.13] - 2026-01-08
+### [v0.1.14] - 2026-01-08
 
-#### Improvements
+#### Added
 
+- **Cosmic Night Theme**: A deep blue variation of the Midnight Void theme.
+  - Day mode: Cool Glacial Blue (#f8fafc)
+  - Night mode: Deepest Cosmic Blue (#020617) with violet/cyan nebula glow
 - **Midnight Void Theme**: A modern, black-focused theme with absolute blacks and graphite tones
   - Day mode: Matte Graphite aesthetic (#0a0a0a)
   - Night mode: Absolute Void (#000000) with subtle electric blue glows

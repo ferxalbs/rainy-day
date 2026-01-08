@@ -2,7 +2,7 @@
 
 export type ThemeAppearance = 'day' | 'night';
 export type ThemeMode = 'day' | 'night' | 'automatic';
-export type ThemeName = 'default' | 'sky-blue' | 'cosmic-gold' | 'starry-christmas' | 'ocean-sunset' | 'midnight-void';
+export type ThemeName = 'default' | 'sky-blue' | 'cosmic-gold' | 'starry-christmas' | 'ocean-sunset' | 'midnight-void' | 'cosmic-night';
 
 export interface ThemeColors {
   background: string;
@@ -211,5 +211,37 @@ export const MIDNIGHT_VOID_NIGHT_THEME: ThemeConfig = {
     muted: '240 10% 4%',               // Near black muted
     card: '0 0% 2%',                   // Almost pure black card
     popover: '0 0% 2%',                // Almost pure black popover
+  },
+};
+
+export const COSMIC_NIGHT_DAY_THEME: ThemeConfig = {
+  name: 'cosmic-night',
+  mode: 'day',
+  colors: {
+    background: '240 30% 96%',         // Pale Stardust Blue
+    foreground: '250 40% 15%',         // Deep Space Navy
+    border: '250 40% 85%',             // Soft Nebula Border
+    primary: '270 95% 60%',            // Electric Violet
+    secondary: '240 30% 93%',          // Stardust Secondary
+    accent: '300 90% 60%',             // Cosmic Magenta
+    muted: '240 30% 90%',              // Muted Stardust
+    card: '0 0% 100%',                 // White
+    popover: '0 0% 100%',              // White
+  },
+};
+
+export const COSMIC_NIGHT_NIGHT_THEME: ThemeConfig = {
+  name: 'cosmic-night',
+  mode: 'night',
+  colors: {
+    background: '265 45% 5%',          // Deep Majestic Violet Void
+    foreground: '210 20% 98%',         // Bright Starlight
+    border: '265 50% 20%',             // Deep Purple Border
+    primary: '190 100% 50%',           // Glowing Cyan
+    secondary: '265 40% 15%',          // Deep Violet Secondary
+    accent: '320 100% 60%',            // Hot Pink Plasma
+    muted: '265 30% 15%',              // Muted Violet
+    card: '265 45% 8%',                // Dark Violet Card
+    popover: '265 45% 8%',             // Dark Violet Popover
   },
 };

@@ -72,7 +72,7 @@ export function CommandPalette() {
             className="gap-2"
           >
             <MonitorSmartphone className="h-4 w-4" />
-            <span>Default Theme</span>
+            <span>Default</span>
             {themeName === "default" && (
               <span className="ml-auto text-xs text-primary">Active</span>
             )}
@@ -83,7 +83,7 @@ export function CommandPalette() {
             className="gap-2"
           >
             <Cloud className="h-4 w-4" />
-            <span>Sky Blue Theme</span>
+            <span>Sky Blue</span>
             {themeName === "sky-blue" && (
               <span className="ml-auto text-xs text-primary">Active</span>
             )}
@@ -94,7 +94,7 @@ export function CommandPalette() {
             className="gap-2"
           >
             <Sparkles className="h-4 w-4" />
-            <span>Cosmic Gold Theme</span>
+            <span>Cosmic Gold</span>
             {themeName === "cosmic-gold" && (
               <span className="ml-auto text-xs text-primary">Active</span>
             )}
@@ -105,7 +105,7 @@ export function CommandPalette() {
             className="gap-2"
           >
             <Snowflake className="h-4 w-4" />
-            <span>Starry Christmas Theme</span>
+            <span>Starry Christmas</span>
             {themeName === "starry-christmas" && (
               <span className="ml-auto text-xs text-primary">Active</span>
             )}
@@ -116,7 +116,7 @@ export function CommandPalette() {
             className="gap-2"
           >
             <Sunrise className="h-4 w-4" />
-            <span>Ocean Sunset Theme</span>
+            <span>Ocean Sunset</span>
             {themeName === "ocean-sunset" && (
               <span className="ml-auto text-xs text-primary">Active</span>
             )}
@@ -127,8 +127,19 @@ export function CommandPalette() {
             className="gap-2"
           >
             <div className="size-4 rounded-full bg-[#000000] border border-white/20" />
-            <span>Midnight Void Theme</span>
+            <span>Midnight Void</span>
             {themeName === "midnight-void" && (
+              <span className="ml-auto text-xs text-primary">Active</span>
+            )}
+          </CommandItem>
+
+          <CommandItem
+            onSelect={() => handleThemeNameChange("cosmic-night")}
+            className="gap-2"
+          >
+            <div className="size-4 rounded-full bg-[#020617] border border-blue-500/20" />
+            <span>Cosmic Night</span>
+            {themeName === "cosmic-night" && (
               <span className="ml-auto text-xs text-primary">Active</span>
             )}
           </CommandItem>
