@@ -11,28 +11,28 @@ import { useState, useRef, useEffect } from "react";
 import { useNotifications } from "../../hooks/useNotifications";
 import { Button } from "../ui/button";
 import type { Notification } from "../../services/backend/notifications";
-import "./NotificationBell.css";
 
 interface NotificationBellProps {
   onClick?: () => void;
   className?: string;
 }
 
-export function NotificationBell({ onClick, className = "" }: NotificationBellProps) {
+export function NotificationBell({
+  onClick,
+  className = "",
+}: NotificationBellProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const {
-    notifications,
-    unreadCount,
-    isLoading,
-    markAsRead,
-    markAllAsRead,
-  } = useNotifications();
+  const { notifications, unreadCount, isLoading, markAsRead, markAllAsRead } =
+    useNotifications();
 
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -95,48 +95,52 @@ export function NotificationBell({ onClick, className = "" }: NotificationBellPr
   };
 
   return (
-    <div className={`notification-bell-container ${className}`} ref={dropdownRef}>
+    <div className={`relative ${className}`} ref={dropdownRef}>
       <Button
         variant="ghost"
         size="icon"
         onClick={handleBellClick}
-        className="notification-bell-btn"
-        title={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ""}`}
+        className="relative"
+        title={`Notifications${
+          unreadCount > 0 ? ` (${unreadCount} unread)` : ""
+        }`}
       >
         <BellIcon />
         {unreadCount > 0 && (
-          <span className="notification-badge">
+          <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 flex items-center justify-center text-[10px] font-bold text-white bg-destructive rounded-full pointer-events-none">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}
       </Button>
 
       {isOpen && (
-        <div className="notification-dropdown">
-          <div className="notification-dropdown-header">
-            <h3>Notifications</h3>
+        <div className="absolute top-[calc(100%+8px)] right-0 w-80 max-h-[400px] bg-popover/10 backdrop-blur-3xl border border-border rounded-xl shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+          <div className="flex justify-between items-center px-4 py-3 border-b border-border bg-muted/30">
+            <h3 className="text-sm font-semibold text-foreground">
+              Notifications
+            </h3>
             {unreadCount > 0 && (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={handleMarkAllAsRead}
-                className="mark-all-read-btn"
+                className="h-auto p-0 text-xs text-primary hover:text-primary/80"
               >
                 Mark all read
               </Button>
             )}
           </div>
 
-          <div className="notification-list">
+          <div className="overflow-y-auto max-h-[340px]">
             {isLoading ? (
-              <div className="notification-loading">
+              <div className="flex flex-col items-center justify-center gap-2 p-6 text-muted-foreground">
                 <LoadingSpinner />
                 <span>Loading...</span>
               </div>
             ) : notifications.length === 0 ? (
-              <div className="notification-empty">
-                <span>🔔</span>
-                <p>No notifications</p>
+              <div className="flex flex-col items-center justify-center gap-2 p-6 text-muted-foreground">
+                <span className="text-2xl">🔔</span>
+                <p className="text-sm">No notifications</p>
               </div>
             ) : (
               notifications.map((notification) => (
@@ -155,7 +159,6 @@ export function NotificationBell({ onClick, className = "" }: NotificationBellPr
     </div>
   );
 }
-
 
 /**
  * Individual notification item
@@ -177,18 +180,35 @@ function NotificationItem({
 
   return (
     <button
-      className={`notification-item ${isUnread ? "unread" : ""}`}
+      className={`flex items-start gap-3 w-full p-3 text-left transition-colors border-b border-border/50 last:border-0 hover:bg-muted/50
+        ${isUnread ? "bg-primary/5 hover:bg-primary/10" : "bg-transparent"}`}
       onClick={onClick}
     >
-      <span className="notification-icon">{getIcon(notification.type)}</span>
-      <div className="notification-content">
-        <span className="notification-title">{notification.title}</span>
+      <span className="text-lg flex-shrink-0 mt-0.5">
+        {getIcon(notification.type)}
+      </span>
+      <div className="flex-1 min-w-0 flex flex-col gap-0.5">
+        <span
+          className={`text-sm ${
+            isUnread
+              ? "font-semibold text-foreground"
+              : "font-medium text-foreground/80"
+          } truncate`}
+        >
+          {notification.title}
+        </span>
         {notification.body && (
-          <span className="notification-body">{notification.body}</span>
+          <span className="text-xs text-muted-foreground truncate">
+            {notification.body}
+          </span>
         )}
-        <span className="notification-time">{formatTime(notification.createdAt)}</span>
+        <span className="text-[10px] text-muted-foreground/70">
+          {formatTime(notification.createdAt)}
+        </span>
       </div>
-      {isUnread && <span className="unread-dot" />}
+      {isUnread && (
+        <span className="w-2 h-2 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+      )}
     </button>
   );
 }

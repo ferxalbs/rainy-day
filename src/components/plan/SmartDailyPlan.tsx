@@ -78,13 +78,13 @@ export function SmartDailyPlan({
   const getPriorityClasses = (priority: PlanTask["priority"]) => {
     switch (priority) {
       case "high":
-        return "bg-red-500/20 text-red-400 border-red-500/30";
+        return "bg-destructive/10 text-destructive border-destructive/20";
       case "medium":
-        return "bg-amber-500/20 text-amber-400 border-amber-500/30";
+        return "bg-amber-500/10 text-amber-500 border-amber-500/20";
       case "low":
-        return "bg-green-500/20 text-green-400 border-green-500/30";
+        return "bg-green-500/10 text-green-500 border-green-500/20";
       default:
-        return "bg-white/10 text-white/60";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -107,8 +107,8 @@ export function SmartDailyPlan({
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-4 text-white/60">
-        <div className="w-8 h-8 border-3 border-white/20 border-t-blue-500 rounded-full animate-spin" />
+      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4 text-muted-foreground">
+        <div className="w-8 h-8 border-4 border-muted/30 border-t-primary rounded-full animate-spin" />
         <p>Loading your AI-powered plan...</p>
       </div>
     );
@@ -116,11 +116,11 @@ export function SmartDailyPlan({
 
   if (error && !plan) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-4 text-white/60">
-        <p className="text-red-400">{error}</p>
+      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4 text-muted-foreground">
+        <p className="text-destructive">{error}</p>
         <button
           onClick={regenerate}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+          className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
         >
           Generate Plan
         </button>
@@ -129,17 +129,19 @@ export function SmartDailyPlan({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Summary Card */}
       {plan && (plan.summary || plan.energy_tip) && (
-        <section className="p-4 rounded-xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-white/10 backdrop-blur-sm">
+        <section className="p-5 rounded-2xl bg-gradient-to-br from-primary/10 to-purple-500/10 border-2 border-border/40 backdrop-blur-2xl shadow-lg">
           {plan.summary && (
-            <p className="text-white/90 leading-relaxed mb-3">{plan.summary}</p>
+            <p className="text-foreground/90 leading-relaxed mb-4 text-base">
+              {plan.summary}
+            </p>
           )}
           {plan.energy_tip && (
-            <div className="flex items-start gap-2 p-3 rounded-lg bg-white/5 text-sm text-white/70">
+            <div className="flex items-start gap-3 p-3 rounded-xl bg-card/20 text-sm text-foreground/80 border border-border/30">
               <span className="text-lg">💡</span>
-              <span>{plan.energy_tip}</span>
+              <span className="leading-snug pt-0.5">{plan.energy_tip}</span>
             </div>
           )}
         </section>
@@ -154,7 +156,7 @@ export function SmartDailyPlan({
         {!plan || plan.focus_blocks.length === 0 ? (
           <EmptyState>No focus blocks scheduled</EmptyState>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-3">
             {plan.focus_blocks.map((task) => (
               <TaskCard
                 key={task.id}
@@ -180,7 +182,7 @@ export function SmartDailyPlan({
         {!plan || plan.quick_wins.length === 0 ? (
           <EmptyState>No quick wins available</EmptyState>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-3">
             {plan.quick_wins.map((task) => (
               <TaskCard
                 key={task.id}
@@ -202,7 +204,7 @@ export function SmartDailyPlan({
         {!plan || plan.meetings.length === 0 ? (
           <EmptyState>No meetings scheduled</EmptyState>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-3">
             {plan.meetings.map((meeting) => (
               <MeetingCard
                 key={meeting.id}
@@ -222,7 +224,7 @@ export function SmartDailyPlan({
           icon="📌"
           count={plan.defer_suggestions.length}
         >
-          <div className="space-y-1">
+          <div className="space-y-2">
             {plan.defer_suggestions.map((suggestion, index) => (
               <DeferCard
                 key={index}
@@ -237,13 +239,15 @@ export function SmartDailyPlan({
 
       {/* No Plan State */}
       {!plan && !error && (
-        <section className="p-8 rounded-xl bg-white/5 border border-white/10 text-center">
-          <p className="text-white/60 mb-4">No plan generated yet for today.</p>
+        <section className="p-12 rounded-2xl bg-card/10 border-2 border-border/30 backdrop-blur-2xl text-center shadow-xl">
+          <p className="text-muted-foreground mb-6 text-lg">
+            No plan generated yet for today.
+          </p>
           <button
             onClick={regenerate}
             disabled={isGenerating}
-            className="px-6 py-2.5 bg-blue-500 text-white rounded-lg font-medium
-                         hover:bg-blue-600 transition-colors disabled:opacity-50"
+            className="px-8 py-3 bg-primary text-primary-foreground rounded-xl font-medium
+                         hover:bg-primary/90 transition-all disabled:opacity-50 shadow-lg shadow-primary/20"
           >
             {isGenerating ? "Generating..." : "Generate AI Plan"}
           </button>
@@ -266,12 +270,12 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
-      <h2 className="flex items-center gap-2 text-lg font-semibold text-white mb-3">
-        <span className="text-xl">{icon}</span>
+    <section className="p-5 rounded-2xl bg-card/10 border-2 border-border/20 backdrop-blur-2xl shadow-xl">
+      <h2 className="flex items-center gap-3 text-lg font-semibold text-foreground mb-4 opacity-90">
+        <span className="text-2xl filter drop-shadow-sm">{icon}</span>
         {title}
         {count > 0 && (
-          <span className="ml-auto text-xs font-normal text-white/40 bg-white/10 px-2 py-0.5 rounded-full">
+          <span className="ml-auto text-xs font-semibold text-muted-foreground bg-muted/20 border border-border/10 px-2.5 py-1 rounded-full backdrop-blur-md">
             {count}
           </span>
         )}
@@ -283,7 +287,9 @@ function Section({
 
 // Empty State
 function EmptyState({ children }: { children: React.ReactNode }) {
-  return <p className="text-center text-white/40 text-sm py-4">{children}</p>;
+  return (
+    <p className="text-center text-muted-foreground text-sm py-4">{children}</p>
+  );
 }
 
 // Task Card
@@ -334,43 +340,49 @@ function TaskCard({
   };
 
   return (
-    <div className="flex items-start gap-3 p-3 rounded-lg bg-white/3 hover:bg-white/5 transition-colors">
+    <div className="flex items-start gap-4 p-4 rounded-xl bg-card/5 hover:bg-card/10 border border-transparent hover:border-border/30 transition-all duration-300 group">
       {task.source_type === "task" && (
         <input
           type="checkbox"
           onChange={handleComplete}
-          className="mt-0.5 w-4 h-4 rounded accent-blue-500"
+          className="mt-1 w-4 h-4 rounded-md border-muted-foreground/40 accent-primary focus:ring-primary/20"
           title="Mark as complete"
         />
       )}
       <div className="flex-1 min-w-0">
-        <div className="flex flex-wrap items-center gap-2 mb-1">
-          <span>{getTypeIcon(task.type)}</span>
-          <span className="text-white font-medium">{task.title}</span>
+        <div className="flex flex-wrap items-center gap-2 mb-1.5">
+          <span className="filter drop-shadow-sm opacity-90">
+            {getTypeIcon(task.type)}
+          </span>
+          <span className="text-foreground font-medium text-base tracking-tight">
+            {task.title}
+          </span>
           <span
-            className={`text-xs px-2 py-0.5 rounded border uppercase ${getPriorityClasses(
+            className={`text-[10px] px-2 py-0.5 rounded-full uppercase border font-bold tracking-wider ${getPriorityClasses(
               task.priority
             )}`}
           >
             {task.priority}
           </span>
         </div>
-        <div className="flex flex-wrap items-center gap-3 text-xs text-white/50">
+        <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground/80 font-medium">
           {formatTime(task.suggested_time) && (
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1.5">
               <span>🕐</span>
               {formatTime(task.suggested_time)}
             </span>
           )}
           {task.duration_minutes > 0 && (
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1.5">
               <span>⏱️</span>
               {task.duration_minutes}min
             </span>
           )}
         </div>
         {task.context && (
-          <p className="mt-1.5 text-sm text-white/60 italic">{task.context}</p>
+          <p className="mt-2 text-sm text-foreground/60 italic leading-relaxed">
+            {task.context}
+          </p>
         )}
       </div>
       <FeedbackButtons
@@ -430,25 +442,29 @@ function MeetingCard({ meeting, onFeedback, formatTime }: MeetingCardProps) {
 
   return (
     <div
-      className={`flex items-start gap-3 p-3 rounded-lg transition-colors
+      className={`flex items-start gap-4 p-4 rounded-xl transition-all border
                     ${
                       isStartingSoon()
-                        ? "bg-blue-500/10 border-l-2 border-blue-500"
-                        : "bg-white/3 hover:bg-white/5"
+                        ? "bg-primary/10 border-primary shadow-lg shadow-primary/10"
+                        : "bg-card/5 hover:bg-card/10 border-transparent hover:border-border/20"
                     }`}
     >
-      <div className="text-blue-400 text-sm font-medium min-w-[70px]">
+      <div className="text-primary text-sm font-semibold min-w-[70px] uppercase tracking-wide">
         {formatTime(meeting.suggested_time) || "TBD"}
       </div>
       <div className="flex-1 min-w-0">
-        <span className="text-white font-medium">{meeting.title}</span>
+        <span className="text-foreground font-medium text-base tracking-tight block">
+          {meeting.title}
+        </span>
         {meeting.duration_minutes > 0 && (
-          <span className="ml-2 text-xs text-white/40">
+          <span className="inline-block mt-1 text-xs text-muted-foreground font-medium bg-muted/20 px-2 py-0.5 rounded-md">
             {meeting.duration_minutes} min
           </span>
         )}
         {meeting.context && (
-          <p className="text-sm text-white/50 mt-0.5">{meeting.context}</p>
+          <p className="text-sm text-foreground/60 mt-1.5 leading-relaxed">
+            {meeting.context}
+          </p>
         )}
       </div>
       <FeedbackButtons
@@ -500,8 +516,10 @@ function DeferCard({ suggestion, index, onFeedback }: DeferCardProps) {
   };
 
   return (
-    <div className="flex items-center gap-2 p-2 rounded-lg bg-white/3 border-l-2 border-white/20">
-      <span className="flex-1 text-sm text-white/60">{suggestionText}</span>
+    <div className="flex items-center gap-2 p-2 rounded-lg bg-card/30 border-l-2 border-muted-foreground/30">
+      <span className="flex-1 text-sm text-muted-foreground">
+        {suggestionText}
+      </span>
       <FeedbackButtons
         feedbackGiven={feedbackGiven}
         isSubmitting={isSubmitting}
@@ -524,12 +542,12 @@ function FeedbackButtons({
   onFeedback,
 }: FeedbackButtonsProps) {
   return (
-    <div className="flex gap-1 flex-shrink-0">
+    <div className="flex gap-1 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
       <button
         className={`p-1.5 rounded transition-colors ${
           feedbackGiven === "positive"
-            ? "bg-green-500/20 text-green-400"
-            : "text-white/30 hover:text-white/60 hover:bg-white/5"
+            ? "bg-green-500/10 text-green-500"
+            : "text-muted-foreground hover:text-foreground hover:bg-muted"
         }`}
         onClick={() => onFeedback("positive")}
         disabled={isSubmitting || feedbackGiven !== null}
@@ -549,8 +567,8 @@ function FeedbackButtons({
       <button
         className={`p-1.5 rounded transition-colors ${
           feedbackGiven === "negative"
-            ? "bg-red-500/20 text-red-400"
-            : "text-white/30 hover:text-white/60 hover:bg-white/5"
+            ? "bg-destructive/10 text-destructive"
+            : "text-muted-foreground hover:text-foreground hover:bg-muted"
         }`}
         onClick={() => onFeedback("negative")}
         disabled={isSubmitting || feedbackGiven !== null}
@@ -570,5 +588,3 @@ function FeedbackButtons({
     </div>
   );
 }
-
-export default SmartDailyPlan;

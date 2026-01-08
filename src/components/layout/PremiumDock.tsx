@@ -30,7 +30,7 @@ export function PremiumDock({ activePage, onPageChange }: PremiumDockProps) {
           iconSize={48}
           iconMagnification={60}
           iconDistance={120}
-          className="h-16 gap-3 px-3 bg-card/40 backdrop-blur-2xl border border-border rounded-2xl shadow-2xl shadow-black/50"
+          className="h-16 gap-3 px-3 bg-card/10 backdrop-blur-2xl border border-border rounded-2xl shadow-2xl shadow-black/50"
         >
           {pages.map((page) => {
             const Icon = page.icon;
