@@ -1,18 +1,20 @@
 import { useState, useEffect } from "react";
-import { getTodayEvents } from "../../services/calendar";
-import { getInboxSummary } from "../../services/gmail";
-import { getTaskLists, getTasks } from "../../services/tasks";
-import type {
-  ProcessedEvent,
-  ThreadSummary,
-  Task,
-  TaskList,
-} from "../../types";
+import {
+  getTodayEvents,
+  getEmails,
+  getTasks,
+  getTaskLists,
+  triggerSync,
+  type CalendarEvent,
+  type Email,
+  type Task,
+  type TaskList,
+} from "../../services/backend/data";
 import "./DailyPlan.css";
 
 interface DailyPlanState {
-  events: ProcessedEvent[];
-  threads: ThreadSummary[];
+  events: CalendarEvent[];
+  emails: Email[];
   tasks: Task[];
   taskLists: TaskList[];
   isLoading: boolean;
@@ -22,7 +24,7 @@ interface DailyPlanState {
 export function DailyPlan() {
   const [state, setState] = useState<DailyPlanState>({
     events: [],
-    threads: [],
+    emails: [],
     tasks: [],
     taskLists: [],
     isLoading: true,
@@ -37,14 +39,42 @@ export function DailyPlan() {
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
     try {
-      const [events, threads, taskLists] = await Promise.all([
+      // First trigger a sync to get fresh data
+      await triggerSync("all").catch(() => {});
+
+      // Wait a moment for sync to start
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const [events, emails, taskLists] = await Promise.all([
         getTodayEvents().catch(() => []),
-        getInboxSummary(10, "in:inbox is:unread").catch(() => []),
+        getEmails(10).catch(() => []),
         getTaskLists().catch(() => []),
       ]);
 
       // Get tasks from the first task list
       let tasks: Task[] = [];
+      if (taskLists.length > 0) {
+        tasks = await getTasks(taskLists[0].id, false).catch(() => []);
+      }
+
+      setState({
+        events,
+        emails,
+        tasks,
+        taskLists,
+        isLoading: false,
+        error: null,
+      });
+    } catch (error) {
+      setState((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: "Failed to load daily plan",
+      }));
+    }
+  };
+
+
       if (taskLists.length > 0) {
         tasks = await getTasks(taskLists[0].id, false).catch(() => []);
       }
