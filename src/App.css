@@ -165,7 +165,70 @@
   --muted-foreground: 199 70% 65%;
   --accent: 202 85% 16%;
   --accent-foreground: 199 85% 96%;
-  --color-bg-primary: #051923;
+  --color-bg-primary: #0c1820;
+}
+
+/* Midnight Void Specific Backgrounds */
+html.theme-midnight-void.theme-night body {
+  background-color: #000000;
+  background-image: 
+    /* Electric blue subtle glow from center */ radial-gradient(
+      circle at 50% 50%,
+      rgba(59, 130, 246, 0.05),
+      transparent 70%
+    ),
+    /* Deep graphite atmosphere */
+      linear-gradient(to bottom, #000000 0%, #050505 100%);
+  background-attachment: fixed;
+}
+
+html.theme-midnight-void.theme-day body {
+  background-color: #0a0a0a;
+  background-image: linear-gradient(to bottom, #0a0a0a 0%, #121212 100%);
+  background-attachment: fixed;
+}
+
+/* Midnight Void Theme Variables */
+.theme-midnight-void {
+  --primary: 217.2 91.2% 59.8%;
+  --color-accent-primary: #3b82f6;
+}
+
+.theme-midnight-void.theme-day {
+  --background: 240 10% 10%;
+  --foreground: 0 0% 98%;
+  --card: 240 10% 8%;
+  --card-foreground: 0 0% 98%;
+  --popover: 240 10% 8%;
+  --popover-foreground: 0 0% 98%;
+  --border: 240 10% 20%;
+  --secondary: 240 10% 15%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 240 10% 12%;
+  --muted-foreground: 240 5% 65%;
+  --accent: 217.2 91.2% 59.8%;
+  --accent-foreground: 0 0% 100%;
+  --color-bg-primary: #0a0a0a;
+  --primary-foreground: 0 0% 100%;
+}
+
+.theme-midnight-void.theme-night {
+  --background: 0 0% 0%;
+  --foreground: 0 0% 95%;
+  --card: 0 0% 2%;
+  --card-foreground: 0 0% 95%;
+  --popover: 0 0% 2%;
+  --popover-foreground: 0 0% 95%;
+  --border: 240 10% 12%;
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 240 10% 5%;
+  --secondary-foreground: 0 0% 95%;
+  --muted: 240 10% 4%;
+  --muted-foreground: 240 5% 50%;
+  --accent: 217.2 91.2% 59.8%;
+  --accent-foreground: 0 0% 100%;
+  --color-bg-primary: #000000;
 }
 
 /* Cosmic Gold Specific Backgrounds */

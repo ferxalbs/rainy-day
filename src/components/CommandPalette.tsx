@@ -121,6 +121,17 @@ export function CommandPalette() {
               <span className="ml-auto text-xs text-primary">Active</span>
             )}
           </CommandItem>
+
+          <CommandItem
+            onSelect={() => handleThemeNameChange("midnight-void")}
+            className="gap-2"
+          >
+            <div className="size-4 rounded-full bg-[#000000] border border-white/20" />
+            <span>Midnight Void Theme</span>
+            {themeName === "midnight-void" && (
+              <span className="ml-auto text-xs text-primary">Active</span>
+            )}
+          </CommandItem>
         </CommandGroup>
 
         <CommandSeparator />

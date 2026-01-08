@@ -18,6 +18,8 @@ import {
   STARRY_CHRISTMAS_NIGHT_THEME,
   OCEAN_SUNSET_DAY_THEME,
   OCEAN_SUNSET_NIGHT_THEME,
+  MIDNIGHT_VOID_DAY_THEME,
+  MIDNIGHT_VOID_NIGHT_THEME,
 } from "../types/theme";
 
 interface ThemeContextType {
@@ -74,6 +76,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
           ? OCEAN_SUNSET_DAY_THEME
           : OCEAN_SUNSET_NIGHT_THEME;
       }
+      if (name === "midnight-void") {
+        return actualAppearance === "day"
+          ? MIDNIGHT_VOID_DAY_THEME
+          : MIDNIGHT_VOID_NIGHT_THEME;
+      }
       return actualAppearance === "day" ? DAY_THEME : NIGHT_THEME;
     },
     [getSystemThemePreference]
@@ -93,6 +100,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         "theme-cosmic-gold",
         "theme-starry-christmas",
         "theme-ocean-sunset",
+        "theme-midnight-void",
         "theme-default"
       );
 

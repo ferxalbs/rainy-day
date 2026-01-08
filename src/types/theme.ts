@@ -2,7 +2,7 @@
 
 export type ThemeAppearance = 'day' | 'night';
 export type ThemeMode = 'day' | 'night' | 'automatic';
-export type ThemeName = 'default' | 'sky-blue' | 'cosmic-gold' | 'starry-christmas' | 'ocean-sunset';
+export type ThemeName = 'default' | 'sky-blue' | 'cosmic-gold' | 'starry-christmas' | 'ocean-sunset' | 'midnight-void';
 
 export interface ThemeColors {
   background: string;
@@ -177,8 +177,39 @@ export const OCEAN_SUNSET_NIGHT_THEME: ThemeConfig = {
     secondary: '230 35% 12%',          // Dark indigo secondary
     accent: '32 100% 50%',             // Golden sunset glow
     muted: '230 25% 15%',              // Muted midnight
-    card: '230 35% 8%',                // Midnight depths card
-    popover: '230 35% 8%',             // Midnight depths popover
+    card: '200 40% 10%',               // Ocean depths card
+    popover: '200 40% 10%',            // Ocean depths popover
   },
 };
 
+export const MIDNIGHT_VOID_DAY_THEME: ThemeConfig = {
+  name: 'midnight-void',
+  mode: 'day',
+  colors: {
+    background: '240 10% 10%',         // Matte Graphite
+    foreground: '0 0% 98%',            // Crisp White
+    border: '240 10% 20%',             // Subtle Graphite border
+    primary: '217.2 91.2% 59.8%',      // Electric Blue
+    secondary: '240 10% 15%',          // Darker Graphite
+    accent: '217.2 91.2% 59.8%',       // Electric Blue accent
+    muted: '240 10% 12%',              // Muted Graphite
+    card: '240 10% 8%',                // Graphite card
+    popover: '240 10% 8%',             // Graphite popover
+  },
+};
+
+export const MIDNIGHT_VOID_NIGHT_THEME: ThemeConfig = {
+  name: 'midnight-void',
+  mode: 'night',
+  colors: {
+    background: '0 0% 0%',             // Absolute Void
+    foreground: '0 0% 95%',            // Soft White
+    border: '240 10% 12%',             // Very subtle border
+    primary: '217.2 91.2% 59.8%',      // Electric Blue
+    secondary: '240 10% 5%',           // Near black
+    accent: '217.2 91.2% 59.8%',       // Electric Blue accent
+    muted: '240 10% 4%',               // Near black muted
+    card: '0 0% 2%',                   // Almost pure black card
+    popover: '0 0% 2%',                // Almost pure black popover
+  },
+};

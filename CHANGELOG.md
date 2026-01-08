@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### [v0.1.12] - 2026-01-07
+### [v0.1.13] - 2026-01-08
 
 #### Improvements
 
+- **Midnight Void Theme**: A modern, black-focused theme with absolute blacks and graphite tones
+  - Day mode: Matte Graphite aesthetic (#0a0a0a)
+  - Night mode: Absolute Void (#000000) with subtle electric blue glows
 - **Ocean Sunset Theme Optimization**: Revamped colors and backgrounds for a more premium experience
   - Day mode: Refined "peachy sand" palette with smoother sunset horizon gradients
   - Night mode: Deep midnight indigo background with starry patterns and horizon afterglow
