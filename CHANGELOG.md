@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.1.16] - 2026-01-08
+
+#### Added
+
+- **Backend Integration**: Complete integration with Rainy Day Cloud backend for centralized data sync
+  - New JWT-based authentication flow with polling mechanism
+  - Backend token storage in OS keychain (`store_backend_tokens`, `get_backend_access_token`, `get_backend_refresh_token`, `clear_backend_tokens` commands)
+  - New `BackendAuthContext` for React state management
+- **Backend Services**: Created `src/services/backend/` module
+  - `api.ts`: Base API client with JWT handling and auto-refresh
+  - `auth.ts`: Polling auth flow (init → poll → exchange)
+  - `data.ts`: Data fetching from backend (emails, events, tasks)
+  - `plan.ts`: AI plan generation service
+- **Server Endpoints**: New routes in backend server
+  - `GET /auth/me`: Returns authenticated user info
+  - `GET /data/emails`: Fetch synced emails
+  - `GET /data/events`: Fetch calendar events
+  - `GET /data/tasks`: Fetch tasks
+  - `GET /data/task-lists`: Fetch task lists
+
+#### Improvements
+
+- **AuthContext**: Migrated from local Tauri Google OAuth to backend JWT authentication
+- **DailyPlan Component**: Updated to fetch data from backend API instead of local Tauri commands
+- **ConfigPage**: Added backend version display and simplified using unified AuthContext
+
+#### Fixes
+
+- **Race Condition**: Fixed SQL race condition in `completeLoginAttempt` where status was set to 'approved' before the one-time code was stored
+- **Auth Exchange Endpoint**: Fixed path from `/auth/exchange` to `/auth/session/exchange`
+- **User Query**: Fixed `/auth/me` SQL query to use existing columns (removed non-existent `picture` column)
+
 ### [v0.1.15] - 2026-01-08
 
 #### Added
