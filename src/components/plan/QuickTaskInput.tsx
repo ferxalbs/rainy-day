@@ -4,11 +4,12 @@
  * Inline input for quickly creating tasks. Submits on Enter key
  * and clears input on success.
  *
- * Requirements: 2.2
+ * Requirements: 2.2, 8.5
  */
 
-import { useState, useRef, useCallback, type KeyboardEvent } from "react";
+import { useState, useRef, useCallback, useEffect, type KeyboardEvent } from "react";
 import { useTaskActions } from "../../hooks/useTaskActions";
+import { FOCUS_QUICK_TASK_EVENT } from "../../hooks/useKeyboardShortcuts";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import type { ActionResult } from "../../services/backend/actions";
@@ -32,6 +33,16 @@ export function QuickTaskInput({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { createTask } = useTaskActions();
+
+  // Listen for keyboard shortcut to focus input (Cmd+N)
+  useEffect(() => {
+    const handleFocus = () => {
+      inputRef.current?.focus();
+    };
+
+    window.addEventListener(FOCUS_QUICK_TASK_EVENT, handleFocus);
+    return () => window.removeEventListener(FOCUS_QUICK_TASK_EVENT, handleFocus);
+  }, []);
 
   const handleSubmit = useCallback(async () => {
     const trimmedTitle = title.trim();

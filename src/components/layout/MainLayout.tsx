@@ -1,13 +1,22 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useDailyData } from "../../hooks/useDailyData";
+import { useSyncStatus } from "../../hooks/useSyncStatus";
+import {
+  useKeyboardShortcuts,
+  FOCUS_QUICK_TASK_EVENT,
+  REGENERATE_PLAN_EVENT,
+  TRIGGER_SYNC_EVENT,
+} from "../../hooks/useKeyboardShortcuts";
 import { Topbar } from "./Topbar";
 import { PremiumDock, type DockPage } from "./PremiumDock";
 import { InboxPage } from "../pages/InboxPage";
 import { AgendaPage } from "../pages/AgendaPage";
 import { TaskPage } from "../pages/TaskPage";
 import { ConfigPage } from "../pages/ConfigPage";
+import { SmartDailyPlan } from "../plan/SmartDailyPlan";
 
 const PAGE_TITLES: Record<DockPage, string> = {
+  plan: "AI Daily Plan",
   inbox: "Priority Inbox",
   agenda: "Today's Agenda",
   task: "Tasks",
@@ -15,8 +24,34 @@ const PAGE_TITLES: Record<DockPage, string> = {
 };
 
 export function MainLayout() {
-  const [activePage, setActivePage] = useState<DockPage>("inbox");
+  const [activePage, setActivePage] = useState<DockPage>("plan");
   const { events, threads, tasks, isLoading, refresh } = useDailyData();
+  const { triggerSync } = useSyncStatus();
+
+  // Keyboard shortcut handlers
+  const handleRegeneratePlan = useCallback(() => {
+    // Dispatch event for SmartDailyPlan to handle
+    window.dispatchEvent(new CustomEvent(REGENERATE_PLAN_EVENT));
+  }, []);
+
+  const handleFocusQuickTask = useCallback(() => {
+    // Dispatch event for QuickTaskInput to handle
+    window.dispatchEvent(new CustomEvent(FOCUS_QUICK_TASK_EVENT));
+  }, []);
+
+  const handleTriggerSync = useCallback(() => {
+    // Dispatch event and trigger sync
+    window.dispatchEvent(new CustomEvent(TRIGGER_SYNC_EVENT));
+    triggerSync("all");
+  }, [triggerSync]);
+
+  // Register keyboard shortcuts
+  useKeyboardShortcuts({
+    onRegeneratePlan: handleRegeneratePlan,
+    onFocusQuickTask: handleFocusQuickTask,
+    onTriggerSync: handleTriggerSync,
+    enabled: true,
+  });
 
   // Listen for navigation events from Command Palette
   useEffect(() => {
@@ -75,6 +110,7 @@ export function MainLayout() {
           </div>
 
           {/* Page Content */}
+          {activePage === "plan" && <SmartDailyPlan />}
           {activePage === "inbox" && (
             <InboxPage threads={threads} isLoading={isLoading} />
           )}

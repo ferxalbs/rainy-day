@@ -201,14 +201,36 @@ export function CommandPalette() {
         <CommandGroup heading="Actions">
           <CommandItem
             onSelect={() => {
-              window.location.reload();
+              window.dispatchEvent(new CustomEvent("regenerate-plan"));
               setOpen(false);
             }}
             className="gap-2"
           >
             <RefreshCw className="h-4 w-4" />
-            <span>Reload Application</span>
+            <span>Regenerate AI Plan</span>
             <span className="ml-auto text-xs text-muted-foreground">⌘R</span>
+          </CommandItem>
+          <CommandItem
+            onSelect={() => {
+              window.dispatchEvent(new CustomEvent("focus-quick-task"));
+              setOpen(false);
+            }}
+            className="gap-2"
+          >
+            <span className="h-4 w-4 flex items-center justify-center text-sm">+</span>
+            <span>New Quick Task</span>
+            <span className="ml-auto text-xs text-muted-foreground">⌘N</span>
+          </CommandItem>
+          <CommandItem
+            onSelect={() => {
+              window.dispatchEvent(new CustomEvent("trigger-sync"));
+              setOpen(false);
+            }}
+            className="gap-2"
+          >
+            <RefreshCw className="h-4 w-4" />
+            <span>Sync Data</span>
+            <span className="ml-auto text-xs text-muted-foreground">⌘S</span>
           </CommandItem>
           <CommandItem
             onSelect={() => {
