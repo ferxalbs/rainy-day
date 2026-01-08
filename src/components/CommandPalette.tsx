@@ -8,6 +8,7 @@ import {
   Snowflake,
   RefreshCw,
   Sunrise,
+  Settings,
 } from "lucide-react";
 import {
   CommandDialog,
@@ -208,6 +209,18 @@ export function CommandPalette() {
             <RefreshCw className="h-4 w-4" />
             <span>Reload Application</span>
             <span className="ml-auto text-xs text-muted-foreground">⌘R</span>
+          </CommandItem>
+          <CommandItem
+            onSelect={() => {
+              window.dispatchEvent(
+                new CustomEvent("navigate-to-page", { detail: "config" })
+              );
+              setOpen(false);
+            }}
+            className="gap-2"
+          >
+            <Settings className="h-4 w-4" />
+            <span>Open Config</span>
           </CommandItem>
         </CommandGroup>
       </CommandList>

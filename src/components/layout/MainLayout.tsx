@@ -1,20 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDailyData } from "../../hooks/useDailyData";
 import { Topbar } from "./Topbar";
 import { PremiumDock, type DockPage } from "./PremiumDock";
 import { InboxPage } from "../pages/InboxPage";
 import { AgendaPage } from "../pages/AgendaPage";
 import { TaskPage } from "../pages/TaskPage";
+import { ConfigPage } from "../pages/ConfigPage";
 
 const PAGE_TITLES: Record<DockPage, string> = {
   inbox: "Priority Inbox",
   agenda: "Today's Agenda",
   task: "Tasks",
+  config: "Configuration",
 };
 
 export function MainLayout() {
   const [activePage, setActivePage] = useState<DockPage>("inbox");
   const { events, threads, tasks, isLoading, refresh } = useDailyData();
+
+  // Listen for navigation events from Command Palette
+  useEffect(() => {
+    const handleNavigate = (e: CustomEvent<DockPage>) => {
+      setActivePage(e.detail);
+    };
+    window.addEventListener(
+      "navigate-to-page" as string,
+      handleNavigate as EventListener
+    );
+    return () =>
+      window.removeEventListener(
+        "navigate-to-page" as string,
+        handleNavigate as EventListener
+      );
+  }, []);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -66,6 +84,7 @@ export function MainLayout() {
           {activePage === "task" && (
             <TaskPage tasks={tasks} isLoading={isLoading} />
           )}
+          {activePage === "config" && <ConfigPage />}
         </div>
       </main>
 

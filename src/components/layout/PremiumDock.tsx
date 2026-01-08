@@ -5,9 +5,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import { Inbox, Calendar, CheckSquare } from "lucide-react";
+import { Inbox, Calendar, CheckSquare, Settings } from "lucide-react";
 
-export type DockPage = "inbox" | "agenda" | "task";
+export type DockPage = "inbox" | "agenda" | "task" | "config";
 
 interface PremiumDockProps {
   activePage: DockPage;
@@ -18,6 +18,7 @@ const pages = [
   { id: "inbox" as DockPage, icon: Inbox, label: "Inbox" },
   { id: "agenda" as DockPage, icon: Calendar, label: "Agenda" },
   { id: "task" as DockPage, icon: CheckSquare, label: "Tasks" },
+  { id: "config" as DockPage, icon: Settings, label: "Config" },
 ];
 
 export function PremiumDock({ activePage, onPageChange }: PremiumDockProps) {
