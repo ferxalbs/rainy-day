@@ -1,5 +1,15 @@
 import { useAuth } from "../../contexts/AuthContext";
-import "./GoogleSignIn.css";
+import { Button } from "../ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+// Legacy styles preserved but unused for this new implementation
+// import "./GoogleSignIn.legacy.css";
 
 export function GoogleSignIn() {
   const { login, isLoading, isLoggingIn } = useAuth();
@@ -13,16 +23,17 @@ export function GoogleSignIn() {
   };
 
   return (
-    <div className="google-signin-container">
-      <div className="signin-card glass">
-        <div className="signin-header">
-          <div className="logo">
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <Card className="w-full max-w-md bg-card/40 backdrop-blur-xl border-border/50 shadow-2xl">
+        <CardHeader className="text-center space-y-4 pb-8">
+          <div className="mx-auto bg-background/50 p-4 rounded-2xl ring-1 ring-border/50 shadow-sm w-fit">
             <svg
               width="48"
               height="48"
               viewBox="0 0 48 48"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
+              className="w-12 h-12"
             >
               <circle cx="24" cy="24" r="20" fill="url(#gradient)" />
               <path
@@ -45,33 +56,38 @@ export function GoogleSignIn() {
               </defs>
             </svg>
           </div>
-          <h1 className="signin-title">Rainy Day</h1>
-          <p className="signin-subtitle">
-            Turn your inbox into an actionable daily plan
-          </p>
-        </div>
+          <div className="space-y-2">
+            <CardTitle className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-violet-500">
+              Rainy Day
+            </CardTitle>
+            <CardDescription className="text-lg">
+              Turn your inbox into an actionable daily plan
+            </CardDescription>
+          </div>
+        </CardHeader>
 
-        <div className="signin-content">
-          <p className="signin-description">
+        <CardContent className="space-y-6 pb-8">
+          <p className="text-center text-muted-foreground leading-relaxed">
             Connect your Google account to get started. We'll help you focus on
             what matters most by organizing your emails, calendar, and tasks.
           </p>
 
-          <button
-            className="google-button"
+          <Button
+            variant="outline"
+            className="w-full h-12 text-base font-medium transition-all hover:scale-[1.02] active:scale-[0.98] bg-background/50 hover:bg-background/80 border-border/50"
             onClick={handleSignIn}
             disabled={isLoading || isLoggingIn}
           >
             {isLoggingIn ? (
-              <>
-                <div className="button-spinner" />
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
                 <span>Conectando...</span>
-              </>
+              </div>
             ) : (
-              <>
+              <div className="flex items-center gap-3">
                 <svg
-                  width="24"
-                  height="24"
+                  width="20"
+                  height="20"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -93,26 +109,26 @@ export function GoogleSignIn() {
                     fill="#EA4335"
                   />
                 </svg>
-                <span>Continue with Google</span>
-              </>
+                Continue with Google
+              </div>
             )}
-          </button>
+          </Button>
 
           {isLoggingIn && (
-            <p className="signin-hint">
+            <p className="text-sm text-center text-primary animate-pulse">
               Completa el inicio de sesión en tu navegador...
             </p>
           )}
-        </div>
+        </CardContent>
 
-        <div className="signin-footer">
-          <p className="privacy-note">
+        <CardFooter className="justify-center border-t border-border/10 pt-6 pb-6">
+          <p className="text-xs text-center text-muted-foreground/60 leading-relaxed max-w-xs">
             We only request read access to your email and calendar.
             <br />
             Your data never leaves your device.
           </p>
-        </div>
-      </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 }
