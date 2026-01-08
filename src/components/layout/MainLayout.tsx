@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useDailyData } from "../../hooks/useDailyData";
 import { useSyncStatus } from "../../hooks/useSyncStatus";
+import { useDailyPlan } from "../../hooks/useDailyPlan";
 import {
   useKeyboardShortcuts,
   FOCUS_QUICK_TASK_EVENT,
@@ -27,6 +28,7 @@ export function MainLayout() {
   const [activePage, setActivePage] = useState<DockPage>("plan");
   const { events, threads, tasks, isLoading, refresh } = useDailyData();
   const { triggerSync } = useSyncStatus();
+  const { isGenerating, regenerate } = useDailyPlan();
 
   // Keyboard shortcut handlers
   const handleRegeneratePlan = useCallback(() => {
@@ -69,28 +71,24 @@ export function MainLayout() {
       );
   }, []);
 
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 18) return "Good afternoon";
-    return "Good evening";
-  };
+  // Page-aware refresh handler
+  const handleRefresh = useCallback(() => {
+    if (activePage === "plan") {
+      regenerate();
+    } else {
+      refresh();
+    }
+  }, [activePage, regenerate, refresh]);
 
-  const formatDate = () => {
-    return new Date().toLocaleDateString("en-US", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-    });
-  };
+  const isRefreshing = activePage === "plan" ? isGenerating : isLoading;
 
   return (
     <div className="min-h-screen">
       {/* Native-style Topbar */}
       <Topbar
         title={PAGE_TITLES[activePage]}
-        onRefresh={refresh}
-        isRefreshing={isLoading}
+        onRefresh={handleRefresh}
+        isRefreshing={isRefreshing}
       />
 
       {/* Main Content */}
@@ -99,12 +97,20 @@ export function MainLayout() {
           {/* Greeting Section */}
           <div className="mb-8 pt-4">
             <h1 className="text-3xl font-bold text-foreground">
-              {getGreeting()}
+              {new Date().getHours() < 12
+                ? "Good morning"
+                : new Date().getHours() < 18
+                ? "Good afternoon"
+                : "Good evening"}
             </h1>
             <div className="flex items-center gap-2 mt-2">
               <span className="w-1.5 h-1.5 rounded-full bg-primary" />
               <p className="text-sm font-medium text-muted-foreground uppercase tracking-widest">
-                {formatDate()}
+                {new Date().toLocaleDateString("en-US", {
+                  weekday: "long",
+                  month: "long",
+                  day: "numeric",
+                })}
               </p>
             </div>
           </div>
