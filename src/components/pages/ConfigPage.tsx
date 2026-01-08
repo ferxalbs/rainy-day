@@ -1,5 +1,6 @@
 import { useAuth } from "../../contexts/AuthContext";
 import { useTheme } from "../../contexts/ThemeContext";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -20,8 +21,10 @@ import {
   LogOut,
   Bot,
   Rocket,
+  Cloud,
 } from "lucide-react";
 import { Button } from "../ui/button";
+import { checkBackendHealth, getBackendInfo } from "../../services/backend/api";
 
 // App version from package.json would be injected at build time
 const APP_VERSION = "0.1.15";
@@ -35,8 +38,23 @@ interface ConfigItem {
 }
 
 export function ConfigPage() {
-  const { user, logout } = useAuth();
+  const { user, logout, isAuthenticated } = useAuth();
   const { themeName, currentTheme } = useTheme();
+  const [backendVersion, setBackendVersion] = useState<string | null>(null);
+  const [isBackendAvailable, setIsBackendAvailable] = useState(false);
+
+  useEffect(() => {
+    const checkBackend = async () => {
+      const healthy = await checkBackendHealth();
+      setIsBackendAvailable(healthy);
+
+      if (healthy) {
+        const info = await getBackendInfo();
+        setBackendVersion(info?.version ?? null);
+      }
+    };
+    checkBackend();
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -72,6 +90,15 @@ export function ConfigPage() {
       value: `v${APP_VERSION}`,
     },
     {
+      icon: <Cloud className="w-4 h-4" />,
+      label: "Backend",
+      value: backendVersion
+        ? `v${backendVersion}`
+        : isBackendAvailable
+        ? "Connected"
+        : "Offline",
+    },
+    {
       icon: <Palette className="w-4 h-4" />,
       label: "Active Theme",
       value: `${themeName} (${currentTheme.mode})`,
@@ -82,22 +109,22 @@ export function ConfigPage() {
     {
       icon: <Mail className="w-4 h-4" />,
       name: "Gmail Integration",
-      status: "Active",
+      status: isAuthenticated ? "Active" : "Disconnected",
     },
     {
       icon: <Calendar className="w-4 h-4" />,
       name: "Google Calendar",
-      status: "Active",
+      status: isAuthenticated ? "Active" : "Disconnected",
     },
     {
       icon: <CheckSquare className="w-4 h-4" />,
       name: "Google Tasks",
-      status: "Active",
+      status: isAuthenticated ? "Active" : "Disconnected",
     },
     {
       icon: <Zap className="w-4 h-4" />,
-      name: "Daily Sync",
-      status: "Enabled",
+      name: "AI Daily Plans",
+      status: isAuthenticated ? "Enabled" : "Disconnected",
     },
   ];
 
@@ -161,7 +188,13 @@ export function ConfigPage() {
                     <div className="text-muted-foreground">{cap.icon}</div>
                     <span className="text-sm text-foreground">{cap.name}</span>
                   </div>
-                  <span className="text-xs font-medium px-2 py-1 rounded-full bg-primary/10 text-primary">
+                  <span
+                    className={`text-xs font-medium px-2 py-1 rounded-full ${
+                      cap.status === "Active" || cap.status === "Enabled"
+                        ? "bg-primary/10 text-primary"
+                        : "bg-muted text-muted-foreground"
+                    }`}
+                  >
                     {cap.status}
                   </span>
                 </div>

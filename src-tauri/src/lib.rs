@@ -96,6 +96,12 @@ pub fn run() {
             auth::wait_for_oauth_callback,
             auth::is_authenticated,
             auth::logout,
+            // Backend token commands
+            auth::store_backend_tokens,
+            auth::get_backend_access_token,
+            auth::get_backend_refresh_token,
+            auth::clear_backend_tokens,
+            // Google API commands
             google::gmail::get_inbox_summary,
             google::gmail::get_thread_detail,
             google::gmail::open_thread_in_gmail,
@@ -108,6 +114,7 @@ pub fn run() {
             google::tasks::complete_task,
             google::tasks::reopen_task,
             google::tasks::delete_task,
+            // Theme commands
             theme::get_theme,
             theme::set_theme,
             theme::get_system_theme,

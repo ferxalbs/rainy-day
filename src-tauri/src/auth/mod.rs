@@ -161,15 +161,13 @@ pub async fn wait_for_oauth_callback(
     println!("Starting OAuth callback server on port {}...", port);
 
     // Run the blocking TCP server in a separate thread
-    let callback_result = tokio::task::spawn_blocking(move || {
-        wait_for_callback_sync(port)
-    })
-    .await
-    .map_err(|e| format!("Task join error: {}", e))?
-    .map_err(|e| format!("Callback error: {}", e))?;
+    let callback_result = tokio::task::spawn_blocking(move || wait_for_callback_sync(port))
+        .await
+        .map_err(|e| format!("Task join error: {}", e))?
+        .map_err(|e| format!("Callback error: {}", e))?;
 
     let (code, received_state) = callback_result;
-    
+
     println!("Received OAuth callback with code");
 
     // Verify CSRF token
@@ -184,7 +182,7 @@ pub async fn wait_for_oauth_callback(
 
     // Exchange code for tokens using reqwest with timeout
     let redirect_uri = format!("http://127.0.0.1:{}", port);
-    
+
     let http_client = reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(30))
         .build()
@@ -221,16 +219,23 @@ pub async fn wait_for_oauth_callback(
         return Err(format!("Token exchange failed: {}", error_text));
     }
 
-    let response_text = token_response.text().await
+    let response_text = token_response
+        .text()
+        .await
         .map_err(|e| format!("Failed to read token response: {}", e))?;
-    
-    println!("Token response received, length: {} bytes", response_text.len());
 
-    let tokens: GoogleTokenResponse = serde_json::from_str(&response_text)
-        .map_err(|e| {
-            eprintln!("Failed to parse: {}", &response_text[..200.min(response_text.len())]);
-            format!("Failed to parse token response: {}", e)
-        })?;
+    println!(
+        "Token response received, length: {} bytes",
+        response_text.len()
+    );
+
+    let tokens: GoogleTokenResponse = serde_json::from_str(&response_text).map_err(|e| {
+        eprintln!(
+            "Failed to parse: {}",
+            &response_text[..200.min(response_text.len())]
+        );
+        format!("Failed to parse token response: {}", e)
+    })?;
 
     println!("Token exchange successful, fetching user info...");
 
@@ -378,4 +383,32 @@ pub async fn is_authenticated(token_store: State<'_, TokenStore>) -> Result<Auth
 #[tauri::command]
 pub async fn logout(token_store: State<'_, TokenStore>) -> Result<(), String> {
     token_store.clear_tokens().await
+}
+
+// ============================================================================
+// Backend Token Commands
+// ============================================================================
+
+/// Store backend JWT tokens in keychain
+#[tauri::command]
+pub fn store_backend_tokens(access_token: String, refresh_token: String) -> Result<(), String> {
+    keychain::store_backend_tokens(&access_token, &refresh_token)
+}
+
+/// Get backend access token from keychain
+#[tauri::command]
+pub fn get_backend_access_token() -> Result<Option<String>, String> {
+    keychain::get_backend_access_token()
+}
+
+/// Get backend refresh token from keychain
+#[tauri::command]
+pub fn get_backend_refresh_token() -> Result<Option<String>, String> {
+    keychain::get_backend_refresh_token()
+}
+
+/// Clear backend tokens from keychain
+#[tauri::command]
+pub fn clear_backend_tokens() -> Result<(), String> {
+    keychain::clear_backend_tokens()
 }
