@@ -154,15 +154,15 @@ export const OCEAN_SUNSET_DAY_THEME: ThemeConfig = {
   name: 'ocean-sunset',
   mode: 'day',
   colors: {
-    background: '39 100% 97%',         // Light peachy sand
-    foreground: '200 30% 20%',         // Deep ocean blue text
-    border: '14 100% 75%',             // Soft coral border
-    primary: '14 91% 60%',             // Coral (Coral 500)
-    secondary: '39 100% 94%',          // Pale sunset
-    accent: '25 95% 53%',              // Orange sunset
-    muted: '39 50% 92%',               // Muted sand
-    card: '39 100% 98%',               // Almost white sand
-    popover: '39 100% 98%',            // Almost white sand
+    background: '39 100% 98%',         // Light peachy sand
+    foreground: '24 45% 15%',          // Warm dark brown
+    border: '14 90% 85%',              // Soft coral pink border
+    primary: '14 100% 63%',            // Vibrant Coral
+    secondary: '28 100% 95%',          // Pale sunset peach
+    accent: '28 100% 55%',             // Golden orange sunset
+    muted: '39 50% 94%',               // Soft sand muted
+    card: '39 100% 99%',               // Luminous sand card
+    popover: '39 100% 99%',            // Luminous sand popover
   },
 };
 
@@ -170,15 +170,15 @@ export const OCEAN_SUNSET_NIGHT_THEME: ThemeConfig = {
   name: 'ocean-sunset',
   mode: 'night',
   colors: {
-    background: '200 40% 8%',          // Deep midnight ocean
+    background: '230 40% 6%',          // Deep midnight ocean
     foreground: '39 90% 95%',          // Soft coral glow
-    border: '14 70% 30%',              // Dark coral border
-    primary: '14 91% 60%',             // Coral (Coral 500)
-    secondary: '200 40% 12%',          // Dark ocean secondary
-    accent: '25 95% 53%',              // Orange glow
-    muted: '200 30% 15%',              // Muted ocean
-    card: '200 40% 10%',               // Ocean depths card
-    popover: '200 40% 10%',            // Ocean depths popover
+    border: '280 50% 20%',             // Muted sunset purple border
+    primary: '14 100% 63%',            // Vibrant Coral
+    secondary: '230 35% 12%',          // Dark indigo secondary
+    accent: '32 100% 50%',             // Golden sunset glow
+    muted: '230 25% 15%',              // Muted midnight
+    card: '230 35% 8%',                // Midnight depths card
+    popover: '230 35% 8%',             // Midnight depths popover
   },
 };
 

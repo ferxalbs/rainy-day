@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.1.12] - 2026-01-07
+
+#### Improvements
+
+- **Ocean Sunset Theme Optimization**: Revamped colors and backgrounds for a more premium experience
+  - Day mode: Refined "peachy sand" palette with smoother sunset horizon gradients
+  - Night mode: Deep midnight indigo background with starry patterns and horizon afterglow
+  - Improved color precision using precise HSL values for better visual harmony
+  - Enhanced contrast and readability across all components
+
+#### Fixes
+
+- **Command Palette UI**: Added glassmorphism effect (`bg/10` and `backdrop-blur-xl`) for a more premium look.
+
 ### [v0.1.11] - 2026-01-07
 
 #### Added

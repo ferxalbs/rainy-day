@@ -397,65 +397,60 @@ html.theme-starry-christmas.theme-day body {
 
 /* Ocean Sunset Specific Backgrounds */
 html.theme-ocean-sunset.theme-day body {
-  background-color: #fff7ed;
+  background-color: #fffaf5;
   background-image: 
-    /* Sunset gradient horizon */ radial-gradient(
+    /* Sunset glow horizon */ radial-gradient(
       ellipse at 50% 100%,
-      rgba(251, 146, 60, 0.2),
-      transparent 60%
+      rgba(255, 140, 0, 0.15),
+      transparent 70%
     ),
-    /* Coral glow from top */
+    /* Soft coral sky from top */
       radial-gradient(
-        circle at 50% 0%,
-        rgba(244, 114, 182, 0.15),
+        circle at 30% 0%,
+        rgba(255, 105, 180, 0.1),
         transparent 50%
       ),
-    /* Ocean reflection */
+    /* Sand reflection */
       radial-gradient(
         ellipse at 50% 80%,
-        rgba(14, 165, 233, 0.08),
+        rgba(255, 222, 173, 0.2),
         transparent 40%
       ),
-    /* Base gradient */ linear-gradient(to bottom, #fff7ed 0%, #ffedd5 100%);
+    /* Base atmosphere gradient */
+      linear-gradient(to bottom, #fffaf5 0%, #fff0e0 100%);
   background-attachment: fixed;
 }
 
 html.theme-ocean-sunset.theme-night body {
-  background-color: #0c1820;
+  background-color: #030712;
   background-image: 
-    /* Horizon glow */ radial-gradient(
-      ellipse at 50% 100%,
-      rgba(251, 146, 60, 0.12),
-      transparent 50%
+    /* Horizon afterglow */ radial-gradient(
+      ellipse at 50% 110%,
+      rgba(255, 69, 0, 0.15),
+      transparent 60%
     ),
-    /* Coral moon glow */
+    /* Deep indigo sky glow */
       radial-gradient(
-        circle at 70% 20%,
-        rgba(244, 114, 182, 0.08),
-        transparent 30%
+        circle at 50% -10%,
+        rgba(30, 58, 138, 0.2),
+        transparent 50%
       ),
-    /* Ocean waves shimmer */
+    /* Subtle star field */
       radial-gradient(
-        2px 2px at 30% 60%,
-        rgba(56, 189, 248, 0.3) 50%,
-        transparent 100%
+        1px 1px at 20% 30%,
+        rgba(255, 255, 255, 0.2) 100%,
+        transparent 0
       ),
     radial-gradient(
-      1px 1px at 70% 40%,
-      rgba(56, 189, 248, 0.3) 50%,
-      transparent 100%
+      1px 1px at 80% 60%,
+      rgba(255, 255, 255, 0.1) 100%,
+      transparent 0
     ),
-    radial-gradient(
-      2px 2px at 50% 80%,
-      rgba(56, 189, 248, 0.2) 50%,
-      transparent 100%
-    ),
-    /* Base ocean gradient */
-      linear-gradient(to bottom, #0f2434 0%, #0c1820 100%);
-  background-size: 100% 100%, 100% 100%, 300px 300px, 200px 200px, 250px 250px,
-    100% 100%;
-  background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
-  background-repeat: no-repeat, no-repeat, repeat, repeat, repeat, no-repeat;
+    /* Base midnight gradient */
+      linear-gradient(to bottom, #030712 0%, #020617 100%);
+  background-size: 100% 100%, 100% 100%, 400px 400px, 300px 300px, 100% 100%;
+  background-position: 0 0, 0 0, 0 0, 0 0, 0 0;
+  background-repeat: no-repeat, no-repeat, repeat, repeat, no-repeat;
   background-attachment: fixed;
 }
 
@@ -466,40 +461,40 @@ html.theme-ocean-sunset.theme-night body {
 }
 
 .theme-ocean-sunset.theme-day {
-  --background: 39 100% 97%;
-  --foreground: 200 30% 20%;
-  --card: 39 100% 98%;
-  --card-foreground: 200 30% 20%;
-  --popover: 39 100% 98%;
-  --popover-foreground: 200 30% 20%;
-  --border: 14 100% 75%;
-  --secondary: 39 100% 94%;
-  --secondary-foreground: 200 30% 20%;
-  --muted: 39 50% 92%;
-  --muted-foreground: 200 30% 45%;
-  --accent: 25 95% 53%;
-  --accent-foreground: 39 100% 97%;
-  --color-bg-primary: #fff7ed;
-  --primary-foreground: 39 100% 97%;
+  --background: 39 100% 98%;
+  --foreground: 24 45% 15%;
+  --card: 39 100% 99%;
+  --card-foreground: 24 45% 15%;
+  --popover: 39 100% 99%;
+  --popover-foreground: 24 45% 15%;
+  --border: 14 90% 85%;
+  --secondary: 28 100% 95%;
+  --secondary-foreground: 24 45% 15%;
+  --muted: 39 50% 94%;
+  --muted-foreground: 24 35% 45%;
+  --accent: 28 100% 55%;
+  --accent-foreground: 39 100% 98%;
+  --color-bg-primary: #fffaf5;
+  --primary-foreground: 39 100% 98%;
 }
 
 .theme-ocean-sunset.theme-night {
-  --background: 200 40% 8%;
+  --background: 230 40% 6%;
   --foreground: 39 90% 95%;
-  --card: 200 40% 10%;
+  --card: 230 35% 8%;
   --card-foreground: 39 90% 95%;
-  --popover: 200 40% 10%;
+  --popover: 230 35% 8%;
   --popover-foreground: 39 90% 95%;
-  --border: 14 70% 30%;
-  --primary: 14 91% 60%;
-  --primary-foreground: 200 40% 8%;
-  --secondary: 200 40% 12%;
+  --border: 280 50% 20%;
+  --primary: 14 100% 63%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 230 35% 12%;
   --secondary-foreground: 39 90% 95%;
-  --muted: 200 30% 15%;
-  --muted-foreground: 39 70% 70%;
-  --accent: 25 95% 53%;
-  --accent-foreground: 200 40% 8%;
-  --color-bg-primary: #0c1820;
+  --muted: 230 25% 15%;
+  --muted-foreground: 39 60% 70%;
+  --accent: 32 100% 50%;
+  --accent-foreground: 0 0% 0%;
+  --color-bg-primary: #030712;
 }
 
 @theme inline {

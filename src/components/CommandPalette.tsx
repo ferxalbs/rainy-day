@@ -60,7 +60,7 @@ export function CommandPalette() {
       onOpenChange={setOpen}
       title="Command Palette"
       description="Quick actions and theme switching"
-      className="backdrop-blur-xl bg-muted/80 border-2 border-border rounded-2xl"
+      className="backdrop-blur-xl bg-muted/10 border-2 border-border rounded-2xl"
     >
       <CommandInput placeholder="Type a command or search..." />
       <CommandList>
