@@ -98,6 +98,43 @@
   --color-accent-primary: #3b82f6;
 }
 
+/* Default Night Theme Background (Login Style) */
+html.theme-night:not([class*="theme-"]) body,
+html.theme-default.theme-night body {
+  /* Exact copy of GoogleSignIn.css */
+  background: radial-gradient(
+      ellipse at top,
+      rgba(59, 130, 246, 0.15),
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at bottom right,
+      rgba(139, 92, 246, 0.1),
+      transparent 50%
+    ),
+    #020617; /* var(--color-bg-primary) value */
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+/* Default Day Theme Background (Login Style Adapted) */
+html.theme-day:not([class*="theme-"]) body,
+html.theme-default.theme-day body {
+  background: radial-gradient(
+      ellipse at top,
+      rgba(59, 130, 246, 0.15),
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at bottom right,
+      rgba(139, 92, 246, 0.15),
+      transparent 50%
+    ),
+    #ffffff;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
 /* Night Theme Colors (default dark theme) */
 .theme-night {
   --background: 222.2 84% 4.9%;

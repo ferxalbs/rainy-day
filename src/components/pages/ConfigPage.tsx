@@ -118,7 +118,7 @@ export function ConfigPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="grid gap-6 md:grid-cols-2">
       {/* User Info Card */}
       <Card className="border-2 border-border/50 bg-card/80 backdrop-blur-xl shadow-xl shadow-primary/5">
         <CardHeader className="pb-4">
@@ -144,7 +144,7 @@ export function ConfigPage() {
       </Card>
 
       {/* Capabilities Card */}
-      <Card className="border-2 border-border/50 bg-card/80 backdrop-blur-xl shadow-xl shadow-primary/5">
+      <Card className="md:col-span-2 border-2 border-border/50 bg-card/80 backdrop-blur-xl shadow-xl shadow-primary/5">
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2">
             <Zap className="w-5 h-5 text-primary" />
@@ -173,7 +173,7 @@ export function ConfigPage() {
       </Card>
 
       {/* Actions Card */}
-      <Card className="border-2 border-border/50 bg-card/80 backdrop-blur-xl shadow-xl shadow-primary/5">
+      <Card className="md:col-span-2 border-2 border-border/50 bg-card/80 backdrop-blur-xl shadow-xl shadow-primary/5">
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2">
             <Zap className="w-5 h-5 text-primary" />
