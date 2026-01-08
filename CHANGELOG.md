@@ -7,46 +7,81 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.2.1] - 2026-01-08
+
+#### Added
+
+- **Rust Notification Commands**: Native notification system with Tauri commands
+
+  - `check_notification_permission` - Check if OS notification permission is granted
+  - `request_notification_permission` - Request permission from user
+  - `send_native_notification` - Send notification with optional sound
+  - `send_typed_notification` - Send notification with automatic sound mapping per type
+  - New `src-tauri/src/notifications.rs` module
+
+- **Sound Mapping**: Automatic macOS system sounds per notification type
+
+  - `task_due` → Hero sound (urgent)
+  - `plan_ready` → Glass sound (positive)
+  - `reminder` → Ping sound (gentle)
+  - `email_summary` → Blow sound (informational)
+  - `system` → Sosumi sound (alert)
+
+- **Documentation**: Future enhancement roadmap
+  - `docs/FUTURE_NOTIFICATIONS.md` with scheduled notifications, action buttons, custom sounds, and badge count plans
+
+#### Improvements
+
+- **nativeNotifications Service**: Updated to use Rust commands with fallback chain (Rust → JS plugin → Web)
+- **useNativeNotifications Hook**: Now uses `sendTypedNotification` for automatic sound per notification type
+
 ### [v0.2.0] - 2026-01-08
 
 #### Added
 
 - **AI-Powered Daily Plan**: Complete integration with Gemini AI for intelligent daily planning
+
   - `SmartDailyPlan` component replaces static view with AI-generated plans
   - Focus blocks, quick wins, and meeting sections with suggested times
   - Energy tips and motivational summaries from AI
   - Plan regeneration on demand with loading states
 
 - **Real-Time Task Actions**: Full CRUD operations on Google Tasks from the UI
+
   - `TaskActionButton` component for complete/delete actions
   - `QuickTaskInput` for inline task creation
   - Optimistic UI updates with rollback on error
   - Action logging for audit trail
 
 - **Smart Notifications System**: Proactive notification system
+
   - `NotificationBell` component with unread badge
   - Notification dropdown with mark as read functionality
   - Task due reminders (2 hours before)
   - Plan ready notifications
 
 - **Background Sync Integration**: Inngest job system fully connected
+
   - `SyncIndicator` component showing sync status
   - Manual sync trigger from UI
   - Automatic 5-minute sync for active users
   - Last sync timestamp display
 
 - **Memory & Personalization**: AI learning from user feedback
+
   - Thumbs up/down feedback on plan items
   - Feedback stored as episodic memory for future personalization
   - 30-day memory expiration for relevance
 
 - **Offline Support**: Graceful offline handling
+
   - LocalStorage caching for plan, tasks, notifications
   - Offline indicator banner
   - "Cached" badge on stale data
   - Automatic retry on reconnection
 
 - **Keyboard Shortcuts**: Power user features
+
   - `Cmd+R` to refresh/regenerate plan
   - `Cmd+N` to focus quick task input
   - `Cmd+S` to trigger sync

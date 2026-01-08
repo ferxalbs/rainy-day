@@ -12,6 +12,7 @@ import { useEffect, useCallback, useRef, useState } from "react";
 import {
   initializeNotifications,
   sendNotification,
+  sendTypedNotification,
   isPermissionGranted,
 } from "../services/nativeNotifications";
 import { useNotifications } from "./useNotifications";
@@ -91,7 +92,8 @@ export function useNativeNotifications({
 
       // Only send native notification for high priority or specific types
       if (shouldSendNativeNotification(notification)) {
-        sendNotification({
+        sendTypedNotification({
+          type: notification.type,
           title: notification.title,
           body: notification.body,
         });

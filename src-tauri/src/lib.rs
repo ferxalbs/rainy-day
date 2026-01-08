@@ -5,6 +5,7 @@
 
 mod auth;
 mod google;
+mod notifications;
 mod theme;
 
 use auth::{AuthState, TokenStore};
@@ -120,6 +121,11 @@ pub fn run() {
             theme::set_theme,
             theme::get_system_theme,
             theme::reset_theme,
+            // Notification commands
+            notifications::check_notification_permission,
+            notifications::request_notification_permission,
+            notifications::send_native_notification,
+            notifications::send_typed_notification,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
