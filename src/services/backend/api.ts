@@ -2,7 +2,7 @@
  * Backend API Client
  *
  * Handles all communication with the Rainy Day backend server.
- * Uses JWT tokens stored in the Tauri keychain for authentication.
+ * Uses JWT tokens stored in the Tauri keychain with localStorage fallback.
  */
 
 import { invoke } from "@tauri-apps/api/core";
@@ -10,46 +10,86 @@ import { invoke } from "@tauri-apps/api/core";
 // API URL from environment or default to localhost
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
+// Storage keys for localStorage fallback
+const STORAGE_ACCESS_KEY = "rainy_day_backend_access_token";
+const STORAGE_REFRESH_KEY = "rainy_day_backend_refresh_token";
+
 /**
- * Get the backend access token from Tauri keychain
+ * Get the backend access token - tries keychain first, then localStorage fallback
  */
 async function getAccessToken(): Promise<string | null> {
+  // Try keychain first
   try {
-    return await invoke<string | null>("get_backend_access_token");
-  } catch {
-    return null;
+    const token = await invoke<string | null>("get_backend_access_token");
+    if (token) return token;
+  } catch (e) {
+    console.warn("Keychain access failed, using fallback:", e);
   }
+
+  // Fallback to localStorage
+  return localStorage.getItem(STORAGE_ACCESS_KEY);
 }
 
 /**
- * Get the backend refresh token from Tauri keychain
+ * Get the backend refresh token - tries keychain first, then localStorage fallback
  */
 async function getRefreshToken(): Promise<string | null> {
+  // Try keychain first
   try {
-    return await invoke<string | null>("get_backend_refresh_token");
-  } catch {
-    return null;
+    const token = await invoke<string | null>("get_backend_refresh_token");
+    if (token) return token;
+  } catch (e) {
+    console.warn("Keychain access failed, using fallback:", e);
   }
+
+  // Fallback to localStorage
+  return localStorage.getItem(STORAGE_REFRESH_KEY);
 }
 
 /**
- * Store backend tokens in Tauri keychain
+ * Store backend tokens - stores in both keychain and localStorage fallback
  */
 export async function storeTokens(
   accessToken: string,
   refreshToken: string
 ): Promise<void> {
-  await invoke("store_backend_tokens", {
-    accessToken,
-    refreshToken,
-  });
+  // Always store in localStorage as fallback
+  localStorage.setItem(STORAGE_ACCESS_KEY, accessToken);
+  localStorage.setItem(STORAGE_REFRESH_KEY, refreshToken);
+
+  // Try to store in keychain (may fail on unsigned apps)
+  try {
+    await invoke("store_backend_tokens", {
+      accessToken,
+      refreshToken,
+    });
+  } catch (e) {
+    console.warn("Keychain store failed, tokens saved to localStorage:", e);
+  }
 }
 
 /**
- * Clear backend tokens from Tauri keychain
+ * Clear backend tokens from both keychain and localStorage
  */
 export async function clearTokens(): Promise<void> {
-  await invoke("clear_backend_tokens");
+  // Clear localStorage
+  localStorage.removeItem(STORAGE_ACCESS_KEY);
+  localStorage.removeItem(STORAGE_REFRESH_KEY);
+
+  // Try to clear keychain
+  try {
+    await invoke("clear_backend_tokens");
+  } catch (e) {
+    console.warn("Keychain clear failed:", e);
+  }
+}
+
+/**
+ * Check if tokens exist (either in keychain or localStorage)
+ */
+export async function hasTokens(): Promise<boolean> {
+  const token = await getAccessToken();
+  return token !== null;
 }
 
 /**
@@ -60,7 +100,7 @@ async function refreshAccessToken(): Promise<string | null> {
   if (!refreshToken) return null;
 
   try {
-    const response = await fetch(`${API_URL}/auth/session/refresh`, {
+    const response = await fetch(`${API_URL}/auth/refresh`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refresh_token: refreshToken }),

@@ -9,7 +9,7 @@
 
 import { invoke } from "@tauri-apps/api/core";
 import { openUrl } from "@tauri-apps/plugin-opener";
-import { storeTokens, clearTokens } from "./api";
+import { storeTokens, clearTokens, hasTokens } from "./api";
 
 // API URL from environment or default to localhost
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -207,17 +207,10 @@ export async function getBackendUser(): Promise<BackendUser | null> {
 }
 
 /**
- o Check if connected to backend
+ * Check if connected to backend
  */
 export async function isBackendConnected(): Promise<boolean> {
-  try {
-    const accessToken = await invoke<string | null>(
-      "get_backend_access_token"
-    );
-    return accessToken !== null;
-  } catch {
-    return false;
-  }
+  return hasTokens();
 }
 
 /**
