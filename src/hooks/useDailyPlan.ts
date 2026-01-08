@@ -4,12 +4,12 @@
  * This hook provides state management and actions for the daily plan feature,
  * including fetching, regenerating, and submitting feedback on plans.
  *
- * Requirements: 1.1, 1.2, 1.8, 5.1, 5.5
+ * Requirements: 1.1, 1.2, 1.8, 5.1, 5.5, 8.4
  */
 
 import { useState, useEffect, useCallback } from "react";
 import {
-  getTodayPlan,
+  getTodayPlanWithCache,
   regeneratePlan,
   submitPlanFeedback,
   submitItemFeedback,
@@ -26,6 +26,12 @@ export interface UseDailyPlanReturn {
   isGenerating: boolean;
   /** Error message if something went wrong */
   error: string | null;
+  /** Whether the current data is from cache */
+  fromCache: boolean;
+  /** Whether the cached data is stale */
+  isStale: boolean;
+  /** When the data was cached (if from cache) */
+  cachedAt?: number;
   /** Regenerate the plan with updated context */
   regenerate: () => Promise<void>;
   /** Submit feedback for the current plan */
@@ -52,17 +58,24 @@ export function useDailyPlan(): UseDailyPlanReturn {
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fromCache, setFromCache] = useState(false);
+  const [isStale, setIsStale] = useState(false);
+  const [cachedAt, setCachedAt] = useState<number | undefined>(undefined);
 
   /**
    * Fetch today's plan from the backend
+   * Falls back to cached data on network errors (Requirement 8.4)
    */
   const fetchPlan = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const fetchedPlan = await getTodayPlan();
-      setPlan(fetchedPlan);
+      const result = await getTodayPlanWithCache();
+      setPlan(result.plan);
+      setFromCache(result.fromCache);
+      setIsStale(result.isStale);
+      setCachedAt(result.cachedAt);
     } catch (err) {
       console.error("Failed to fetch daily plan:", err);
       setError("Failed to load daily plan. Please try again.");
@@ -83,6 +96,9 @@ export function useDailyPlan(): UseDailyPlanReturn {
       const newPlan = await regeneratePlan();
       if (newPlan) {
         setPlan(newPlan);
+        setFromCache(false);
+        setIsStale(false);
+        setCachedAt(undefined);
       } else {
         setError("Failed to generate plan. Please try again.");
       }
@@ -158,6 +174,9 @@ export function useDailyPlan(): UseDailyPlanReturn {
     isLoading,
     isGenerating,
     error,
+    fromCache,
+    isStale,
+    cachedAt,
     regenerate,
     submitFeedback,
     submitItemFeedback: handleItemFeedback,

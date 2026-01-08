@@ -47,6 +47,8 @@ export {
 // Plan services
 export {
   getTodayPlan,
+  getTodayPlanWithCache,
+  getCachedPlan,
   generatePlan,
   regeneratePlan,
   submitPlanFeedback,
@@ -76,9 +78,28 @@ export {
 // Notifications services
 export {
   getNotifications,
+  getNotificationsWithCache,
+  getCachedNotifications,
   getUnreadCount,
+  getUnreadCountWithCache,
   markAsRead,
   markAllAsRead,
   deleteNotification,
   type Notification,
 } from "./notifications";
+
+// Cache services
+export {
+  cacheSet,
+  cacheGet,
+  cacheGetFresh,
+  cacheGetStale,
+  cacheRemove,
+  cacheClearAll,
+  isOffline,
+  isNetworkError,
+  CACHE_KEYS,
+  CACHE_EXPIRATION,
+  type CachedData,
+  type CacheResult,
+} from "./cache";

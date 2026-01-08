@@ -474,3 +474,10 @@
 .defer-text {
   flex: 1;
 }
+
+
+/* Cached Badge in Plan Header */
+.plan-cached-badge {
+  margin-left: var(--spacing-sm);
+  vertical-align: middle;
+}

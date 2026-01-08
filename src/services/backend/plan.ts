@@ -6,6 +6,14 @@
  */
 
 import { get, post } from "./api";
+import {
+  cacheSet,
+  cacheGetStale,
+  CACHE_KEYS,
+  CACHE_EXPIRATION,
+  isNetworkError,
+  type CacheResult,
+} from "./cache";
 
 /**
  * A task item within the daily plan
@@ -50,18 +58,80 @@ export interface PlanHistoryItem {
 /**
  * Get today's AI-generated plan
  * Returns null if no plan exists for today
+ * Falls back to cached data on network errors
  */
 export async function getTodayPlan(): Promise<DailyPlan | null> {
-  const response = await get<{ plan: DailyPlan | null }>("/plan/today");
-  return response.ok ? response.data?.plan ?? null : null;
+  try {
+    const response = await get<{ plan: DailyPlan | null }>("/plan/today");
+    if (response.ok && response.data?.plan) {
+      // Cache successful response
+      cacheSet(CACHE_KEYS.PLAN, response.data.plan, CACHE_EXPIRATION.PLAN);
+      return response.data.plan;
+    }
+    return response.ok ? response.data?.plan ?? null : null;
+  } catch (error) {
+    // On network error, try to return cached data
+    if (isNetworkError(error)) {
+      const cached = cacheGetStale<DailyPlan>(CACHE_KEYS.PLAN);
+      if (cached) {
+        return cached.data;
+      }
+    }
+    throw error;
+  }
+}
+
+/**
+ * Get today's plan with cache metadata
+ * Useful for UI to show "cached" badge
+ */
+export async function getTodayPlanWithCache(): Promise<{
+  plan: DailyPlan | null;
+  fromCache: boolean;
+  isStale: boolean;
+  cachedAt?: number;
+}> {
+  try {
+    const response = await get<{ plan: DailyPlan | null }>("/plan/today");
+    if (response.ok && response.data?.plan) {
+      cacheSet(CACHE_KEYS.PLAN, response.data.plan, CACHE_EXPIRATION.PLAN);
+      return { plan: response.data.plan, fromCache: false, isStale: false };
+    }
+    return { plan: response.ok ? response.data?.plan ?? null : null, fromCache: false, isStale: false };
+  } catch (error) {
+    if (isNetworkError(error)) {
+      const cached = cacheGetStale<DailyPlan>(CACHE_KEYS.PLAN);
+      if (cached) {
+        return {
+          plan: cached.data,
+          fromCache: true,
+          isStale: cached.isStale,
+          cachedAt: cached.cachedAt,
+        };
+      }
+    }
+    throw error;
+  }
+}
+
+/**
+ * Get cached plan data (for offline indicator)
+ */
+export function getCachedPlan(): CacheResult<DailyPlan> | null {
+  return cacheGetStale<DailyPlan>(CACHE_KEYS.PLAN);
 }
 
 /**
  * Force regenerate the daily plan with updated context
  * This will create a new plan even if one already exists
+ * Caches the new plan on success
  */
 export async function regeneratePlan(): Promise<DailyPlan | null> {
   const response = await post<{ plan: DailyPlan }>("/plan/generate");
+  if (response.ok && response.data?.plan) {
+    cacheSet(CACHE_KEYS.PLAN, response.data.plan, CACHE_EXPIRATION.PLAN);
+    return response.data.plan;
+  }
   return response.ok ? response.data?.plan ?? null : null;
 }
 
