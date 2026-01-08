@@ -74,28 +74,6 @@ export function DailyPlan() {
     }
   };
 
-
-      if (taskLists.length > 0) {
-        tasks = await getTasks(taskLists[0].id, false).catch(() => []);
-      }
-
-      setState({
-        events,
-        threads,
-        tasks,
-        taskLists,
-        isLoading: false,
-        error: null,
-      });
-    } catch (error) {
-      setState((prev) => ({
-        ...prev,
-        isLoading: false,
-        error: "Failed to load daily plan",
-      }));
-    }
-  };
-
   const formatTime = (dateTimeString: string) => {
     try {
       const date = new Date(dateTimeString);
@@ -205,17 +183,17 @@ export function DailyPlan() {
             <span className="block-icon">📬</span>
             Priority Inbox
           </h2>
-          {state.threads.length === 0 ? (
+          {state.emails.length === 0 ? (
             <p className="empty-state">Inbox zero! 🎉</p>
           ) : (
             <ul className="thread-list">
-              {state.threads.slice(0, 5).map((thread) => (
-                <li key={thread.id} className="thread-item">
+              {state.emails.slice(0, 5).map((email) => (
+                <li key={email.id} className="thread-item">
                   <div className="thread-content">
                     <span className="thread-subject">
-                      {thread.subject || thread.snippet.slice(0, 50)}
+                      {email.subject || email.snippet.slice(0, 50)}
                     </span>
-                    <span className="thread-snippet">{thread.snippet}</span>
+                    <span className="thread-snippet">{email.snippet}</span>
                   </div>
                 </li>
               ))}

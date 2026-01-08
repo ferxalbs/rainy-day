@@ -1,6 +1,8 @@
 /**
- * Type definitions for Tauri commands
- * These match the Rust types in src-tauri/src/google/types.rs
+ * Type definitions for the application
+ * 
+ * These types are used throughout the frontend and are compatible
+ * with both the backend HTTP API and legacy Tauri commands.
  */
 
 // Auth types
@@ -16,7 +18,7 @@ export interface AuthStatus {
   expires_at: number | null;
 }
 
-// Gmail types
+// Gmail/Email types (backward compatible with Tauri types)
 export interface ThreadSummary {
   id: string;
   subject: string;
@@ -53,7 +55,7 @@ export interface GmailHeader {
   value: string;
 }
 
-// Calendar types
+// Calendar types (backward compatible with Tauri types)
 export interface ProcessedEvent {
   id: string;
   title: string;
@@ -90,11 +92,12 @@ export interface EventAttendee {
   is_self: boolean | null;
 }
 
-// Tasks types
+// Tasks types (backward compatible with Tauri types)
 export interface TaskList {
   id: string;
   title: string;
-  updated: string | null;
+  updated?: string | null;
+  google_list_id?: string;
 }
 
 export interface Task {
@@ -103,10 +106,12 @@ export interface Task {
   notes: string | null;
   status: string | null;
   due: string | null;
-  completed: string | null;
-  updated: string | null;
-  parent: string | null;
-  position: string | null;
+  completed?: string | null;
+  updated?: string | null;
+  parent?: string | null;
+  position?: string | null;
+  list_id?: string;
+  google_task_id?: string;
 }
 
 export interface NewTask {
@@ -121,3 +126,13 @@ export interface TaskUpdate {
   status: string | null;
   due: string | null;
 }
+
+// Backend-specific types (re-exported from services)
+export type {
+  Email,
+  CalendarEvent as BackendCalendarEvent,
+  Task as BackendTask,
+  TaskList as BackendTaskList,
+} from "../services/backend/data";
+
+export type { BackendUser } from "../services/backend/auth";

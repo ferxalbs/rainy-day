@@ -29,14 +29,40 @@ export {
   type BackendUser,
 } from "./auth";
 
+// Data services
+export {
+  getEmails,
+  getEvents,
+  getTodayEvents,
+  getTasks,
+  getTaskLists,
+  triggerSync,
+  getSyncStatus,
+  type Email,
+  type CalendarEvent,
+  type Task,
+  type TaskList,
+} from "./data";
+
 // Plan services
 export {
   getTodayPlan,
   generatePlan,
   submitPlanFeedback,
   getPlanHistory,
-  triggerSync,
   type DailyPlan,
   type PlanSuggestion,
   type PlanHistoryItem,
 } from "./plan";
+
+// Action services
+export {
+  createTask,
+  updateTask,
+  completeTask,
+  deleteTask,
+  getActionHistory,
+  type CreateTaskRequest,
+  type UpdateTaskRequest,
+  type ActionResult,
+} from "./actions";

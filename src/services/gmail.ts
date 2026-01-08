@@ -1,46 +1,54 @@
 /**
- * Gmail service for fetching email threads
+ * @deprecated This file is deprecated. Use services from './backend/data' instead.
+ * 
+ * This file contained Tauri-based Gmail commands that have been
+ * replaced by HTTP-based data fetching through the backend server.
+ * 
+ * Migration guide:
+ * - getInboxSummary() -> getEmails() from './backend/data'
+ * - getThreadDetail() -> Not available (use email ID directly)
+ * - openThreadInGmail() -> Use direct URL: https://mail.google.com/mail/u/0/#inbox/{threadId}
  */
-import { invoke } from '@tauri-apps/api/core';
-import { openUrl } from '@tauri-apps/plugin-opener';
-import type { ThreadSummary, GmailThreadDetail } from '../types';
+
+import { getEmails, type Email } from './backend/data';
+import type { ThreadSummary } from '../types';
 
 /**
- * Get inbox summary with top email threads
+ * @deprecated Use getEmails() from './backend/data' instead
  */
 export async function getInboxSummary(
   maxItems: number = 20,
-  query: string = 'in:inbox is:unread'
+  _query: string = 'in:inbox is:unread'
 ): Promise<ThreadSummary[]> {
-  try {
-    return await invoke<ThreadSummary[]>('get_inbox_summary', {
-      maxItems,
-      query,
-    });
-  } catch (error) {
-    console.error('Failed to get inbox summary:', error);
-    throw error;
-  }
+  console.warn('getInboxSummary is deprecated. Use getEmails from backend/data instead.');
+  
+  const emails = await getEmails(maxItems);
+  
+  // Convert Email to ThreadSummary for backward compatibility
+  return emails.map((email: Email): ThreadSummary => ({
+    id: email.id,
+    subject: email.subject,
+    snippet: email.snippet,
+    from_name: email.sender.split('<')[0]?.trim() || email.sender,
+    from_email: email.sender.match(/<(.+)>/)?.[1] || email.sender,
+    date: new Date(email.received_at).toISOString(),
+    is_unread: !email.is_read,
+    message_count: 1,
+    priority_score: email.is_important ? 100 : 50,
+  }));
 }
 
 /**
- * Get detailed information about a specific thread
+ * @deprecated Not available in HTTP backend
  */
-export async function getThreadDetail(threadId: string): Promise<GmailThreadDetail> {
-  try {
-    return await invoke<GmailThreadDetail>('get_thread_detail', {
-      threadId,
-    });
-  } catch (error) {
-    console.error('Failed to get thread detail:', error);
-    throw error;
-  }
+export async function getThreadDetail(_threadId: string): Promise<never> {
+  throw new Error('getThreadDetail is not available. Use email data directly.');
 }
 
 /**
- * Open a thread in Gmail web interface
+ * @deprecated Use direct URL instead
  */
 export async function openThreadInGmail(threadId: string): Promise<void> {
-  const url = await invoke<string>('open_thread_in_gmail', { threadId });
-  await openUrl(url);
+  const url = `https://mail.google.com/mail/u/0/#inbox/${threadId}`;
+  window.open(url, '_blank');
 }
