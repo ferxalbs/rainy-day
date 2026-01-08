@@ -55,10 +55,14 @@ export async function getEmails(
   limit = 20,
   offset = 0
 ): Promise<Email[]> {
-  const response = await get<{ emails: Email[] }>(
+  const response = await get<{ emails: Email[]; error?: string }>(
     `/data/emails?limit=${limit}&offset=${offset}`
   );
-  return response.ok ? response.data?.emails ?? [] : [];
+  if (!response.ok) {
+    console.error('Failed to fetch emails:', response.error);
+    return [];
+  }
+  return response.data?.emails ?? [];
 }
 
 /**
@@ -73,8 +77,12 @@ export async function getEvents(
   if (startDate) url += `&start_date=${startDate}`;
   if (endDate) url += `&end_date=${endDate}`;
 
-  const response = await get<{ events: CalendarEvent[] }>(url);
-  return response.ok ? response.data?.events ?? [] : [];
+  const response = await get<{ events: CalendarEvent[]; error?: string }>(url);
+  if (!response.ok) {
+    console.error('Failed to fetch events:', response.error);
+    return [];
+  }
+  return response.data?.events ?? [];
 }
 
 /**
@@ -98,10 +106,14 @@ export async function getTasks(
   limit = 50
 ): Promise<Task[]> {
   let url = `/data/tasks?limit=${limit}&show_completed=${showCompleted}`;
-  if (listId) url += `&list_id=${listId}`;
+  if (listId && listId !== 'default') url += `&list_id=${listId}`;
 
-  const response = await get<{ tasks: Task[] }>(url);
-  return response.ok ? response.data?.tasks ?? [] : [];
+  const response = await get<{ tasks: Task[]; error?: string }>(url);
+  if (!response.ok) {
+    console.error('Failed to fetch tasks:', response.error);
+    return [];
+  }
+  return response.data?.tasks ?? [];
 }
 
 /**
@@ -109,7 +121,11 @@ export async function getTasks(
  */
 export async function getTaskLists(): Promise<TaskList[]> {
   const response = await get<{ lists: TaskList[] }>("/data/task-lists");
-  return response.ok ? response.data?.lists ?? [] : [];
+  if (!response.ok) {
+    console.error('Failed to fetch task lists:', response.error);
+    return [{ id: 'default', google_list_id: '', title: 'My Tasks' }];
+  }
+  return response.data?.lists ?? [{ id: 'default', google_list_id: '', title: 'My Tasks' }];
 }
 
 /**
