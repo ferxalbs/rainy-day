@@ -1,0 +1,59 @@
+/* SyncIndicator Component Styles */
+
+.sync-indicator-btn {
+  position: relative;
+}
+
+.sync-indicator-btn.synced .sync-icon {
+  color: var(--color-success, #22c55e);
+}
+
+.sync-indicator-btn.error .sync-icon {
+  color: var(--color-error, #ef4444);
+}
+
+.sync-indicator-btn.syncing .sync-icon,
+.sync-indicator-btn:disabled .sync-icon {
+  color: var(--color-accent-primary, #3b82f6);
+}
+
+.sync-indicator-btn.idle .sync-icon {
+  color: var(--color-text-tertiary, #888);
+}
+
+/* Spinning animation */
+.sync-icon.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Tooltip content */
+.sync-tooltip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+}
+
+.sync-status-text {
+  font-weight: 500;
+}
+
+.sync-last-time {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.sync-hint {
+  font-size: 10px;
+  opacity: 0.6;
+  margin-top: 2px;
+}
