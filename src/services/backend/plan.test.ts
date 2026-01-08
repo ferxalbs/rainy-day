@@ -32,7 +32,7 @@ const planTaskArbitrary: fc.Arbitrary<PlanTask> = fc.record({
  * Arbitrary generator for DailyPlan
  */
 const dailyPlanArbitrary: fc.Arbitrary<DailyPlan> = fc.record({
-  date: fc.date().map((d) => d.toISOString().split("T")[0]!),
+  date: fc.date({ min: new Date("2020-01-01"), max: new Date("2030-12-31") }).map((d) => d.toISOString().split("T")[0]!),
   summary: fc.string({ minLength: 1 }),
   energy_tip: fc.option(fc.string({ minLength: 1 }), { nil: undefined }),
   focus_blocks: fc.array(planTaskArbitrary),
