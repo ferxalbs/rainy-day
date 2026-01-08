@@ -124,7 +124,7 @@ export async function pollBackendAuth(
 export async function exchangeBackendCode(
   oneTimeCode: string
 ): Promise<ExchangeResponse> {
-  const response = await fetch(`${API_URL}/auth/exchange`, {
+  const response = await fetch(`${API_URL}/auth/session/exchange`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ one_time_code: oneTimeCode }),
