@@ -28,3 +28,7 @@ src-tauri/target
 
 #env
 .env
+
+# Server folder (has its own .git)
+server/local.db
+server/local.db-*

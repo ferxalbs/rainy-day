@@ -8,13 +8,18 @@
 
 | Aspecto      | Decisión                           |
 | ------------ | ---------------------------------- |
-| **Backend**  | Bun + Hono (repo: `rainy-day-api`) |
+| **Backend**  | Bun + Hono (folder: `/server`)     |
 | **Database** | Turso (libSQL)                     |
 | **AI**       | Gemini API                         |
 | **Jobs**     | Inngest (cron + colas)             |
-| **Deploy**   | Google Cloud Run                   |
+| **Deploy**   | Google Cloud Run (URL por defecto) |
 | **Sync**     | Cada 5 min + on-demand             |
 | **Cliente**  | Tauri v2 (notificaciones nativas)  |
+| **Vector**   | Turso F32_BLOB (768 dim)           |
+| **FTS**      | SQLite FTS5 (fallback)             |
+
+> [!NOTE]
+> El servidor se creará en `/server` dentro de este repo con su propio `.git` para facilitar el testing en tiempo real con la app Tauri.
 
 ---
 
@@ -33,7 +38,7 @@
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                         BACKEND (Bun + Hono)                                 │
-│                         Repo: rainy-day-api                                  │
+│                         Folder: /server (own git)                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
@@ -92,50 +97,232 @@
 
 ---
 
-## 🧠 Sistema de Memoria del Agente
+## 🧠 SuperMemoria del Agente (Vector + FTS)
 
-### Tipos de Memoria
+### Arquitectura de Memoria
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    MEMORIA DEL AGENTE                            │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  │
-│  │   PATRONES      │  │  PREFERENCIAS   │  │    CONTEXTO     │  │
-│  │   (Aprendidos)  │  │  (Explícitas)   │  │   (Temporal)    │  │
-│  ├─────────────────┤  ├─────────────────┤  ├─────────────────┤  │
-│  │• Deep work AM   │  │• No reuniones   │  │• Proyecto       │  │
-│  │• Emails post-   │  │  viernes PM     │  │  activo actual  │  │
-│  │  lunch          │  │• Responder en   │  │• Deadlines      │  │
-│  │• Duración real  │  │  24h máximo     │  │  próximos       │  │
-│  │  de tareas      │  │• Priorizar      │  │• Estado de      │  │
-│  │• Horario peak   │  │  cliente X      │  │  ánimo          │  │
-│  └─────────────────┘  └─────────────────┘  └─────────────────┘  │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      SUPERMEMORIA (Turso)                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐              │
+│  │ PROFILE MEMORY  │  │WORKSPACE MEMORY │  │ EPISODIC MEMORY │              │
+│  │    (Lenta)      │  │    (Media)      │  │    (Rápida)     │              │
+│  ├─────────────────┤  ├─────────────────┤  ├─────────────────┤              │
+│  │• Preferencias   │  │• Objetivos      │  │• "Hoy pospuso   │              │
+│  │• Horario        │  │• Repos activos  │  │   tarea X"      │              │
+│  │• Idioma         │  │• Decisiones     │  │• "Respondió Y"  │              │
+│  │• Reglas ("no    │  │  técnicas       │  │• "Priorizó Z"   │              │
+│  │  reuniones      │  │• Progreso de    │  │• TTL: expira    │              │
+│  │  antes 10am")   │  │  proyectos      │  │  automático     │              │
+│  └─────────────────┘  └─────────────────┘  └─────────────────┘              │
+│                                                                              │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │                         RETRIEVAL DUAL                               │    │
+│  ├─────────────────────────────────────────────────────────────────────┤    │
+│  │  🔍 VECTOR SEARCH              │  📝 FTS5 FALLBACK                  │    │
+│  │  (Semántico - F32_BLOB 768)    │  (Texto literal)                   │    │
+│  │  "tareas que suele posponer"   │  "factura", "reunión con Juan"    │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Aprendizaje de Patrones
+### Tipos de Memoria (3 Scopes)
 
-El agente analiza y aprende:
+| Scope         | Velocidad | TTL          | Contenido                           | Ejemplo                                  |
+| ------------- | --------- | ------------ | ----------------------------------- | ---------------------------------------- |
+| **Profile**   | Lenta     | Permanente   | Preferencias, reglas, configuración | "No sugerir reuniones antes de 10am"     |
+| **Workspace** | Media     | Por proyecto | Objetivos, decisiones, repos        | "Proyecto Alpha tiene deadline 15 marzo" |
+| **Episodic**  | Rápida    | 7-30 días    | Acciones recientes, comportamiento  | "Ayer pospuso la tarea de documentación" |
 
-1. **Patrones Temporales**
+### Esquema de Memoria (Turso Vector + FTS5)
 
-   - ¿Cuándo hace deep work? (mañanas, noches)
-   - ¿Cuándo revisa emails?
-   - ¿Días de más productividad?
+```sql
+-- Tabla principal de memorias con vector embeddings
+CREATE TABLE memories (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  scope TEXT NOT NULL,          -- profile | workspace | episodic
+  source TEXT NOT NULL,         -- gmail | calendar | tasks | manual | agent
+  kind TEXT NOT NULL,           -- preference | fact | summary | decision | event
+  text TEXT NOT NULL,           -- contenido canonizado
+  embedding F32_BLOB(768),      -- vector de Gemini embeddings
+  importance REAL NOT NULL DEFAULT 0.5,  -- 0.0 - 1.0
+  created_at INTEGER NOT NULL,
+  expires_at INTEGER,           -- NULL para permanente, timestamp para episodic
+  workspace_id TEXT,            -- opcional, para workspace memory
+  metadata TEXT                 -- JSON adicional
+);
 
-2. **Patrones de Comportamiento**
+-- Índice compuesto para queries filtradas
+CREATE INDEX memories_user_scope_created
+  ON memories(user_id, scope, created_at DESC);
 
-   - Tiempo real vs estimado de tareas
-   - Tasa de completación de tareas
-   - Tipos de emails que ignora vs responde rápido
+-- Índice vectorial para búsqueda semántica
+CREATE INDEX memories_vec_idx
+  ON memories(libsql_vector_idx(embedding));
 
-3. **Patrones de Contexto**
-   - Proyectos recurrentes
-   - Personas con las que más interactúa
-   - Temas que requieren más tiempo
+-- Tabla FTS5 para búsqueda de texto literal
+CREATE VIRTUAL TABLE memories_fts USING fts5(
+  text,
+  kind,
+  source,
+  content='memories',
+  content_rowid='rowid'
+);
+
+-- Triggers para mantener FTS sincronizado
+CREATE TRIGGER memories_ai AFTER INSERT ON memories BEGIN
+  INSERT INTO memories_fts(rowid, text, kind, source)
+  VALUES (new.rowid, new.text, new.kind, new.source);
+END;
+
+CREATE TRIGGER memories_ad AFTER DELETE ON memories BEGIN
+  INSERT INTO memories_fts(memories_fts, rowid, text, kind, source)
+  VALUES ('delete', old.rowid, old.text, old.kind, old.source);
+END;
+
+CREATE TRIGGER memories_au AFTER UPDATE ON memories BEGIN
+  INSERT INTO memories_fts(memories_fts, rowid, text, kind, source)
+  VALUES ('delete', old.rowid, old.text, old.kind, old.source);
+  INSERT INTO memories_fts(rowid, text, kind, source)
+  VALUES (new.rowid, new.text, new.kind, new.source);
+END;
+```
+
+### Queries de Retrieval
+
+**Búsqueda Semántica (Vector)**
+
+```sql
+-- q_vec = embedding de la query desde Gemini
+SELECT m.*
+FROM vector_top_k('memories_vec_idx', :q_vec, 20) v
+JOIN memories m ON m.rowid = v.id
+WHERE m.user_id = :user_id
+  AND m.scope IN ('profile', 'workspace')
+  AND (m.expires_at IS NULL OR m.expires_at > :now)
+ORDER BY m.importance DESC, m.created_at DESC
+LIMIT 10;
+```
+
+**Búsqueda Literal (FTS5 Fallback)**
+
+```sql
+SELECT m.*
+FROM memories m
+JOIN memories_fts f ON f.rowid = m.rowid
+WHERE memories_fts MATCH :search_term
+  AND m.user_id = :user_id
+ORDER BY bm25(memories_fts) DESC
+LIMIT 10;
+```
+
+### Pipeline del Agente (Leer → Escribir)
+
+```
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│   LECTURA    │────▶│   GEMINI     │────▶│   ESCRITURA  │
+│  (Retrieval) │     │   (Plan)     │     │   (Extract)  │
+└──────────────┘     └──────────────┘     └──────────────┘
+       │                    │                    │
+       ▼                    ▼                    ▼
+  • Query embedding   • Genera plan       • Extrae 1-5 memorias
+  • vector_top_k      • Usa contexto      • Dedupe por hash
+  • Filtros scope     • Prioriza          • Guarda con embedding
+  • FTS fallback      • Sugiere           • TTL para episodic
+```
+
+**Lectura (antes del plan)**
+
+```typescript
+async function retrieveMemories(userId: string, queryText: string) {
+  // 1. Generar embedding de la query
+  const queryEmbed = await gemini.embed(queryText);
+
+  // 2. Buscar por vector (semántico)
+  const vectorResults = await db.execute({
+    sql: `SELECT m.* FROM vector_top_k('memories_vec_idx', ?, 20) v
+          JOIN memories m ON m.rowid = v.id
+          WHERE m.user_id = ? AND (m.expires_at IS NULL OR m.expires_at > ?)`,
+    args: [vectorToBlob(queryEmbed), userId, Date.now()],
+  });
+
+  // 3. Fallback FTS si hay keywords específicos
+  if (hasKeywords(queryText)) {
+    const ftsResults = await searchFTS(queryText, userId);
+    return mergeResults(vectorResults, ftsResults);
+  }
+
+  return vectorResults;
+}
+```
+
+**Escritura (después del plan)**
+
+```typescript
+async function extractAndSaveMemories(userId: string, planResult: PlanResult) {
+  // 1. Pedir a Gemini que extraiga memorias candidatas
+  const candidates = await gemini.extractMemories(planResult);
+
+  // 2. Deduplicar (hash o similitud > 0.95)
+  for (const memory of candidates) {
+    const isDupe = await checkDuplicate(userId, memory);
+    if (!isDupe) {
+      const embedding = await gemini.embed(memory.text);
+      await db.execute({
+        sql: `INSERT INTO memories (id, user_id, scope, source, kind, text, 
+              embedding, importance, created_at, expires_at)
+              VALUES (?, ?, ?, ?, ?, ?, vector32(?), ?, ?, ?)`,
+        args: [
+          generateId(),
+          userId,
+          memory.scope,
+          memory.source,
+          memory.kind,
+          memory.text,
+          JSON.stringify(embedding),
+          memory.importance,
+          Date.now(),
+          memory.scope === "episodic"
+            ? Date.now() + 7 * 24 * 60 * 60 * 1000
+            : null,
+        ],
+      });
+    }
+  }
+}
+```
+
+### Reglas de Extracción de Memorias
+
+| Tipo           | Qué extraer                    | Ejemplo                                           |
+| -------------- | ------------------------------ | ------------------------------------------------- |
+| **preference** | Reglas explícitas o implícitas | "Usuario prefiere hacer deep work en las mañanas" |
+| **fact**       | Información dura               | "Trabaja en empresa X como rol Y"                 |
+| **summary**    | Resúmenes de patrones          | "Tiende a posponer tareas de documentación"       |
+| **decision**   | Decisiones tomadas             | "Decidió priorizar proyecto Alpha sobre Beta"     |
+| **event**      | Eventos significativos         | "Completó milestone importante ayer"              |
+
+### Limpieza Automática (Job Inngest)
+
+```typescript
+// Limpiar memorias episódicas expiradas cada noche
+inngest.createFunction(
+  { id: "cleanup-expired-memories" },
+  { cron: "0 3 * * *" }, // 3am
+  async ({ step }) => {
+    await step.run("delete-expired", async () => {
+      await db.execute({
+        sql: `DELETE FROM memories WHERE expires_at IS NOT NULL AND expires_at < ?`,
+        args: [Date.now()],
+      });
+    });
+  }
+);
+```
 
 ---
 
@@ -528,10 +715,10 @@ async function checkNotifications() {
 
 ---
 
-## 📁 Estructura del Proyecto (rainy-day-api)
+## 📁 Estructura del Proyecto (/server)
 
 ```
-rainy-day-api/
+server/                          # Folder dentro de rainy-day con su propio .git
 ├── src/
 │   ├── index.ts                 # Entry point Hono
 │   ├── config/
