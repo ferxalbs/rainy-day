@@ -26,7 +26,7 @@ export function GoogleSignIn() {
     <div className="min-h-screen flex items-center justify-center p-4">
       <Card className="w-full max-w-md bg-card/40 backdrop-blur-xl border-border/50 shadow-2xl">
         <CardHeader className="text-center space-y-4 pb-8">
-          <div className="mx-auto bg-background/50 p-4 rounded-2xl ring-1 ring-border/50 shadow-sm w-fit">
+          <div className="mx-auto w-fit">
             <svg
               width="48"
               height="48"
@@ -35,29 +35,30 @@ export function GoogleSignIn() {
               xmlns="http://www.w3.org/2000/svg"
               className="w-12 h-12"
             >
-              <circle cx="24" cy="24" r="20" fill="url(#gradient)" />
+              <circle cx="24" cy="24" r="20" fill="url(#logo-gradient)" />
               <path
                 d="M24 14C19.58 14 16 17.58 16 22C16 24.76 17.28 27.22 19.3 28.74L17.56 32.68L22.18 30.38C22.76 30.52 23.36 30.6 24 30.6C28.42 30.6 32 27 32 22.6C32 18.18 28.42 14.6 24 14.6V14Z"
-                fill="white"
+                fill="currentColor"
+                className="text-primary-foreground"
                 fillOpacity="0.9"
               />
               <defs>
                 <linearGradient
-                  id="gradient"
+                  id="logo-gradient"
                   x1="4"
                   y1="4"
                   x2="44"
                   y2="44"
                   gradientUnits="userSpaceOnUse"
                 >
-                  <stop stopColor="#3b82f6" />
-                  <stop offset="1" stopColor="#8b5cf6" />
+                  <stop stopColor="hsl(var(--primary))" />
+                  <stop offset="1" stopColor="hsl(var(--accent))" />
                 </linearGradient>
               </defs>
             </svg>
           </div>
           <div className="space-y-2">
-            <CardTitle className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-violet-500">
+            <CardTitle className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
               Rainy Day
             </CardTitle>
             <CardDescription className="text-lg">
