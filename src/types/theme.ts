@@ -2,7 +2,7 @@
 
 export type ThemeAppearance = 'day' | 'night';
 export type ThemeMode = 'day' | 'night' | 'automatic';
-export type ThemeName = 'default' | 'sky-blue' | 'cosmic-gold' | 'starry-christmas' | 'ocean-sunset' | 'midnight-void' | 'cosmic-night';
+export type ThemeName = 'default' | 'sky-blue' | 'cosmic-gold' | 'starry-christmas' | 'ocean-sunset' | 'midnight-void' | 'cosmic-night' | 'retro-sunset';
 
 export interface ThemeColors {
   background: string;
@@ -243,5 +243,37 @@ export const COSMIC_NIGHT_NIGHT_THEME: ThemeConfig = {
     muted: '265 30% 15%',              // Muted Violet
     card: '265 45% 8%',                // Dark Violet Card
     popover: '265 45% 8%',             // Dark Violet Popover
+  },
+};
+
+export const RETRO_SUNSET_DAY_THEME: ThemeConfig = {
+  name: 'retro-sunset',
+  mode: 'day',
+  colors: {
+    background: '30 40% 96%',          // Warm Cream
+    foreground: '20 40% 20%',          // Deep Brown
+    border: '30 40% 85%',              // Warm Sand Border
+    primary: '25 90% 55%',             // Retro Orange
+    secondary: '30 40% 92%',           // Cream Secondary
+    accent: '35 90% 50%',              // Golden Amber
+    muted: '30 30% 90%',               // Muted Cream
+    card: '0 0% 100%',                 // White
+    popover: '0 0% 100%',              // White
+  },
+};
+
+export const RETRO_SUNSET_NIGHT_THEME: ThemeConfig = {
+  name: 'retro-sunset',
+  mode: 'night',
+  colors: {
+    background: '15 20% 5%',           // Deep Brownish Black
+    foreground: '35 60% 90%',          // Pale Gold Text
+    border: '25 50% 20%',              // Dark Orange Border
+    primary: '25 90% 55%',             // Retro Orange
+    secondary: '15 20% 10%',           // Dark Warm Secondary
+    accent: '40 95% 60%',              // Bright Gold Glow
+    muted: '15 20% 12%',               // Muted Warm Dark
+    card: '15 25% 7%',                 // Warm Dark Card
+    popover: '15 25% 7%',              // Warm Dark Popover
   },
 };

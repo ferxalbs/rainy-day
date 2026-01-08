@@ -22,6 +22,8 @@ import {
   MIDNIGHT_VOID_NIGHT_THEME,
   COSMIC_NIGHT_DAY_THEME,
   COSMIC_NIGHT_NIGHT_THEME,
+  RETRO_SUNSET_DAY_THEME,
+  RETRO_SUNSET_NIGHT_THEME,
 } from "../types/theme";
 
 interface ThemeContextType {
@@ -88,6 +90,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
           ? COSMIC_NIGHT_DAY_THEME
           : COSMIC_NIGHT_NIGHT_THEME;
       }
+      if (name === "retro-sunset") {
+        return actualAppearance === "day"
+          ? RETRO_SUNSET_DAY_THEME
+          : RETRO_SUNSET_NIGHT_THEME;
+      }
       return actualAppearance === "day" ? DAY_THEME : NIGHT_THEME;
     },
     [getSystemThemePreference]
@@ -109,6 +116,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         "theme-ocean-sunset",
         "theme-midnight-void",
         "theme-cosmic-night",
+        "theme-retro-sunset",
         "theme-default"
       );
 

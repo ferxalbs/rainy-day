@@ -315,6 +315,82 @@ html.theme-cosmic-night.theme-day body {
   --primary-foreground: 265 45% 5%;
 }
 
+/* Retro Sunset Specific Backgrounds */
+html.theme-retro-sunset.theme-night body {
+  background-color: #0f0a08;
+  background-image: 
+    /* Keyhole Sunset Glow (Intense Orange/Gold) */ radial-gradient(
+      circle at 50% 40%,
+      rgba(249, 115, 22, 0.2) 0%,
+      rgba(234, 88, 12, 0.1) 30%,
+      transparent 70%
+    ),
+    /* Warm Horizon Haze */
+      radial-gradient(
+        ellipse at 50% 100%,
+        rgba(180, 83, 9, 0.2),
+        transparent 60%
+      ),
+    /* Deep Film Grain / Noise Simulation (Subtle) */
+      linear-gradient(to bottom, rgba(15, 10, 8, 0.8), rgba(15, 10, 8, 0.95)),
+    /* Base Dark Warm Gradient */
+      linear-gradient(to bottom, #1c1917 0%, #0f0a08 100%);
+  background-attachment: fixed;
+}
+
+html.theme-retro-sunset.theme-day body {
+  background-color: #fff7ed;
+  background-image: radial-gradient(
+      circle at 80% 10%,
+      rgba(251, 146, 60, 0.1),
+      transparent 40%
+    ),
+    linear-gradient(to bottom, #fff7ed 0%, #ffedd5 100%);
+  background-attachment: fixed;
+}
+
+/* Retro Sunset Theme Variables */
+.theme-retro-sunset {
+  --primary: 25 90% 55%; /* Retro Orange */
+  --color-accent-primary: #f97316;
+}
+
+.theme-retro-sunset.theme-day {
+  --background: 30 40% 96%;
+  --foreground: 20 40% 20%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 40% 20%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 40% 20%;
+  --border: 30 40% 85%;
+  --secondary: 30 40% 92%;
+  --secondary-foreground: 20 40% 20%;
+  --muted: 30 30% 90%;
+  --muted-foreground: 25 20% 50%;
+  --accent: 35 90% 50%;
+  --accent-foreground: 30 40% 96%;
+  --color-bg-primary: #fff7ed;
+  --primary-foreground: 30 40% 96%;
+}
+
+.theme-retro-sunset.theme-night {
+  --background: 15 20% 5%;
+  --foreground: 35 60% 90%;
+  --card: 15 25% 7%;
+  --card-foreground: 35 60% 90%;
+  --popover: 15 25% 7%;
+  --popover-foreground: 35 60% 90%;
+  --border: 25 50% 20%;
+  --secondary: 15 20% 10%;
+  --secondary-foreground: 35 60% 90%;
+  --muted: 15 20% 12%;
+  --muted-foreground: 15 15% 50%;
+  --accent: 40 95% 60%;
+  --accent-foreground: 15 20% 5%;
+  --color-bg-primary: #0f0a08;
+  --primary-foreground: 15 20% 5%;
+}
+
 /* Cosmic Gold Specific Backgrounds */
 html.theme-cosmic-gold.theme-night body {
   background-color: #030100;

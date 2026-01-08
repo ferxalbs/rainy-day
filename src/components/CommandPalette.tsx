@@ -143,6 +143,17 @@ export function CommandPalette() {
               <span className="ml-auto text-xs text-primary">Active</span>
             )}
           </CommandItem>
+
+          <CommandItem
+            onSelect={() => handleThemeNameChange("retro-sunset")}
+            className="gap-2"
+          >
+            <div className="size-4 rounded-full bg-[#0f0a08] border border-orange-500/20" />
+            <span>Retro Sunset</span>
+            {themeName === "retro-sunset" && (
+              <span className="ml-auto text-xs text-primary">Active</span>
+            )}
+          </CommandItem>
         </CommandGroup>
 
         <CommandSeparator />

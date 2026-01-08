@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.1.15] - 2026-01-08
+
+#### Added
+
+- **Retro Sunset Theme**: A nostalgic, cinema-noir inspired theme based on a "keyhole" lighting concept.
+  - Day mode: Warm Cream (#fff7ed) with golden accents.
+  - Night mode: Deep Brownish Black (#0f0a08) with intense Orange/Gold "keyhole" glow.
+
 ### [v0.1.14] - 2026-01-08
 
 #### Added

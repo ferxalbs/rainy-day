@@ -56,10 +56,11 @@ pub async fn set_theme(app: AppHandle, mode: String, name: String) -> Result<(),
         "ocean-sunset",
         "midnight-void",
         "cosmic-night",
+        "retro-sunset",
     ];
     if !valid_names.contains(&name.as_str()) {
         return Err(format!(
-            "Invalid theme name: {}. Must be one of: default, sky-blue, cosmic-gold, starry-christmas, ocean-sunset, midnight-void, cosmic-night",
+            "Invalid theme name: {}. Must be one of: default, sky-blue, cosmic-gold, starry-christmas, ocean-sunset, midnight-void, cosmic-night, retro-sunset",
             name
         ));
     }
