@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.1.17] - 2026-01-08
+
+#### Fixed
+
+- **Database Schema Alignment**: Fixed SQL queries in `/data/*` routes to match actual database schema
+  - `emails`: Changed `sender`, `received_at`, `is_read` to `from_email`, `from_name`, `date`, `is_unread`
+  - `calendar_events`: Removed non-existent `meeting_link` column, now extracted from `description`
+  - `task_lists`: Route now derives task lists from `tasks` table (no separate table exists)
+- **Synchronous Sync for Development**: `/sync/trigger` now runs synchronously when Inngest is not configured, enabling local development without Inngest Dev Server
+
+#### Changed
+
+- **Frontend Services Migration**: Completed migration from Tauri/Rust commands to HTTP backend
+  - `useDailyData` hook now uses `backend/data.ts` services
+  - `DailyPlan.tsx` fixed duplicate code and uses backend services
+  - Added backward-compatible type conversions (`Email` → `ThreadSummary`, `CalendarEvent` → `ProcessedEvent`)
+- **Theme Service**: Migrated from Tauri commands to `localStorage` for theme persistence
+- **Deprecated Tauri Services**: Old services (`auth.ts`, `gmail.ts`, `calendar.ts`, `tasks.ts`) now redirect to backend services with deprecation warnings
+
+#### Added
+
+- **Actions Service**: New `src/services/backend/actions.ts` for task CRUD operations via HTTP
+- **Better Error Handling**: Data services now return empty arrays on error instead of throwing
+
 ### [v0.1.16] - 2026-01-08
 
 #### Added
