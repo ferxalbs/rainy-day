@@ -171,6 +171,59 @@ export function ConfigPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Actions Card */}
+      <Card className="border-2 border-border/50 bg-card/80 backdrop-blur-xl shadow-xl shadow-primary/5">
+        <CardHeader className="pb-4">
+          <CardTitle className="flex items-center gap-2">
+            <Zap className="w-5 h-5 text-primary" />
+            Actions
+          </CardTitle>
+          <CardDescription>Manage your session and preferences</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Button
+              variant="outline"
+              className="w-full justify-start gap-2 h-auto py-3"
+              disabled
+            >
+              <Bot className="w-4 h-4" />
+              <div className="flex flex-col items-start gap-0.5">
+                <span className="font-medium">AI Model</span>
+                <span className="text-xs text-muted-foreground">
+                  Select default model (Coming Soon)
+                </span>
+              </div>
+            </Button>
+
+            <Button
+              variant="outline"
+              className="w-full justify-start gap-2 h-auto py-3"
+              disabled
+            >
+              <Rocket className="w-4 h-4" />
+              <div className="flex flex-col items-start gap-0.5">
+                <span className="font-medium">Upgrade Plan</span>
+                <span className="text-xs text-muted-foreground">
+                  Get more features (Coming Soon)
+                </span>
+              </div>
+            </Button>
+          </div>
+
+          <Separator />
+
+          <Button
+            variant="destructive"
+            className="w-full gap-2"
+            onClick={handleLogout}
+          >
+            <LogOut className="w-4 h-4" />
+            Sign Out
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
 }
