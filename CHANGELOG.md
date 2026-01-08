@@ -7,6 +7,90 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.2.0] - 2026-01-08
+
+#### Added
+
+- **AI-Powered Daily Plan**: Complete integration with Gemini AI for intelligent daily planning
+  - `SmartDailyPlan` component replaces static view with AI-generated plans
+  - Focus blocks, quick wins, and meeting sections with suggested times
+  - Energy tips and motivational summaries from AI
+  - Plan regeneration on demand with loading states
+
+- **Real-Time Task Actions**: Full CRUD operations on Google Tasks from the UI
+  - `TaskActionButton` component for complete/delete actions
+  - `QuickTaskInput` for inline task creation
+  - Optimistic UI updates with rollback on error
+  - Action logging for audit trail
+
+- **Smart Notifications System**: Proactive notification system
+  - `NotificationBell` component with unread badge
+  - Notification dropdown with mark as read functionality
+  - Task due reminders (2 hours before)
+  - Plan ready notifications
+
+- **Background Sync Integration**: Inngest job system fully connected
+  - `SyncIndicator` component showing sync status
+  - Manual sync trigger from UI
+  - Automatic 5-minute sync for active users
+  - Last sync timestamp display
+
+- **Memory & Personalization**: AI learning from user feedback
+  - Thumbs up/down feedback on plan items
+  - Feedback stored as episodic memory for future personalization
+  - 30-day memory expiration for relevance
+
+- **Offline Support**: Graceful offline handling
+  - LocalStorage caching for plan, tasks, notifications
+  - Offline indicator banner
+  - "Cached" badge on stale data
+  - Automatic retry on reconnection
+
+- **Keyboard Shortcuts**: Power user features
+  - `Cmd+R` to refresh/regenerate plan
+  - `Cmd+N` to focus quick task input
+  - `Cmd+S` to trigger sync
+
+- **Native Tauri Integration**: OS-level features
+  - System notifications via Tauri notification API
+  - Secure token storage in OS keychain
+  - Meeting join buttons with external link handling
+
+#### New Services
+
+- `src/services/backend/plan.ts` - AI plan fetching and feedback
+- `src/services/backend/actions.ts` - Task CRUD operations
+- `src/services/backend/notifications.ts` - Notification management
+- `src/services/backend/cache.ts` - Offline caching layer
+
+#### New Hooks
+
+- `useDailyPlan` - AI plan state management
+- `useTaskActions` - Task operations with optimistic updates
+- `useNotifications` - Notification state and actions
+- `useSyncStatus` - Sync status tracking
+- `useKeyboardShortcuts` - Global keyboard shortcuts
+
+#### New Components
+
+- `SmartDailyPlan` - AI-powered daily plan view
+- `TaskActionButton` - Task action buttons
+- `QuickTaskInput` - Inline task creation
+- `NotificationBell` - Notification badge and dropdown
+- `SyncIndicator` - Sync status indicator
+- `MeetingJoinButton` - Calendar meeting join button
+- `OfflineIndicator` - Offline mode banner
+
+#### Property-Based Tests
+
+- Plan structure completeness validation
+- Plan regeneration timestamp ordering
+- Action execution result consistency
+- UI state consistency after actions
+- Notification count invariant
+- Memory storage on feedback
+- Offline fallback behavior
+
 ### [v0.1.17] - 2026-01-08
 
 #### Fixed

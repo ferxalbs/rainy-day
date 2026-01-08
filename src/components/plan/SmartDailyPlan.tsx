@@ -78,11 +78,11 @@ export function SmartDailyPlan({
   const getPriorityClasses = (priority: PlanTask["priority"]) => {
     switch (priority) {
       case "high":
-        return "bg-destructive/10 text-destructive border-destructive/20";
+        return "bg-destructive/20 text-destructive border-destructive/80";
       case "medium":
-        return "bg-amber-500/10 text-amber-500 border-amber-500/20";
+        return "bg-amber-500/20 text-amber-500 border-amber-500/20";
       case "low":
-        return "bg-green-500/10 text-green-500 border-green-500/20";
+        return "bg-green-500/20 text-green-500 border-green-500/20";
       default:
         return "bg-muted text-muted-foreground";
     }
@@ -132,7 +132,7 @@ export function SmartDailyPlan({
     <div className="space-y-6">
       {/* Summary Card */}
       {plan && (plan.summary || plan.energy_tip) && (
-        <section className="p-5 rounded-2xl bg-gradient-to-br from-primary/10 to-purple-500/10 border-2 border-border/40 backdrop-blur-2xl shadow-lg">
+        <section className="p-5 rounded-2xl bg-gradient-to-br from-primary/10 to-purple-500/10 border-2 border-border/50 backdrop-blur-3xl shadow-xl shadow-primary/5">
           {plan.summary && (
             <p className="text-foreground/90 leading-relaxed mb-4 text-base">
               {plan.summary}
@@ -270,12 +270,12 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="p-5 rounded-2xl bg-card/10 border-2 border-border/20 backdrop-blur-2xl shadow-xl">
+    <section className="p-5 rounded-2xl bg-gradient-to-br from-card/30 to-muted/30 border-2 border-border/50 backdrop-blur-3xl shadow-xl shadow-primary/5 transition-all">
       <h2 className="flex items-center gap-3 text-lg font-semibold text-foreground mb-4 opacity-90">
         <span className="text-2xl filter drop-shadow-sm">{icon}</span>
         {title}
         {count > 0 && (
-          <span className="ml-auto text-xs font-semibold text-muted-foreground bg-muted/20 border border-border/10 px-2.5 py-1 rounded-full backdrop-blur-md">
+          <span className="ml-auto text-xs font-semibold text-muted-foreground bg-muted/20 border-2 border-border/10 px-2.5 py-1 rounded-full backdrop-blur-md">
             {count}
           </span>
         )}
@@ -340,7 +340,7 @@ function TaskCard({
   };
 
   return (
-    <div className="flex items-start gap-4 p-4 rounded-xl bg-card/5 hover:bg-card/10 border border-transparent hover:border-border/30 transition-all duration-300 group">
+    <div className="flex items-start gap-4 p-4 rounded-xl bg-card/10 hover:bg-card/20 border border-transparent hover:border-border/60 transition-all duration-300 group">
       {task.source_type === "task" && (
         <input
           type="checkbox"
@@ -446,7 +446,7 @@ function MeetingCard({ meeting, onFeedback, formatTime }: MeetingCardProps) {
                     ${
                       isStartingSoon()
                         ? "bg-primary/10 border-primary shadow-lg shadow-primary/10"
-                        : "bg-card/5 hover:bg-card/10 border-transparent hover:border-border/20"
+                        : "bg-card/10 hover:bg-card/20 border-transparent hover:border-border/60"
                     }`}
     >
       <div className="text-primary text-sm font-semibold min-w-[70px] uppercase tracking-wide">
