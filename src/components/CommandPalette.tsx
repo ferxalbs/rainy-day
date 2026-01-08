@@ -23,7 +23,7 @@ import type { ThemeMode, ThemeName } from "../types/theme";
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
-  const { mode, themeName, setMode, setThemeName } = useTheme();
+  const { mode, themeName, setMode, setThemeName, currentTheme } = useTheme();
 
   // Handle keyboard shortcut (Cmd+K or Ctrl+K)
   useEffect(() => {
@@ -60,7 +60,9 @@ export function CommandPalette() {
       onOpenChange={setOpen}
       title="Command Palette"
       description="Quick actions and theme switching"
-      className="backdrop-blur-xl bg-muted/10 border-2 border-border rounded-2xl"
+      className={`backdrop-blur-3xl border-2 border-border rounded-2xl ${
+        currentTheme.mode === "day" ? "bg-popover/50" : "bg-popover/10"
+      }`}
     >
       <CommandInput placeholder="Type a command or search..." />
       <CommandList>
