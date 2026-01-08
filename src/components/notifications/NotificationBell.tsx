@@ -10,7 +10,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNotifications } from "../../hooks/useNotifications";
 import { Button } from "../ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 import type { Notification } from "../../services/backend/notifications";
 
 interface NotificationBellProps {
@@ -115,11 +114,11 @@ export function NotificationBell({
       </Button>
 
       {isOpen && (
-        <Card className="absolute top-[calc(100%+8px)] right-0 w-80 max-h-[400px] mica-blur border-2 border-border/60 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-150 p-0 flex flex-col">
-          <CardHeader className="flex flex-row justify-between items-center px-4 py-3 border-b border-border bg-muted/20 transition-colors space-y-0">
-            <CardTitle className="text-sm font-semibold text-foreground">
+        <div className="absolute top-[calc(100%+8px)] right-0 w-80 max-h-[400px] bg-card backdrop-blur-3xl border-2 border-border/60 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+          <div className="flex justify-between items-center px-4 py-3 border-b border-border bg-muted/40 transition-colors">
+            <h3 className="text-sm font-semibold text-foreground">
               Notifications
-            </CardTitle>
+            </h3>
             {unreadCount > 0 && (
               <Button
                 variant="ghost"
@@ -130,8 +129,9 @@ export function NotificationBell({
                 Mark all read
               </Button>
             )}
-          </CardHeader>
-          <CardContent className="overflow-y-auto max-h-[340px] p-0 flex-1">
+          </div>
+
+          <div className="overflow-y-auto max-h-[340px]">
             {isLoading ? (
               <div className="flex flex-col items-center justify-center gap-2 p-6 text-muted-foreground">
                 <LoadingSpinner />
@@ -153,8 +153,8 @@ export function NotificationBell({
                 />
               ))
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
     </div>
   );
