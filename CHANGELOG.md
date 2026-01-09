@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.3.1] - 2026-01-09
+
+#### Added
+
+- **Update System**: Update checking functionality with auto-check and manual triggers.
+- **CI/CD**: Enable Tauri updater signing and configure public key.
+- **Task Management**: Add task management with create, complete, and delete actions in `TaskPage`.
+
+#### Improvements
+
+- **TaskPage**: Enforce `google_task_id` usage for Google Tasks API interactions.
+
+#### Patches
+
+- **Dependencies**: Update Rust dependencies and server submodule.
+
 ### [v0.3.0] - 2026-01-09
 
 #### Added
