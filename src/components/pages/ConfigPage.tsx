@@ -48,13 +48,11 @@ export function ConfigPage() {
     settings: notifSettings,
     isActive: notificationsActive,
     toggle: toggleNotifications,
-    sendTestNotification,
     setAutoInitialize,
   } = useNotificationSettings();
   const [appVersion, setAppVersion] = useState<string>("...");
   const [backendVersion, setBackendVersion] = useState<string | null>(null);
   const [isBackendAvailable, setIsBackendAvailable] = useState(false);
-  const [isSendingTest, setIsSendingTest] = useState(false);
 
   useEffect(() => {
     // Get app version from Tauri
@@ -81,15 +79,6 @@ export function ConfigPage() {
       // Auth wrapper will handle redirection
     } catch (error) {
       console.error("Logout failed:", error);
-    }
-  };
-
-  const handleTestNotification = async () => {
-    setIsSendingTest(true);
-    try {
-      await sendTestNotification();
-    } finally {
-      setIsSendingTest(false);
     }
   };
 
@@ -292,29 +281,6 @@ export function ConfigPage() {
               className="min-w-[80px]"
             >
               {notifSettings.autoInitialize ? "On" : "Off"}
-            </Button>
-          </div>
-
-          <Separator />
-
-          {/* Test Notification */}
-          <div className="flex items-center justify-between py-2">
-            <div className="flex items-center gap-3">
-              <Bell className="w-4 h-4 text-muted-foreground" />
-              <div className="flex flex-col">
-                <span className="text-sm font-medium">Test Notification</span>
-                <span className="text-xs text-muted-foreground">
-                  Send a test notification to verify it works
-                </span>
-              </div>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleTestNotification}
-              disabled={!notificationsActive || isSendingTest}
-            >
-              {isSendingTest ? "Sending..." : "Send Test"}
             </Button>
           </div>
 
