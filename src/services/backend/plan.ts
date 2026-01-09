@@ -172,7 +172,7 @@ export type ItemFeedbackType = "positive" | "negative";
  * @param itemType - The type of item (focus_block, quick_win, meeting, defer)
  */
 export async function submitItemFeedback(
-  itemId: string,
+  _itemId: string,
   itemTitle: string,
   feedbackType: ItemFeedbackType,
   itemType: "focus_block" | "quick_win" | "meeting" | "defer"

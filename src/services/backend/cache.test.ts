@@ -6,7 +6,7 @@
  * Validates: Requirements 8.4
  */
 
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import * as fc from "fast-check";
 import {
   cacheSet,
@@ -93,19 +93,6 @@ const notificationArbitrary: fc.Arbitrary<Notification> = fc.record({
   createdAt: fc.integer({ min: 0 }),
   readAt: fc.option(fc.integer({ min: 0 }), { nil: undefined }),
 });
-
-/**
- * Arbitrary generator for cache key
- */
-const cacheKeyArbitrary = fc.constantFrom(
-  CACHE_KEYS.PLAN,
-  CACHE_KEYS.NOTIFICATIONS,
-  CACHE_KEYS.NOTIFICATION_COUNT,
-  CACHE_KEYS.EMAILS,
-  CACHE_KEYS.EVENTS,
-  CACHE_KEYS.TASKS,
-  CACHE_KEYS.SYNC_STATUS
-);
 
 /**
  * Arbitrary generator for expiration time

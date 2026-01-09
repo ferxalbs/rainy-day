@@ -6,16 +6,43 @@
  * Uses Tailwind CSS v4 for styling.
  *
  * Requirements: 1.6, 1.7, 5.1, 5.5, 6.4, 8.4, 8.5
+ * Email Actions Requirements: 1.1, 2.1, 3.1, 3.4
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useDailyPlan } from "../../hooks/useDailyPlan";
+import { useEmailActions } from "../../hooks/useEmailActions";
 import { REGENERATE_PLAN_EVENT } from "../../hooks/useKeyboardShortcuts";
+import { EmailActionBar } from "./EmailActionBar";
 import type { PlanTask, ItemFeedbackType } from "../../services/backend/plan";
 
 interface SmartDailyPlanProps {
   onTaskComplete?: (taskId: string) => void;
   onTaskCreate?: (title: string) => void;
+}
+
+/**
+ * Notification state for displaying success/error messages
+ * Requirements: 3.4
+ */
+interface NotificationState {
+  type: "success" | "error";
+  message: string;
+  id: number;
+  /** Optional action for retry */
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
+}
+
+/**
+ * Optimistic state for email items
+ * Requirements: 6.1, 6.2, 6.3, 6.4
+ */
+interface OptimisticEmailState {
+  archived: boolean;
+  markedRead: boolean;
 }
 
 export function SmartDailyPlan({
@@ -31,6 +58,209 @@ export function SmartDailyPlan({
     regenerate,
     submitItemFeedback,
   } = useDailyPlan();
+
+  // Email actions hook for archive, mark-read, convert-to-task
+  const {
+    archiveEmail,
+    markAsRead,
+    convertToTask,
+    loadingStates: emailLoadingStates,
+    retryLastAction: _retryLastAction,
+  } = useEmailActions();
+
+  // Notification state for success/error messages
+  // Requirements: 3.4
+  const [notifications, setNotifications] = useState<NotificationState[]>([]);
+
+  // Optimistic state for email items (keyed by email ID)
+  // Requirements: 6.1, 6.2, 6.3, 6.4
+  const [optimisticStates, setOptimisticStates] = useState<
+    Record<string, OptimisticEmailState>
+  >({});
+
+  /**
+   * Dismiss a notification
+   */
+  const dismissNotification = useCallback((id: number) => {
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
+  }, []);
+
+  /**
+   * Show a notification message
+   * Requirements: 3.4
+   */
+  const showNotification = useCallback(
+    (
+      type: "success" | "error",
+      message: string,
+      action?: { label: string; onClick: () => void }
+    ) => {
+      const id = Date.now();
+      setNotifications((prev) => [...prev, { type, message, id, action }]);
+      // Auto-dismiss after 5 seconds for success, 8 seconds for errors (to allow retry)
+      const dismissTime = type === "success" ? 4000 : 6000;
+      setTimeout(() => {
+        setNotifications((prev) => prev.filter((n) => n.id !== id));
+      }, dismissTime);
+    },
+    []
+  );
+
+  /**
+   * Set optimistic state for an email
+   */
+  const setOptimisticState = useCallback(
+    (emailId: string, state: Partial<OptimisticEmailState>) => {
+      setOptimisticStates((prev) => ({
+        ...prev,
+        [emailId]: {
+          archived: prev[emailId]?.archived ?? false,
+          markedRead: prev[emailId]?.markedRead ?? false,
+          ...state,
+        },
+      }));
+    },
+    []
+  );
+
+  /**
+   * Rollback optimistic state for an email
+   * Requirements: 6.2, 6.4
+   */
+  const rollbackOptimisticState = useCallback(
+    (emailId: string, state: Partial<OptimisticEmailState>) => {
+      setOptimisticStates((prev) => {
+        const current = prev[emailId];
+        if (!current) return prev;
+
+        const updated = { ...current };
+        if (state.archived !== undefined) updated.archived = false;
+        if (state.markedRead !== undefined) updated.markedRead = false;
+
+        // If both are false, remove the entry
+        if (!updated.archived && !updated.markedRead) {
+          const { [emailId]: _, ...rest } = prev;
+          return rest;
+        }
+
+        return { ...prev, [emailId]: updated };
+      });
+    },
+    []
+  );
+
+  /**
+   * Handle archive email action with optimistic update
+   * Requirements: 1.1, 1.3, 6.1, 6.2
+   */
+  const handleArchiveEmail = useCallback(
+    async (emailId: string) => {
+      // Optimistic update: immediately mark as archived
+      setOptimisticState(emailId, { archived: true });
+
+      const result = await archiveEmail(emailId);
+      if (result.success) {
+        showNotification("success", "📥 Email archived successfully");
+      } else {
+        // Rollback on failure
+        rollbackOptimisticState(emailId, { archived: true });
+        showNotification("error", result.message || "Failed to archive email", {
+          label: "Retry",
+          onClick: () => handleArchiveEmail(emailId),
+        });
+      }
+    },
+    [
+      archiveEmail,
+      showNotification,
+      setOptimisticState,
+      rollbackOptimisticState,
+    ]
+  );
+
+  /**
+   * Handle mark email as read action with optimistic update
+   * Requirements: 2.1, 2.3, 6.3, 6.4
+   */
+  const handleMarkAsRead = useCallback(
+    async (emailId: string) => {
+      // Optimistic update: immediately mark as read
+      setOptimisticState(emailId, { markedRead: true });
+
+      const result = await markAsRead(emailId);
+      if (result.success) {
+        showNotification("success", "✓ Email marked as read");
+      } else {
+        // Rollback on failure
+        rollbackOptimisticState(emailId, { markedRead: true });
+        showNotification(
+          "error",
+          result.message || "Failed to mark email as read",
+          {
+            label: "Retry",
+            onClick: () => handleMarkAsRead(emailId),
+          }
+        );
+      }
+    },
+    [markAsRead, showNotification, setOptimisticState, rollbackOptimisticState]
+  );
+
+  /**
+   * Handle convert email to task action
+   * Requirements: 3.1, 3.4, 3.5
+   */
+  const handleConvertToTask = useCallback(
+    async (emailId: string) => {
+      const result = await convertToTask(emailId);
+      if (result.success && result.data) {
+        showNotification(
+          "success",
+          `✅ Task created: "${result.data.task_title}"`
+        );
+      } else {
+        showNotification(
+          "error",
+          result.message || "Failed to convert email to task",
+          {
+            label: "Retry",
+            onClick: () => handleConvertToTask(emailId),
+          }
+        );
+      }
+    },
+    [convertToTask, showNotification]
+  );
+
+  /**
+   * Filter tasks based on optimistic state (hide archived emails)
+   * Requirements: 6.1
+   */
+  const filterOptimisticallyArchivedTasks = useCallback(
+    (tasks: PlanTask[]) => {
+      return tasks.filter((task) => {
+        // Only filter email items
+        if (task.type !== "email" && task.source_type !== "email") return true;
+        // Check if optimistically archived
+        const emailId = task.source_id;
+        if (!emailId) return true;
+        return !optimisticStates[emailId]?.archived;
+      });
+    },
+    [optimisticStates]
+  );
+
+  /**
+   * Check if an email is optimistically marked as read
+   * Requirements: 6.3
+   */
+  const isOptimisticallyRead = useCallback(
+    (emailId: string | undefined) => {
+      if (!emailId) return false;
+      return optimisticStates[emailId]?.markedRead ?? false;
+    },
+    [optimisticStates]
+  );
 
   // Listen for keyboard shortcut to regenerate plan (Cmd+R)
   useEffect(() => {
@@ -130,6 +360,59 @@ export function SmartDailyPlan({
 
   return (
     <div className="space-y-6">
+      {/* Notifications - Requirements: 3.4 */}
+      {notifications.length > 0 && (
+        <div className="fixed top-4 right-4 z-50 space-y-2 max-w-sm">
+          {notifications.map((notification) => (
+            <div
+              key={notification.id}
+              className={`px-4 py-3 rounded-lg shadow-lg backdrop-blur-md border transition-all animate-in slide-in-from-right-5 ${
+                notification.type === "success"
+                  ? "bg-green-500/90 text-white border-green-400/50"
+                  : "bg-destructive/90 text-destructive-foreground border-destructive/50"
+              }`}
+            >
+              <div className="flex items-start gap-2">
+                <span className="text-lg flex-shrink-0">
+                  {notification.type === "success" ? "✓" : "✕"}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <span className="text-sm font-medium block">
+                    {notification.message}
+                  </span>
+                  {notification.action && (
+                    <button
+                      onClick={() => {
+                        dismissNotification(notification.id);
+                        notification.action?.onClick();
+                      }}
+                      className="mt-2 text-xs font-semibold underline underline-offset-2 hover:no-underline opacity-90 hover:opacity-100"
+                    >
+                      {notification.action.label}
+                    </button>
+                  )}
+                </div>
+                <button
+                  onClick={() => dismissNotification(notification.id)}
+                  className="flex-shrink-0 p-0.5 rounded hover:bg-white/20 transition-colors"
+                  aria-label="Dismiss notification"
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M18 6L6 18M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
       {/* Summary Card */}
       {plan && (plan.summary || plan.energy_tip) && (
         <section className="p-5 rounded-2xl bg-gradient-to-br from-primary/10 to-purple-500/10 border-2 border-border/50 backdrop-blur-3xl shadow-xl shadow-primary/5">
@@ -151,24 +434,38 @@ export function SmartDailyPlan({
       <Section
         title="Focus Blocks"
         icon="🎯"
-        count={plan?.focus_blocks?.length ?? 0}
+        count={
+          plan ? filterOptimisticallyArchivedTasks(plan.focus_blocks).length : 0
+        }
       >
-        {!plan || plan.focus_blocks.length === 0 ? (
+        {!plan ||
+        filterOptimisticallyArchivedTasks(plan.focus_blocks).length === 0 ? (
           <EmptyState>No focus blocks scheduled</EmptyState>
         ) : (
           <div className="space-y-3">
-            {plan.focus_blocks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                itemType="focus_block"
-                onComplete={onTaskComplete}
-                onFeedback={submitItemFeedback}
-                formatTime={formatSuggestedTime}
-                getPriorityClasses={getPriorityClasses}
-                getTypeIcon={getTypeIcon}
-              />
-            ))}
+            {filterOptimisticallyArchivedTasks(plan.focus_blocks).map(
+              (task) => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  itemType="focus_block"
+                  onComplete={onTaskComplete}
+                  onFeedback={submitItemFeedback}
+                  formatTime={formatSuggestedTime}
+                  getPriorityClasses={getPriorityClasses}
+                  getTypeIcon={getTypeIcon}
+                  onArchiveEmail={handleArchiveEmail}
+                  onMarkAsRead={handleMarkAsRead}
+                  onConvertToTask={handleConvertToTask}
+                  emailLoadingState={
+                    task.source_id
+                      ? emailLoadingStates[task.source_id]
+                      : undefined
+                  }
+                  isOptimisticallyRead={isOptimisticallyRead(task.source_id)}
+                />
+              )
+            )}
           </div>
         )}
       </Section>
@@ -177,13 +474,16 @@ export function SmartDailyPlan({
       <Section
         title="Quick Wins"
         icon="⚡"
-        count={plan?.quick_wins?.length ?? 0}
+        count={
+          plan ? filterOptimisticallyArchivedTasks(plan.quick_wins).length : 0
+        }
       >
-        {!plan || plan.quick_wins.length === 0 ? (
+        {!plan ||
+        filterOptimisticallyArchivedTasks(plan.quick_wins).length === 0 ? (
           <EmptyState>No quick wins available</EmptyState>
         ) : (
           <div className="space-y-3">
-            {plan.quick_wins.map((task) => (
+            {filterOptimisticallyArchivedTasks(plan.quick_wins).map((task) => (
               <TaskCard
                 key={task.id}
                 task={task}
@@ -193,6 +493,15 @@ export function SmartDailyPlan({
                 formatTime={formatSuggestedTime}
                 getPriorityClasses={getPriorityClasses}
                 getTypeIcon={getTypeIcon}
+                onArchiveEmail={handleArchiveEmail}
+                onMarkAsRead={handleMarkAsRead}
+                onConvertToTask={handleConvertToTask}
+                emailLoadingState={
+                  task.source_id
+                    ? emailLoadingStates[task.source_id]
+                    : undefined
+                }
+                isOptimisticallyRead={isOptimisticallyRead(task.source_id)}
               />
             ))}
           </div>
@@ -306,6 +615,17 @@ interface TaskCardProps {
   formatTime: (time?: string) => string | null;
   getPriorityClasses: (priority: PlanTask["priority"]) => string;
   getTypeIcon: (type: PlanTask["type"]) => string;
+  // Email action handlers
+  onArchiveEmail?: (emailId: string) => Promise<void>;
+  onMarkAsRead?: (emailId: string) => Promise<void>;
+  onConvertToTask?: (emailId: string) => Promise<void>;
+  emailLoadingState?: {
+    archive: boolean;
+    markRead: boolean;
+    toTask: boolean;
+  };
+  // Optimistic state for read status
+  isOptimisticallyRead?: boolean;
 }
 
 function TaskCard({
@@ -316,6 +636,11 @@ function TaskCard({
   formatTime,
   getPriorityClasses,
   getTypeIcon,
+  onArchiveEmail,
+  onMarkAsRead,
+  onConvertToTask,
+  emailLoadingState,
+  isOptimisticallyRead = false,
 }: TaskCardProps) {
   const [feedbackGiven, setFeedbackGiven] = useState<ItemFeedbackType | null>(
     null
@@ -339,8 +664,20 @@ function TaskCard({
     setIsSubmitting(false);
   };
 
+  // Check if this is an email item
+  const isEmail = task.type === "email" || task.source_type === "email";
+  // For emails, check optimistic read state (if optimistically read, show as read)
+  // Requirements: 6.3
+  const isUnread = !isOptimisticallyRead;
+
+  // Apply read styling for optimistically read emails
+  // Requirements: 6.3
+  const readStyling = isEmail && isOptimisticallyRead ? "opacity-60" : "";
+
   return (
-    <div className="flex items-start gap-4 p-4 rounded-xl bg-card/10 hover:bg-card/20 border border-transparent hover:border-border/60 transition-all duration-300 group">
+    <div
+      className={`flex items-start gap-4 p-4 rounded-xl bg-card/10 hover:bg-card/20 border border-transparent hover:border-border/60 transition-all duration-300 group ${readStyling}`}
+    >
       {task.source_type === "task" && (
         <input
           type="checkbox"
@@ -354,7 +691,11 @@ function TaskCard({
           <span className="filter drop-shadow-sm opacity-90">
             {getTypeIcon(task.type)}
           </span>
-          <span className="text-foreground font-medium text-base tracking-tight">
+          <span
+            className={`text-foreground font-medium text-base tracking-tight ${
+              isEmail && isOptimisticallyRead ? "font-normal" : ""
+            }`}
+          >
             {task.title}
           </span>
           <span
@@ -364,6 +705,12 @@ function TaskCard({
           >
             {task.priority}
           </span>
+          {/* Show "Read" badge for optimistically read emails */}
+          {isEmail && isOptimisticallyRead && (
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted/30 text-muted-foreground border border-muted/50">
+              Read
+            </span>
+          )}
         </div>
         <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground/80 font-medium">
           {formatTime(task.suggested_time) && (
@@ -385,6 +732,25 @@ function TaskCard({
           </p>
         )}
       </div>
+
+      {/* Email Action Bar - shown for email items */}
+      {isEmail && task.source_id && (
+        <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+          <EmailActionBar
+            email={{
+              id: task.source_id,
+              subject: task.title,
+              isUnread: isUnread,
+            }}
+            onArchive={() => onArchiveEmail?.(task.source_id!)}
+            onMarkRead={() => onMarkAsRead?.(task.source_id!)}
+            onConvertToTask={() => onConvertToTask?.(task.source_id!)}
+            loadingState={emailLoadingState}
+            compact
+          />
+        </div>
+      )}
+
       <FeedbackButtons
         feedbackGiven={feedbackGiven}
         isSubmitting={isSubmitting}

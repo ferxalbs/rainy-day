@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.3.0] - 2026-01-09
+
+#### Added
+
+- **Production Distribution Pipeline**: GitHub Actions workflow for multi-platform releases
+
+  - macOS builds for Apple Silicon (aarch64) and Intel (x86_64)
+  - Windows builds with .msi and .exe installers
+  - Linux builds with .deb, .rpm, and .AppImage
+  - Draft release creation with automatic publishing
+
+- **macOS Bundle Configuration**: Production-ready bundle settings
+
+  - App category: Productivity
+  - Copyright and description metadata
+  - Minimum system version: macOS 11.0 (Big Sur)
+  - `Entitlements.plist` for network, keychain, and notification permissions
+
+- **Production Documentation**
+  - `docs/PRODUCTION_SETUP.md` - Complete guide for releases
+  - Environment variables and GitHub Secrets documentation
+  - Future Apple code signing instructions
+
+#### Improvements
+
+- Updated `.env.example` with production backend URL comments
+- Bundle configuration in `tauri.conf.json` now includes Windows settings
+
+---
+
 ### [v0.2.1] - 2026-01-08
 
 #### Added

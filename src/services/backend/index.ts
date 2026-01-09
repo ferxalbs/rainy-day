@@ -74,6 +74,16 @@ export {
   type ActionResult,
 } from "./actions";
 
+// Email action services
+export {
+  archiveEmail,
+  markEmailAsRead,
+  convertEmailToTask,
+  type ConvertToTaskOptions,
+  type EmailToTaskData,
+  type EmailActionData,
+} from "./emails";
+
 
 // Notifications services
 export {

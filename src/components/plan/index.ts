@@ -9,3 +9,5 @@ export { SmartDailyPlan } from "./SmartDailyPlan";
 export { TaskActionButton } from "./TaskActionButton";
 export { QuickTaskInput } from "./QuickTaskInput";
 export { MeetingJoinButton } from "./MeetingJoinButton";
+export { EmailActionBar } from "./EmailActionBar";
+export type { EmailActionBarProps } from "./EmailActionBar";

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Allow outgoing network connections (API calls to backend) -->
+    <key>com.apple.security.network.client</key>
+    <true/>
+    
+    <!-- Allow access to keychain for secure token storage -->
+    <key>com.apple.security.keychain-access-groups</key>
+    <array>
+        <string>$(AppIdentifierPrefix)com.enosislabs.rainyday</string>
+    </array>
+    
+    <!-- Allow user notifications -->
+    <key>com.apple.security.temporary-exception.apple-events</key>
+    <array>
+        <string>com.apple.notificationcenterui</string>
+    </array>
+</dict>
+</plist>

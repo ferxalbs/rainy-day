@@ -85,7 +85,7 @@ export async function createTask(listId: string, task: NewTask): Promise<Task> {
   });
   
   if (!result.success || !result.data) {
-    throw new Error(result.error || 'Failed to create task');
+    throw new Error(result.message || 'Failed to create task');
   }
   
   return toTask(result.data);
@@ -108,7 +108,7 @@ export async function updateTask(
   });
   
   if (!result.success || !result.data) {
-    throw new Error(result.error || 'Failed to update task');
+    throw new Error(result.message || 'Failed to update task');
   }
   
   return toTask(result.data);
@@ -123,7 +123,7 @@ export async function completeTask(listId: string, taskId: string): Promise<Task
   const result = await backendCompleteTask(taskId, listId);
   
   if (!result.success || !result.data) {
-    throw new Error(result.error || 'Failed to complete task');
+    throw new Error(result.message || 'Failed to complete task');
   }
   
   return toTask(result.data);
@@ -138,7 +138,7 @@ export async function reopenTask(_listId: string, taskId: string): Promise<Task>
   const result = await backendUpdateTask(taskId, {});
   
   if (!result.success || !result.data) {
-    throw new Error(result.error || 'Failed to reopen task');
+    throw new Error(result.message || 'Failed to reopen task');
   }
   
   return toTask(result.data);
@@ -153,6 +153,6 @@ export async function deleteTask(listId: string, taskId: string): Promise<void> 
   const result = await backendDeleteTask(taskId, listId);
   
   if (!result.success) {
-    throw new Error(result.error || 'Failed to delete task');
+    throw new Error(result.message || 'Failed to delete task');
   }
 }

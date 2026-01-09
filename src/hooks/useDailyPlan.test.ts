@@ -8,64 +8,10 @@
 
 import { describe, it, expect } from "vitest";
 import * as fc from "fast-check";
-import type { DailyPlan, PlanTask } from "../services/backend/plan";
+import type { DailyPlan } from "../services/backend/plan";
 
 /**
- * Arbitrary generator for PlanTask
- */
-const planTaskArbitrary: fc.Arbitrary<PlanTask> = fc.record({
-  id: fc.string({ minLength: 1 }),
-  title: fc.string({ minLength: 1 }),
-  type: fc.constantFrom("task", "email", "meeting", "focus", "break") as fc.Arbitrary<PlanTask["type"]>,
-  priority: fc.constantFrom("high", "medium", "low") as fc.Arbitrary<PlanTask["priority"]>,
-  duration_minutes: fc.integer({ min: 1, max: 480 }),
-  suggested_time: fc.option(fc.string(), { nil: undefined }),
-  context: fc.option(fc.string(), { nil: undefined }),
-  source_id: fc.option(fc.string(), { nil: undefined }),
-  source_type: fc.option(
-    fc.constantFrom("task", "email", "calendar") as fc.Arbitrary<"task" | "email" | "calendar">,
-    { nil: undefined }
-  ),
-});
-
-/**
- * Arbitrary generator for DailyPlan with a specific generated_at timestamp
- */
-function dailyPlanWithTimestamp(generatedAt: number): fc.Arbitrary<DailyPlan> {
-  return fc.record({
-    date: fc.date({ min: new Date("2020-01-01"), max: new Date("2030-12-31") })
-      .map((d) => d.toISOString().split("T")[0]!),
-    summary: fc.string({ minLength: 1 }),
-    energy_tip: fc.option(fc.string({ minLength: 1 }), { nil: undefined }),
-    focus_blocks: fc.array(planTaskArbitrary),
-    quick_wins: fc.array(planTaskArbitrary),
-    meetings: fc.array(planTaskArbitrary),
-    defer_suggestions: fc.array(fc.string()),
-    generated_at: fc.constant(generatedAt),
-  });
-}
-
-/**
- * Arbitrary generator for a pair of plans where the second is a "regeneration"
- * The regenerated plan should have a greater timestamp
- */
-const planRegenerationPairArbitrary: fc.Arbitrary<{
-  originalPlan: DailyPlan;
-  regeneratedPlan: DailyPlan;
-}> = fc
-  .integer({ min: 1000000000000, max: 2000000000000 }) // Realistic timestamp range
-  .chain((originalTimestamp) => {
-    // Regenerated plan must have a timestamp greater than original
-    const regeneratedTimestamp = originalTimestamp + fc.integer({ min: 1, max: 86400000 }).sample();
-    
-    return fc.record({
-      originalPlan: dailyPlanWithTimestamp(originalTimestamp),
-      regeneratedPlan: dailyPlanWithTimestamp(regeneratedTimestamp),
-    });
-  });
-
-/**
- * Alternative arbitrary that generates two timestamps and ensures ordering
+ * Arbitrary that generates two timestamps and ensures ordering
  */
 const orderedTimestampPairArbitrary: fc.Arbitrary<{
   originalTimestamp: number;

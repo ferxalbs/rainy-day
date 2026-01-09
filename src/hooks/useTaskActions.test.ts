@@ -51,7 +51,7 @@ const actionResultArbitrary: fc.Arbitrary<ActionResult> = fc.oneof(
  * Simulates the state transition after an action completes
  */
 function applyActionResult(
-  previousState: TaskActionUIState,
+  _previousState: TaskActionUIState,
   result: ActionResult
 ): TaskActionUIState {
   return {
