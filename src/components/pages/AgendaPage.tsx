@@ -1,15 +1,15 @@
 import { useState, useCallback } from "react";
 import type { ProcessedEvent } from "../../types";
 import { Skeleton } from "../ui/skeleton";
-import { 
-  ExternalLink, 
-  Plus, 
-  Clock, 
-  MapPin, 
-  Video, 
+import {
+  ExternalLink,
+  Plus,
+  Clock,
+  MapPin,
+  Video,
   Calendar,
   ChevronRight,
-  Users
+  Users,
 } from "lucide-react";
 
 interface AgendaPageProps {
@@ -24,17 +24,24 @@ interface NotificationState {
   id: number;
 }
 
-export function AgendaPage({ events, isLoading, onRefresh }: AgendaPageProps) {
+export function AgendaPage({
+  events,
+  isLoading,
+  onRefresh: _onRefresh,
+}: AgendaPageProps) {
   const [notifications, setNotifications] = useState<NotificationState[]>([]);
   const [expandedEvent, setExpandedEvent] = useState<string | null>(null);
 
-  const showNotification = useCallback((type: "success" | "error" | "info", message: string) => {
-    const id = Date.now();
-    setNotifications((prev) => [...prev, { type, message, id }]);
-    setTimeout(() => {
-      setNotifications((prev) => prev.filter((n) => n.id !== id));
-    }, 3000);
-  }, []);
+  const showNotification = useCallback(
+    (type: "success" | "error" | "info", message: string) => {
+      const id = Date.now();
+      setNotifications((prev) => [...prev, { type, message, id }]);
+      setTimeout(() => {
+        setNotifications((prev) => prev.filter((n) => n.id !== id));
+      }, 3000);
+    },
+    []
+  );
 
   const formatTime = (dateTimeString: string) => {
     try {
@@ -55,7 +62,7 @@ export function AgendaPage({ events, isLoading, onRefresh }: AgendaPageProps) {
       const endDate = new Date(end);
       const diffMs = endDate.getTime() - startDate.getTime();
       const diffMins = Math.round(diffMs / 60000);
-      
+
       if (diffMins < 60) return `${diffMins}min`;
       const hours = Math.floor(diffMins / 60);
       const mins = diffMins % 60;
@@ -81,14 +88,14 @@ export function AgendaPage({ events, isLoading, onRefresh }: AgendaPageProps) {
   };
 
   const handleJoinMeeting = (link: string, title: string) => {
-    window.open(link, '_blank');
+    window.open(link, "_blank");
     showNotification("info", `Joining "${title}"...`);
   };
 
   const handleOpenInCalendar = (eventId: string) => {
     // Open in Google Calendar
     const calendarUrl = `https://calendar.google.com/calendar/r/eventedit/${eventId}`;
-    window.open(calendarUrl, '_blank');
+    window.open(calendarUrl, "_blank");
   };
 
   const handleCreateEvent = () => {
@@ -96,25 +103,35 @@ export function AgendaPage({ events, isLoading, onRefresh }: AgendaPageProps) {
     const now = new Date();
     const startTime = new Date(now.getTime() + 60 * 60 * 1000); // 1 hour from now
     const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // 1 hour duration
-    
+
     const formatForCalendar = (date: Date) => {
-      return date.toISOString().replace(/-|:|\.\d{3}/g, '').slice(0, 15) + 'Z';
+      return (
+        date
+          .toISOString()
+          .replace(/-|:|\.\d{3}/g, "")
+          .slice(0, 15) + "Z"
+      );
     };
-    
-    const calendarUrl = `https://calendar.google.com/calendar/r/eventedit?dates=${formatForCalendar(startTime)}/${formatForCalendar(endTime)}`;
-    window.open(calendarUrl, '_blank');
+
+    const calendarUrl = `https://calendar.google.com/calendar/r/eventedit?dates=${formatForCalendar(
+      startTime
+    )}/${formatForCalendar(endTime)}`;
+    window.open(calendarUrl, "_blank");
     showNotification("info", "Opening Google Calendar...");
   };
 
   // Sort events by start time
-  const sortedEvents = [...events].sort((a, b) => 
-    new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
+  const sortedEvents = [...events].sort(
+    (a, b) =>
+      new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
   );
 
   // Find current/next event
   const now = new Date();
-  const currentEvent = sortedEvents.find(e => isEventNow(e.start_time, e.end_time));
-  const nextEvent = sortedEvents.find(e => new Date(e.start_time) > now);
+  const currentEvent = sortedEvents.find((e) =>
+    isEventNow(e.start_time, e.end_time)
+  );
+  const nextEvent = sortedEvents.find((e) => new Date(e.start_time) > now);
 
   if (isLoading) {
     return (
@@ -153,7 +170,9 @@ export function AgendaPage({ events, isLoading, onRefresh }: AgendaPageProps) {
                   : "bg-destructive/90 text-destructive-foreground border-destructive/50"
               }`}
             >
-              <span className="text-sm font-medium">{notification.message}</span>
+              <span className="text-sm font-medium">
+                {notification.message}
+              </span>
             </div>
           ))}
         </div>
@@ -161,27 +180,33 @@ export function AgendaPage({ events, isLoading, onRefresh }: AgendaPageProps) {
 
       {/* Current/Next Event Banner */}
       {(currentEvent || nextEvent) && (
-        <div className={`rounded-2xl border-2 overflow-hidden ${
-          currentEvent 
-            ? "border-green-500/50 bg-green-500/10" 
-            : "border-primary/50 bg-primary/10"
-        }`}>
+        <div
+          className={`rounded-2xl border-2 overflow-hidden ${
+            currentEvent
+              ? "border-green-500/50 bg-green-500/10"
+              : "border-primary/50 bg-primary/10"
+          }`}
+        >
           <div className="px-5 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className={`w-2 h-2 rounded-full ${
-                  currentEvent ? "bg-green-500 animate-pulse" : "bg-primary"
-                }`} />
+                <div
+                  className={`w-2 h-2 rounded-full ${
+                    currentEvent ? "bg-green-500 animate-pulse" : "bg-primary"
+                  }`}
+                />
                 <span className="text-sm font-medium text-muted-foreground">
                   {currentEvent ? "Happening now" : "Up next"}
                 </span>
               </div>
               {(currentEvent || nextEvent)?.meeting_link && (
                 <button
-                  onClick={() => handleJoinMeeting(
-                    (currentEvent || nextEvent)!.meeting_link!,
-                    (currentEvent || nextEvent)!.title
-                  )}
+                  onClick={() =>
+                    handleJoinMeeting(
+                      (currentEvent || nextEvent)!.meeting_link!,
+                      (currentEvent || nextEvent)!.title
+                    )
+                  }
                   className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
                 >
                   <Video className="w-4 h-4" />
@@ -254,47 +279,65 @@ export function AgendaPage({ events, isLoading, onRefresh }: AgendaPageProps) {
               const isPast = new Date(event.end_time) < now;
               const isExpanded = expandedEvent === event.id;
               const duration = formatDuration(event.start_time, event.end_time);
-              
+
               return (
                 <div
                   key={event.id}
-                  className={`transition-colors ${
-                    isPast ? "opacity-50" : ""
-                  } ${isNow ? "bg-green-500/5" : isSoon ? "bg-primary/5" : "hover:bg-accent"}`}
+                  className={`transition-colors ${isPast ? "opacity-50" : ""} ${
+                    isNow
+                      ? "bg-green-500/5"
+                      : isSoon
+                      ? "bg-primary/5"
+                      : "hover:bg-accent"
+                  }`}
                 >
-                  <div 
+                  <div
                     className="px-5 py-4 cursor-pointer"
-                    onClick={() => setExpandedEvent(isExpanded ? null : event.id)}
+                    onClick={() =>
+                      setExpandedEvent(isExpanded ? null : event.id)
+                    }
                   >
                     <div className="flex gap-4">
                       {/* Time Column */}
                       <div className="flex-shrink-0 w-20">
-                        <div className={`text-sm font-semibold ${
-                          isNow ? "text-green-500" : isSoon ? "text-primary" : "text-primary"
-                        }`}>
+                        <div
+                          className={`text-sm font-semibold ${
+                            isNow
+                              ? "text-green-500"
+                              : isSoon
+                              ? "text-primary"
+                              : "text-primary"
+                          }`}
+                        >
                           {formatTime(event.start_time)}
                         </div>
                         <div className="text-xs text-muted-foreground mt-0.5">
                           {duration}
                         </div>
                       </div>
-                      
+
                       {/* Event Details */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
                           <div>
-                            <p className={`font-medium ${
-                              isPast ? "text-muted-foreground" : "text-foreground"
-                            }`}>
+                            <p
+                              className={`font-medium ${
+                                isPast
+                                  ? "text-muted-foreground"
+                                  : "text-foreground"
+                              }`}
+                            >
                               {event.title}
                             </p>
-                            
+
                             {/* Quick Info */}
                             <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground">
                               {event.location && (
                                 <span className="flex items-center gap-1">
                                   <MapPin className="w-3 h-3" />
-                                  <span className="truncate max-w-[150px]">{event.location}</span>
+                                  <span className="truncate max-w-[150px]">
+                                    {event.location}
+                                  </span>
                                 </span>
                               )}
                               {event.meeting_link && (
@@ -311,7 +354,7 @@ export function AgendaPage({ events, isLoading, onRefresh }: AgendaPageProps) {
                               )}
                             </div>
                           </div>
-                          
+
                           {/* Status Badge */}
                           <div className="flex items-center gap-2">
                             {isNow && (
@@ -324,15 +367,17 @@ export function AgendaPage({ events, isLoading, onRefresh }: AgendaPageProps) {
                                 Soon
                               </span>
                             )}
-                            <ChevronRight className={`w-4 h-4 text-muted-foreground transition-transform ${
-                              isExpanded ? "rotate-90" : ""
-                            }`} />
+                            <ChevronRight
+                              className={`w-4 h-4 text-muted-foreground transition-transform ${
+                                isExpanded ? "rotate-90" : ""
+                              }`}
+                            />
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Expanded Details */}
                   {isExpanded && (
                     <div className="px-5 pb-4 pt-0">
@@ -342,7 +387,10 @@ export function AgendaPage({ events, isLoading, onRefresh }: AgendaPageProps) {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleJoinMeeting(event.meeting_link!, event.title);
+                                handleJoinMeeting(
+                                  event.meeting_link!,
+                                  event.title
+                                );
                               }}
                               className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
                             >
@@ -361,10 +409,12 @@ export function AgendaPage({ events, isLoading, onRefresh }: AgendaPageProps) {
                             Open in Calendar
                           </button>
                         </div>
-                        
+
                         {event.location && (
                           <a
-                            href={`https://maps.google.com/maps?q=${encodeURIComponent(event.location)}`}
+                            href={`https://maps.google.com/maps?q=${encodeURIComponent(
+                              event.location
+                            )}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={(e) => e.stopPropagation()}
