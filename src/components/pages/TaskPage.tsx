@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import type { Task } from "../../types";
+import type { Task } from "../../services/backend/data";
 import { Skeleton } from "../ui/skeleton";
 import { Circle, CheckCircle2, Trash2, Plus } from "lucide-react";
 import { completeTask, deleteTask, createTask } from "../../services/backend";
@@ -34,13 +34,17 @@ export function TaskPage({ tasks, isLoading, onRefresh }: TaskPageProps) {
   }, []);
 
   const handleToggleComplete = useCallback(async (task: Task) => {
-    const taskId = task.google_task_id || task.id;
+    // Use google_task_id for Google Tasks API
+    const taskId = task.google_task_id;
+    if (!taskId) {
+      showNotification("error", "Task ID not found");
+      return;
+    }
     
     // Optimistic update
     setLoadingTasks((prev) => new Set(prev).add(task.id));
     
     if (task.status === "completed") {
-      // TODO: Uncomplete task (not implemented in backend yet)
       showNotification("error", "Uncomplete not supported yet");
       setLoadingTasks((prev) => {
         const next = new Set(prev);
@@ -75,7 +79,12 @@ export function TaskPage({ tasks, isLoading, onRefresh }: TaskPageProps) {
   }, [showNotification, onRefresh]);
 
   const handleDelete = useCallback(async (task: Task) => {
-    const taskId = task.google_task_id || task.id;
+    // Use google_task_id for Google Tasks API
+    const taskId = task.google_task_id;
+    if (!taskId) {
+      showNotification("error", "Task ID not found");
+      return;
+    }
     
     // Optimistic update
     setLoadingTasks((prev) => new Set(prev).add(task.id));
