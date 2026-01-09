@@ -124,7 +124,7 @@ export function MainLayout() {
             <AgendaPage events={events} isLoading={isLoading} />
           )}
           {activePage === "task" && (
-            <TaskPage tasks={tasks} isLoading={isLoading} />
+            <TaskPage tasks={tasks} isLoading={isLoading} onRefresh={refresh} />
           )}
           {activePage === "config" && <ConfigPage />}
         </div>
