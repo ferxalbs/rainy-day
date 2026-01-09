@@ -160,9 +160,10 @@ export interface NewEventData {
   title: string;
   description?: string;
   location?: string;
-  start_time: string; // ISO string
-  end_time: string;   // ISO string
+  start_time: string; // ISO string with timezone offset
+  end_time: string;   // ISO string with timezone offset
   is_all_day?: boolean;
+  timezone?: string;  // IANA timezone (e.g., "America/New_York")
 }
 
 export interface UpdateEventData {

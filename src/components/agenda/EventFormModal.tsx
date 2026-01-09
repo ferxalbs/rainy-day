@@ -20,6 +20,12 @@ import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Switch } from "../ui/switch";
 import { Calendar, Clock, MapPin, Loader2, X } from "lucide-react";
+import {
+  getUserTimezone,
+  localToISO,
+  getTodayLocalDate,
+  getDefaultEventTimes,
+} from "../../utils/timezone";
 
 interface EventFormData {
   title: string;
@@ -41,6 +47,7 @@ interface EventFormModalProps {
     start_time: string;
     end_time: string;
     is_all_day?: boolean;
+    timezone: string;
   }) => Promise<void>;
   initialData?: Partial<EventFormData>;
   mode?: "create" | "edit";
@@ -65,18 +72,14 @@ export function EventFormModal({
 
   // Form state
   const [formData, setFormData] = useState<EventFormData>(() => {
-    const now = new Date();
-    const nextHour = new Date(now.getTime() + 60 * 60 * 1000);
-    nextHour.setMinutes(0, 0, 0);
-    const endHour = new Date(nextHour.getTime() + 60 * 60 * 1000);
-
+    const { startTime, endTime } = getDefaultEventTimes();
     return {
       title: "",
       description: "",
       location: "",
-      date: now.toISOString().split("T")[0],
-      startTime: nextHour.toTimeString().slice(0, 5),
-      endTime: endHour.toTimeString().slice(0, 5),
+      date: getTodayLocalDate(),
+      startTime,
+      endTime,
       isAllDay: false,
     };
   });
@@ -90,18 +93,14 @@ export function EventFormModal({
           ...initialData,
         }));
       } else {
-        const now = new Date();
-        const nextHour = new Date(now.getTime() + 60 * 60 * 1000);
-        nextHour.setMinutes(0, 0, 0);
-        const endHour = new Date(nextHour.getTime() + 60 * 60 * 1000);
-
+        const { startTime, endTime } = getDefaultEventTimes();
         setFormData({
           title: "",
           description: "",
           location: "",
-          date: now.toISOString().split("T")[0],
-          startTime: nextHour.toTimeString().slice(0, 5),
-          endTime: endHour.toTimeString().slice(0, 5),
+          date: getTodayLocalDate(),
+          startTime,
+          endTime,
           isAllDay: false,
         });
       }
@@ -136,34 +135,21 @@ export function EventFormModal({
     setError(null);
 
     try {
-      // Construct datetime using local timezone
+      // Get user's timezone
+      const timezone = getUserTimezone();
+
+      // Construct datetime using timezone utilities
       let startDateTime: string;
       let endDateTime: string;
 
       if (formData.isAllDay) {
-        // For all-day events, use date-only format
-        startDateTime = `${formData.date}T00:00:00`;
-        endDateTime = `${formData.date}T23:59:59`;
+        // For all-day events, use date format with start of day
+        startDateTime = localToISO(formData.date, "00:00");
+        endDateTime = localToISO(formData.date, "23:59");
       } else {
-        // Parse date and time components
-        const [year, month, day] = formData.date.split("-").map(Number);
-        const [startHour, startMin] = formData.startTime.split(":").map(Number);
-        const [endHour, endMin] = formData.endTime.split(":").map(Number);
-
-        // Create Date objects in local timezone
-        const startDate = new Date(
-          year,
-          month - 1,
-          day,
-          startHour,
-          startMin,
-          0
-        );
-        const endDate = new Date(year, month - 1, day, endHour, endMin, 0);
-
-        // Convert to ISO strings (these will include the correct timezone offset)
-        startDateTime = startDate.toISOString();
-        endDateTime = endDate.toISOString();
+        // Use localToISO for proper timezone-aware ISO strings
+        startDateTime = localToISO(formData.date, formData.startTime);
+        endDateTime = localToISO(formData.date, formData.endTime);
       }
 
       await onSubmit({
@@ -173,6 +159,7 @@ export function EventFormModal({
         start_time: startDateTime,
         end_time: endDateTime,
         is_all_day: formData.isAllDay,
+        timezone,
       });
 
       onClose();
