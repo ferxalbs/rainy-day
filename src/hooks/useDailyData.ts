@@ -54,6 +54,16 @@ interface DailyDataState {
 }
 
 /**
+ * Safe conversion of timestamp to ISO string with fallback
+ */
+function safeToISOString(timestamp: number | string | null | undefined): string {
+  if (!timestamp && timestamp !== 0) return new Date().toISOString();
+  const ts = typeof timestamp === 'string' ? parseInt(timestamp, 10) : timestamp;
+  const date = new Date(ts);
+  return isNaN(date.getTime()) ? new Date().toISOString() : date.toISOString();
+}
+
+/**
  * Convert backend Email to ThreadSummary for backward compatibility
  */
 function emailToThread(email: Email): ThreadSummary {
@@ -63,7 +73,7 @@ function emailToThread(email: Email): ThreadSummary {
     snippet: email.snippet,
     from_name: email.sender.split("<")[0]?.trim() || email.sender,
     from_email: email.sender.match(/<(.+)>/)?.[1] || email.sender,
-    date: new Date(email.received_at).toISOString(),
+    date: safeToISOString(email.received_at),
     is_unread: !email.is_read,
     message_count: 1,
     priority_score: email.is_important ? 100 : 50,
