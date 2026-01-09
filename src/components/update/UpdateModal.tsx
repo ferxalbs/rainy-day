@@ -116,6 +116,10 @@ function PackageIcon() {
 // Release Notes Parser
 // =============================================================================
 
+function escapeRegExpLiteral(input: string): string {
+  return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 /**
  * Parse release notes for a specific version from the RELEASE_NOTES.md format.
  * Returns bullet points as an array of strings.
@@ -126,7 +130,7 @@ function parseReleaseNotesForVersion(
 ): string[] {
   // Look for the version header pattern: "## Rainy Day X.X.X"
   const versionPattern = new RegExp(
-    `## Rainy Day ${version.replace(/\./g, "\\.")}[\\s\\S]*?(?=## Rainy Day|$)`,
+    `## Rainy Day ${escapeRegExpLiteral(version)}[\\s\\S]*?(?=## Rainy Day|$)`,
     "i"
   );
 
