@@ -35,5 +35,8 @@ dotenvy = "0.15"
 keyring = { version = "3", features = ["apple-native", "windows-native", "linux-native"] }
 tauri-plugin-updater = "2"
 tauri-plugin-process = "2"
+
+# Linux-specific dependencies
+[target.'cfg(target_os = "linux")'.dependencies]
 glib = "0.21.5"
 
