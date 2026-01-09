@@ -146,7 +146,7 @@ export function TaskPage({ tasks, isLoading, onRefresh }: TaskPageProps) {
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl border-2 border-border/50 bg-card/80 backdrop-blur-xl overflow-hidden">
+      <div className="rounded-2xl border-2 border-border/50 bg-card/30 backdrop-blur-xl overflow-hidden">
         <div className="p-5 border-b border-border">
           <Skeleton className="h-6 w-24 bg-muted" />
         </div>

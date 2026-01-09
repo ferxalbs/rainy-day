@@ -422,7 +422,7 @@ export function SmartDailyPlan({
             </p>
           )}
           {plan.energy_tip && (
-            <div className="flex items-start gap-3 p-3 rounded-xl bg-card/20 text-sm text-foreground/80 border border-border/30">
+            <div className="flex items-start gap-3 p-3 rounded-xl bg-card/30 text-sm text-foreground/80 border border-border/30">
               <span className="text-lg">💡</span>
               <span className="leading-snug pt-0.5">{plan.energy_tip}</span>
             </div>
@@ -548,7 +548,7 @@ export function SmartDailyPlan({
 
       {/* No Plan State */}
       {!plan && !error && (
-        <section className="p-12 rounded-2xl bg-card/10 border-2 border-border/30 backdrop-blur-2xl text-center shadow-xl">
+        <section className="p-12 rounded-2xl bg-card/30 border-2 border-border/30 backdrop-blur-2xl text-center shadow-xl">
           <p className="text-muted-foreground mb-6 text-lg">
             No plan generated yet for today.
           </p>
@@ -676,7 +676,7 @@ function TaskCard({
 
   return (
     <div
-      className={`flex items-start gap-4 p-4 rounded-xl bg-card/10 hover:bg-card/20 border border-transparent hover:border-border/60 transition-all duration-300 group ${readStyling}`}
+      className={`flex items-start gap-4 p-4 rounded-xl bg-card/20 hover:bg-card/30 border border-transparent hover:border-border/60 transition-all duration-300 group ${readStyling}`}
     >
       {task.source_type === "task" && (
         <input
@@ -812,7 +812,7 @@ function MeetingCard({ meeting, onFeedback, formatTime }: MeetingCardProps) {
                     ${
                       isStartingSoon()
                         ? "bg-primary/10 border-primary shadow-lg shadow-primary/10"
-                        : "bg-card/10 hover:bg-card/20 border-transparent hover:border-border/60"
+                        : "bg-card/20 hover:bg-card/30 border-transparent hover:border-border/60"
                     }`}
     >
       <div className="text-primary text-sm font-semibold min-w-[70px] uppercase tracking-wide">

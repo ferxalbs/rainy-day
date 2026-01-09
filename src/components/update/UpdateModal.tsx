@@ -49,7 +49,7 @@ export function UpdateModal({ isOpen, onClose }: UpdateModalProps) {
       />
 
       {/* Modal */}
-      <div className="relative w-full max-w-md mx-4 p-6 rounded-2xl bg-card/95 backdrop-blur-xl border-2 border-blue-500/20 shadow-2xl">
+      <div className="relative w-full max-w-md mx-4 p-6 rounded-2xl bg-card/10 backdrop-blur-xl border-2 shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">

@@ -148,7 +148,7 @@ export function AgendaPage({ events, isLoading, onRefresh }: AgendaPageProps) {
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl border-2 border-border/50 bg-card/80 backdrop-blur-xl overflow-hidden">
+      <div className="rounded-2xl border-2 border-border/50 bg-card/10 backdrop-blur-xl overflow-hidden">
         <div className="p-5 border-b border-border">
           <Skeleton className="h-6 w-32 bg-muted" />
         </div>
@@ -249,7 +249,7 @@ export function AgendaPage({ events, isLoading, onRefresh }: AgendaPageProps) {
       )}
 
       {/* Main Agenda Card */}
-      <div className="rounded-2xl border-2 border-border/50 bg-card/80 backdrop-blur-xl overflow-hidden shadow-xl shadow-primary/5">
+      <div className="rounded-2xl border-2 border-border/50 bg-card/30 backdrop-blur-xl overflow-hidden shadow-xl shadow-primary/5">
         {/* Header */}
         <div className="px-5 py-4 border-b border-border bg-card/50 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-foreground flex items-center gap-3">

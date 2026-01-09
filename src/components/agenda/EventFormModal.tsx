@@ -136,14 +136,35 @@ export function EventFormModal({
     setError(null);
 
     try {
-      // Construct ISO datetime strings
-      const startDateTime = formData.isAllDay
-        ? `${formData.date}T00:00:00.000Z`
-        : `${formData.date}T${formData.startTime}:00.000Z`;
+      // Construct datetime using local timezone
+      let startDateTime: string;
+      let endDateTime: string;
 
-      const endDateTime = formData.isAllDay
-        ? `${formData.date}T23:59:59.999Z`
-        : `${formData.date}T${formData.endTime}:00.000Z`;
+      if (formData.isAllDay) {
+        // For all-day events, use date-only format
+        startDateTime = `${formData.date}T00:00:00`;
+        endDateTime = `${formData.date}T23:59:59`;
+      } else {
+        // Parse date and time components
+        const [year, month, day] = formData.date.split("-").map(Number);
+        const [startHour, startMin] = formData.startTime.split(":").map(Number);
+        const [endHour, endMin] = formData.endTime.split(":").map(Number);
+
+        // Create Date objects in local timezone
+        const startDate = new Date(
+          year,
+          month - 1,
+          day,
+          startHour,
+          startMin,
+          0
+        );
+        const endDate = new Date(year, month - 1, day, endHour, endMin, 0);
+
+        // Convert to ISO strings (these will include the correct timezone offset)
+        startDateTime = startDate.toISOString();
+        endDateTime = endDate.toISOString();
+      }
 
       await onSubmit({
         title: formData.title.trim(),

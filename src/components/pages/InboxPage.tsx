@@ -95,7 +95,7 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
   const visibleThreads = threads.filter((t) => !archivedEmails.has(t.id));
   if (isLoading) {
     return (
-      <div className="rounded-2xl border-2 border-border/50 bg-card/80 backdrop-blur-xl overflow-hidden">
+      <div className="rounded-2xl border-2 border-border/50 bg-card/30 backdrop-blur-xl overflow-hidden">
         <div className="p-5 border-b border-border">
           <Skeleton className="h-6 w-36 bg-muted" />
         </div>
@@ -112,7 +112,7 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
   }
 
   return (
-    <div className="rounded-2xl border-2 border-border/50 bg-card/80 backdrop-blur-xl overflow-hidden shadow-xl shadow-primary/5">
+    <div className="rounded-2xl border-2 border-border/50 bg-card/30 backdrop-blur-xl overflow-hidden shadow-xl shadow-primary/5">
       {/* Notifications */}
       {notifications.length > 0 && (
         <div className="fixed top-4 right-4 z-50 space-y-2 max-w-sm">
@@ -132,7 +132,7 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
       )}
 
       {/* Header */}
-      <div className="px-5 py-4 border-b border-border bg-card/50">
+      <div className="px-5 py-4 border-b border-border bg-card/30">
         <h2 className="text-lg font-semibold text-foreground flex items-center gap-3">
           <span className="text-xl">📬</span>
           Priority Inbox
