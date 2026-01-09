@@ -118,7 +118,7 @@ export function MainLayout() {
           {/* Page Content */}
           {activePage === "plan" && <SmartDailyPlan />}
           {activePage === "inbox" && (
-            <InboxPage threads={threads} isLoading={isLoading} />
+            <InboxPage threads={threads} isLoading={isLoading} onRefresh={refresh} />
           )}
           {activePage === "agenda" && (
             <AgendaPage events={events} isLoading={isLoading} />

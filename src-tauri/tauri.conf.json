@@ -65,6 +65,12 @@
       "desktop": {
         "schemes": ["rainyday"]
       }
+    },
+    "updater": {
+      "endpoints": [
+        "https://github.com/EnosisLabs/rainy-day/releases/latest/download/latest.json"
+      ],
+      "pubkey": ""
     }
   }
 }

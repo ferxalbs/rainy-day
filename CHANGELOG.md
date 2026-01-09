@@ -26,14 +26,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `Entitlements.plist` for network, keychain, and notification permissions
 
 - **Production Documentation**
+
   - `docs/PRODUCTION_SETUP.md` - Complete guide for releases
   - Environment variables and GitHub Secrets documentation
   - Future Apple code signing instructions
+
+- **Auto-Update System**: Native auto-update using Tauri updater plugin
+  - `tauri-plugin-updater` and `tauri-plugin-process` integration
+  - `UpdateModal` component with download progress and install button
+  - `useUpdate` hook for React state management
+  - GitHub Releases integration for distributing updates
+  - Automatic `latest.json` generation for update checking
 
 #### Improvements
 
 - Updated `.env.example` with production backend URL comments
 - Bundle configuration in `tauri.conf.json` now includes Windows settings
+- Added updater and process plugin permissions to capabilities
 
 ---
 

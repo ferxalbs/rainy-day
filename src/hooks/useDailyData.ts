@@ -112,11 +112,8 @@ export function useDailyData() {
       const events = calendarEvents.map(calendarEventToProcessed);
       const threads = emails.map(emailToThread);
 
-      // Get tasks from the first task list
-      let tasks: Task[] = [];
-      if (taskLists.length > 0) {
-        tasks = await getTasks(taskLists[0].id, false).catch(() => []);
-      }
+      // Get all tasks (don't filter by list to include tasks created from emails)
+      const tasks = await getTasks(undefined, false).catch(() => []);
 
       setState({
         events,
