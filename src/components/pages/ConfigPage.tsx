@@ -1,6 +1,7 @@
 import { useAuth } from "../../contexts/AuthContext";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useNotificationSettings } from "../../hooks/useNotificationSettings";
+import { useSubscription } from "../../hooks/useSubscription";
 import { useState, useEffect } from "react";
 import {
   Card,
@@ -20,7 +21,6 @@ import {
   Shield,
   Info,
   LogOut,
-  Bot,
   Rocket,
   Cloud,
   Bell,
@@ -30,6 +30,8 @@ import {
 import { Button } from "../ui/button";
 import { checkBackendHealth, getBackendInfo } from "../../services/backend/api";
 import { getVersion } from "@tauri-apps/api/app";
+import { ModelSelector } from "../settings/ModelSelector";
+import { UpgradePlanModal } from "../settings/UpgradePlanModal";
 
 // App name constant
 const APP_NAME = "Rainy Day";
@@ -53,6 +55,8 @@ export function ConfigPage() {
   const [appVersion, setAppVersion] = useState<string>("...");
   const [backendVersion, setBackendVersion] = useState<string | null>(null);
   const [isBackendAvailable, setIsBackendAvailable] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const { plan, planName } = useSubscription();
 
   useEffect(() => {
     // Get app version from Tauri
@@ -318,30 +322,18 @@ export function ConfigPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Button
-              variant="outline"
-              className="w-full justify-start gap-2 h-auto py-3"
-              disabled
-            >
-              <Bot className="w-4 h-4" />
-              <div className="flex flex-col items-start gap-0.5">
-                <span className="font-medium">AI Model</span>
-                <span className="text-xs text-muted-foreground">
-                  Select default model (Coming Soon)
-                </span>
-              </div>
-            </Button>
+            <ModelSelector onUpgradeClick={() => setShowUpgradeModal(true)} />
 
             <Button
               variant="outline"
               className="w-full justify-start gap-2 h-auto py-3"
-              disabled
+              onClick={() => setShowUpgradeModal(true)}
             >
               <Rocket className="w-4 h-4" />
               <div className="flex flex-col items-start gap-0.5">
                 <span className="font-medium">Upgrade Plan</span>
                 <span className="text-xs text-muted-foreground">
-                  Get more features (Coming Soon)
+                  Current: {planName} {plan !== "free" && "✓"}
                 </span>
               </div>
             </Button>
@@ -379,6 +371,11 @@ export function ConfigPage() {
           </Button>
         </CardContent>
       </Card>
+
+      <UpgradePlanModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+      />
     </div>
   );
 }

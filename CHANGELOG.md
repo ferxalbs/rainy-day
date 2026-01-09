@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.4.0] - 2026-01-09
+
+#### Added
+
+- **SaaS Subscription System**: Complete billing and subscription management
+  - 3 pricing tiers: Free ($0), Plus ($4/mo), Pro ($8/mo)
+  - Stripe integration with checkout sessions and customer portal
+  - Webhook handlers for subscription lifecycle events
+  - `user_plans` and `usage_logs` database tables
+  - `UpgradePlanModal` with pricing cards and upgrade flow
+  - `ModelSelector` dropdown for AI model selection
+  - Model access control based on subscription tier
+  - Usage limits for free tier (5 plan generations/day)
+  - Billing routes: checkout, portal, cancel, reactivate, webhook
+
+#### Improvements
+
+- **AI Models**: Support for 5 AI models based on tier
+  - Free: Gemini 2.5 Flash Lite
+  - Plus: + Gemini 3 Flash
+  - Pro: + Gemini 3 Flash (Dynamic Thinking), Groq GPT OSS 20B/120B
+
 ### [v0.3.4] - 2026-01-09
 
 #### Improvements
