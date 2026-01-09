@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.3.4] - 2026-01-09
+
+#### Improvements
+
+- **AI Daily Plan Redesign**: Complete redesign of the Daily Plan component for a cleaner, more functional interface
+  - New `DailyBriefing.tsx` component replacing `SmartDailyPlan.tsx`
+  - Clean SVG icons instead of emojis for a professional look
+  - Unified action items list (Focus Blocks, Quick Wins, Meetings combined)
+  - Interactive checkboxes for task completion
+  - Dynamic action buttons on hover (Archive, Mark Read, Convert to Task, Join Meeting)
+  - Preserved all existing functionalities (email actions, feedback, optimistic updates)
+  - Removed duplicate date header and refresh button (Topbar handles these)
+
 ### [v0.3.3] - 2026-01-09
 
 #### Added
