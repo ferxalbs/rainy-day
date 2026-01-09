@@ -121,7 +121,7 @@ export function MainLayout() {
             <InboxPage threads={threads} isLoading={isLoading} onRefresh={refresh} />
           )}
           {activePage === "agenda" && (
-            <AgendaPage events={events} isLoading={isLoading} />
+            <AgendaPage events={events} isLoading={isLoading} onRefresh={refresh} />
           )}
           {activePage === "task" && (
             <TaskPage tasks={tasks} isLoading={isLoading} onRefresh={refresh} />
