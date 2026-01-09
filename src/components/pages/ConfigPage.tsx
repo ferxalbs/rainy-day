@@ -29,9 +29,9 @@ import {
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { checkBackendHealth, getBackendInfo } from "../../services/backend/api";
+import { getVersion } from "@tauri-apps/api/app";
 
-// App version from package.json would be injected at build time
-const APP_VERSION = "0.3.0";
+// App name constant
 const APP_NAME = "Rainy Day";
 
 interface ConfigItem {
@@ -49,14 +49,20 @@ export function ConfigPage() {
     isActive: notificationsActive,
     toggle: toggleNotifications,
     sendTestNotification,
-    testWithJSPlugin,
     setAutoInitialize,
   } = useNotificationSettings();
+  const [appVersion, setAppVersion] = useState<string>("...");
   const [backendVersion, setBackendVersion] = useState<string | null>(null);
   const [isBackendAvailable, setIsBackendAvailable] = useState(false);
   const [isSendingTest, setIsSendingTest] = useState(false);
 
   useEffect(() => {
+    // Get app version from Tauri
+    getVersion()
+      .then(setAppVersion)
+      .catch(() => setAppVersion("unknown"));
+
+    // Check backend health and version
     const checkBackend = async () => {
       const healthy = await checkBackendHealth();
       setIsBackendAvailable(healthy);
@@ -109,7 +115,7 @@ export function ConfigPage() {
     {
       icon: <Shield className="w-4 h-4" />,
       label: "Version",
-      value: `v${APP_VERSION}`,
+      value: `v${appVersion}`,
     },
     {
       icon: <Cloud className="w-4 h-4" />,
@@ -302,24 +308,14 @@ export function ConfigPage() {
                 </span>
               </div>
             </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleTestNotification}
-                disabled={!notificationsActive || isSendingTest}
-              >
-                {isSendingTest ? "Sending..." : "Test Rust"}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={testWithJSPlugin}
-                disabled={!notificationsActive}
-              >
-                Test JS
-              </Button>
-            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleTestNotification}
+              disabled={!notificationsActive || isSendingTest}
+            >
+              {isSendingTest ? "Sending..." : "Send Test"}
+            </Button>
           </div>
 
           {/* Status */}
@@ -399,7 +395,7 @@ export function ConfigPage() {
               <div className="flex flex-col items-start gap-0.5">
                 <span className="font-medium">Check for Updates</span>
                 <span className="text-xs text-muted-foreground">
-                  Current: v{APP_VERSION}
+                  Current: v{appVersion}
                 </span>
               </div>
             </Button>
