@@ -1,5 +1,6 @@
 import { useAuth } from "../../contexts/AuthContext";
 import { useTheme } from "../../contexts/ThemeContext";
+import { useNotificationSettings } from "../../hooks/useNotificationSettings";
 import { useState, useEffect } from "react";
 import {
   Card,
@@ -22,12 +23,14 @@ import {
   Bot,
   Rocket,
   Cloud,
+  Bell,
+  BellOff,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { checkBackendHealth, getBackendInfo } from "../../services/backend/api";
 
 // App version from package.json would be injected at build time
-const APP_VERSION = "0.1.15";
+const APP_VERSION = "0.2.1";
 const APP_NAME = "Rainy Day";
 
 interface ConfigItem {
@@ -40,8 +43,17 @@ interface ConfigItem {
 export function ConfigPage() {
   const { user, logout, isAuthenticated } = useAuth();
   const { themeName, currentTheme } = useTheme();
+  const {
+    settings: notifSettings,
+    isActive: notificationsActive,
+    toggle: toggleNotifications,
+    sendTestNotification,
+    testWithJSPlugin,
+    setAutoInitialize,
+  } = useNotificationSettings();
   const [backendVersion, setBackendVersion] = useState<string | null>(null);
   const [isBackendAvailable, setIsBackendAvailable] = useState(false);
+  const [isSendingTest, setIsSendingTest] = useState(false);
 
   useEffect(() => {
     const checkBackend = async () => {
@@ -62,6 +74,15 @@ export function ConfigPage() {
       // Auth wrapper will handle redirection
     } catch (error) {
       console.error("Logout failed:", error);
+    }
+  };
+
+  const handleTestNotification = async () => {
+    setIsSendingTest(true);
+    try {
+      await sendTestNotification();
+    } finally {
+      setIsSendingTest(false);
     }
   };
 
@@ -201,6 +222,124 @@ export function ConfigPage() {
                 {index < capabilities.length - 1 && <Separator />}
               </div>
             ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Notification Settings Card */}
+      <Card className="md:col-span-2 border-2 border-border/50 bg-card/80 backdrop-blur-xl shadow-xl shadow-primary/5">
+        <CardHeader className="pb-4">
+          <CardTitle className="flex items-center gap-2">
+            <Bell className="w-5 h-5 text-primary" />
+            Notifications
+          </CardTitle>
+          <CardDescription>Manage native OS notifications</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Enable/Disable Toggle */}
+          <div className="flex items-center justify-between py-2">
+            <div className="flex items-center gap-3">
+              {notificationsActive ? (
+                <Bell className="w-4 h-4 text-primary" />
+              ) : (
+                <BellOff className="w-4 h-4 text-muted-foreground" />
+              )}
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">
+                  Enable Notifications
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  Receive native OS alerts for tasks and reminders
+                </span>
+              </div>
+            </div>
+            <Button
+              variant={notificationsActive ? "default" : "outline"}
+              size="sm"
+              onClick={toggleNotifications}
+              className="min-w-[80px]"
+            >
+              {notificationsActive ? "On" : "Off"}
+            </Button>
+          </div>
+
+          <Separator />
+
+          {/* Auto Initialize Toggle */}
+          <div className="flex items-center justify-between py-2">
+            <div className="flex items-center gap-3">
+              <Zap className="w-4 h-4 text-muted-foreground" />
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">
+                  Auto-Request Permission
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  Automatically request permission on app start
+                </span>
+              </div>
+            </div>
+            <Button
+              variant={notifSettings.autoInitialize ? "default" : "outline"}
+              size="sm"
+              onClick={() => setAutoInitialize(!notifSettings.autoInitialize)}
+              className="min-w-[80px]"
+            >
+              {notifSettings.autoInitialize ? "On" : "Off"}
+            </Button>
+          </div>
+
+          <Separator />
+
+          {/* Test Notification */}
+          <div className="flex items-center justify-between py-2">
+            <div className="flex items-center gap-3">
+              <Bell className="w-4 h-4 text-muted-foreground" />
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">Test Notification</span>
+                <span className="text-xs text-muted-foreground">
+                  Send a test notification to verify it works
+                </span>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleTestNotification}
+                disabled={!notificationsActive || isSendingTest}
+              >
+                {isSendingTest ? "Sending..." : "Test Rust"}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={testWithJSPlugin}
+                disabled={!notificationsActive}
+              >
+                Test JS
+              </Button>
+            </div>
+          </div>
+
+          {/* Status */}
+          <div className="p-3 rounded-lg bg-muted/50">
+            <div className="flex items-center gap-2">
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  notificationsActive ? "bg-green-500" : "bg-muted-foreground"
+                }`}
+              />
+              <span className="text-xs text-muted-foreground">
+                Status:{" "}
+                <span className="font-medium text-foreground">
+                  {notificationsActive
+                    ? "Active - notifications enabled"
+                    : notifSettings.permissionState === "denied"
+                    ? "Denied - enable in System Settings"
+                    : "Disabled"}
+                </span>
+              </span>
+            </div>
           </div>
         </CardContent>
       </Card>

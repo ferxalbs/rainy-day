@@ -28,7 +28,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `system` → Sosumi sound (alert)
 
 - **Documentation**: Future enhancement roadmap
+
   - `docs/FUTURE_NOTIFICATIONS.md` with scheduled notifications, action buttons, custom sounds, and badge count plans
+
+- **Notification Settings UI**: New settings section in ConfigPage
+  - Enable/disable notifications toggle
+  - Auto-request permission on app start option
+  - Test notification button with status indicator
+  - New `useNotificationSettings` hook with localStorage persistence
 
 #### Improvements
 

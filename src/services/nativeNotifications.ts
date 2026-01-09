@@ -98,24 +98,31 @@ export async function requestPermission(): Promise<
 export async function sendNotification(
   options: NotificationOptions
 ): Promise<boolean> {
+  console.log("[Notification] Sending:", options);
+  
   if (isTauri) {
     try {
+      console.log("[Notification] Using Rust command...");
       await invoke("send_native_notification", {
         title: options.title,
         body: options.body ?? null,
         sound: options.sound ?? null,
       });
+      console.log("[Notification] Rust command succeeded");
       return true;
     } catch (error) {
-      console.warn("Failed to send notification via Rust:", error);
+      console.error("[Notification] Rust command failed:", error);
       // Fallback to JS plugin
       try {
+        console.log("[Notification] Trying JS plugin fallback...");
         const module = await import("@tauri-apps/plugin-notification");
         const hasPermission = await module.isPermissionGranted();
+        console.log("[Notification] JS plugin permission:", hasPermission);
+        
         if (!hasPermission) {
           const permission = await module.requestPermission();
           if (permission !== "granted") {
-            console.warn("Notification permission denied");
+            console.warn("[Notification] Permission denied");
             return false;
           }
         }
@@ -125,19 +132,21 @@ export async function sendNotification(
           body: options.body,
           icon: options.icon,
         });
+        console.log("[Notification] JS plugin succeeded");
         return true;
-      } catch {
-        // Plugin not available
+      } catch (jsError) {
+        console.error("[Notification] JS plugin failed:", jsError);
       }
     }
   }
 
   // Fallback to web notifications
+  console.log("[Notification] Using web fallback...");
   if ("Notification" in window) {
     if (Notification.permission !== "granted") {
       const permission = await Notification.requestPermission();
       if (permission !== "granted") {
-        console.warn("Notification permission denied");
+        console.warn("[Notification] Web permission denied");
         return false;
       }
     }
@@ -146,10 +155,11 @@ export async function sendNotification(
       body: options.body,
       icon: options.icon,
     });
+    console.log("[Notification] Web notification sent");
     return true;
   }
 
-  console.warn("Notifications not supported");
+  console.warn("[Notification] Notifications not supported");
   return false;
 }
 
