@@ -217,7 +217,9 @@ export function CommandPalette() {
             }}
             className="gap-2"
           >
-            <span className="h-4 w-4 flex items-center justify-center text-sm">+</span>
+            <span className="h-4 w-4 flex items-center justify-center text-sm">
+              +
+            </span>
             <span>New Quick Task</span>
             <span className="ml-auto text-xs text-muted-foreground">⌘N</span>
           </CommandItem>
@@ -243,6 +245,16 @@ export function CommandPalette() {
           >
             <Settings className="h-4 w-4" />
             <span>Open Config</span>
+          </CommandItem>
+          <CommandItem
+            onSelect={() => {
+              window.dispatchEvent(new CustomEvent("open-update-modal"));
+              setOpen(false);
+            }}
+            className="gap-2"
+          >
+            <RefreshCw className="h-4 w-4" />
+            <span>Check for Updates</span>
           </CommandItem>
         </CommandGroup>
       </CommandList>

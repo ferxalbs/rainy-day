@@ -25,12 +25,13 @@ import {
   Cloud,
   Bell,
   BellOff,
+  RefreshCw,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { checkBackendHealth, getBackendInfo } from "../../services/backend/api";
 
 // App version from package.json would be injected at build time
-const APP_VERSION = "0.2.1";
+const APP_VERSION = "0.3.0";
 const APP_NAME = "Rainy Day";
 
 interface ConfigItem {
@@ -379,6 +380,26 @@ export function ConfigPage() {
                 <span className="font-medium">Upgrade Plan</span>
                 <span className="text-xs text-muted-foreground">
                   Get more features (Coming Soon)
+                </span>
+              </div>
+            </Button>
+          </div>
+
+          <Separator />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Button
+              variant="outline"
+              className="w-full justify-start gap-2 h-auto py-3"
+              onClick={() =>
+                window.dispatchEvent(new CustomEvent("open-update-modal"))
+              }
+            >
+              <RefreshCw className="w-4 h-4" />
+              <div className="flex flex-col items-start gap-0.5">
+                <span className="font-medium">Check for Updates</span>
+                <span className="text-xs text-muted-foreground">
+                  Current: v{APP_VERSION}
                 </span>
               </div>
             </Button>
