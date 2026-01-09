@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.3.3] - 2026-01-09
+
+#### Added
+
+- **Native Agenda System**: Full in-app event management without external Google Calendar redirects
+  - `EventFormModal` component with glassmorphism design and date/time pickers
+  - Server endpoints `POST/PATCH/DELETE /data/events` for event CRUD operations
+  - Calendar service (`events.ts`) integrating Google Calendar API with local DB storage
+  - Frontend data service functions (`createEvent`, `updateEvent`, `deleteEvent`)
+
+#### Improvements
+
+- **shadcn Components**: Added calendar, popover, label, textarea, switch components
+- **AgendaPage**: Native event creation/deletion with in-app modals and loading states
+
+#### Fixes
+
+- **Auto-Update System**: Added `includeUpdaterJson: true` to GitHub Actions workflow for proper `latest.json` generation
+
 ### [v0.3.2] - 2026-01-09
 
 #### Added

@@ -1,8 +1,10 @@
 import { useState, useCallback } from "react";
 import type { ProcessedEvent } from "../../types";
 import { Skeleton } from "../ui/skeleton";
+import { EventFormModal } from "../agenda/EventFormModal";
+import { createEvent, deleteEvent } from "../../services/backend/data";
 import {
-  ExternalLink,
+  Trash2,
   Plus,
   Clock,
   MapPin,
@@ -10,6 +12,8 @@ import {
   Calendar,
   ChevronRight,
   Users,
+  ExternalLink,
+  Loader2,
 } from "lucide-react";
 
 interface AgendaPageProps {
@@ -24,13 +28,11 @@ interface NotificationState {
   id: number;
 }
 
-export function AgendaPage({
-  events,
-  isLoading,
-  onRefresh: _onRefresh,
-}: AgendaPageProps) {
+export function AgendaPage({ events, isLoading, onRefresh }: AgendaPageProps) {
   const [notifications, setNotifications] = useState<NotificationState[]>([]);
   const [expandedEvent, setExpandedEvent] = useState<string | null>(null);
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
   const showNotification = useCallback(
     (type: "success" | "error" | "info", message: string) => {
@@ -92,32 +94,43 @@ export function AgendaPage({
     showNotification("info", `Joining "${title}"...`);
   };
 
-  const handleOpenInCalendar = (eventId: string) => {
-    // Open in Google Calendar
-    const calendarUrl = `https://calendar.google.com/calendar/r/eventedit/${eventId}`;
-    window.open(calendarUrl, "_blank");
+  const handleCreateEvent = () => {
+    setIsEventModalOpen(true);
   };
 
-  const handleCreateEvent = () => {
-    // Open Google Calendar to create new event
-    const now = new Date();
-    const startTime = new Date(now.getTime() + 60 * 60 * 1000); // 1 hour from now
-    const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // 1 hour duration
+  const handleEventSubmit = async (eventData: {
+    title: string;
+    description?: string;
+    location?: string;
+    start_time: string;
+    end_time: string;
+    is_all_day?: boolean;
+  }) => {
+    const result = await createEvent(eventData);
+    if (result.success) {
+      showNotification("success", `Event "${eventData.title}" created!`);
+      onRefresh?.();
+    } else {
+      throw new Error(result.error || "Failed to create event");
+    }
+  };
 
-    const formatForCalendar = (date: Date) => {
-      return (
-        date
-          .toISOString()
-          .replace(/-|:|\.\d{3}/g, "")
-          .slice(0, 15) + "Z"
-      );
-    };
-
-    const calendarUrl = `https://calendar.google.com/calendar/r/eventedit?dates=${formatForCalendar(
-      startTime
-    )}/${formatForCalendar(endTime)}`;
-    window.open(calendarUrl, "_blank");
-    showNotification("info", "Opening Google Calendar...");
+  const handleDeleteEvent = async (eventId: string, eventTitle: string) => {
+    setIsDeleting(eventId);
+    try {
+      const result = await deleteEvent(eventId);
+      if (result.success) {
+        showNotification("success", `Event "${eventTitle}" deleted`);
+        setExpandedEvent(null);
+        onRefresh?.();
+      } else {
+        showNotification("error", result.error || "Failed to delete event");
+      }
+    } catch {
+      showNotification("error", "Failed to delete event");
+    } finally {
+      setIsDeleting(null);
+    }
   };
 
   // Sort events by start time
@@ -401,12 +414,17 @@ export function AgendaPage({
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleOpenInCalendar(event.id);
+                              handleDeleteEvent(event.id, event.title);
                             }}
-                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted text-foreground text-sm font-medium hover:bg-muted/80 transition-colors"
+                            disabled={isDeleting === event.id}
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-destructive/10 text-destructive text-sm font-medium hover:bg-destructive/20 transition-colors disabled:opacity-50"
                           >
-                            <ExternalLink className="w-4 h-4" />
-                            Open in Calendar
+                            {isDeleting === event.id ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="w-4 h-4" />
+                            )}
+                            Delete
                           </button>
                         </div>
 
@@ -434,6 +452,14 @@ export function AgendaPage({
           </div>
         )}
       </div>
+
+      {/* Event Form Modal */}
+      <EventFormModal
+        isOpen={isEventModalOpen}
+        onClose={() => setIsEventModalOpen(false)}
+        onSubmit={handleEventSubmit}
+        mode="create"
+      />
     </div>
   );
 }

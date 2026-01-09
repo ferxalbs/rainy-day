@@ -4,9 +4,9 @@
  * Fetches synced data from the backend (emails, events, tasks)
  */
 
-import { get, post } from "./api";
+import { get, post, patch, del } from "./api";
 
-// Types
+
 export interface Email {
   id: string;
   gmail_id: string;
@@ -153,3 +153,94 @@ export async function getSyncStatus(): Promise<{
   }>("/sync/status");
   return response.ok ? response.data ?? null : null;
 }
+
+// ========== Calendar Event CRUD ==========
+
+export interface NewEventData {
+  title: string;
+  description?: string;
+  location?: string;
+  start_time: string; // ISO string
+  end_time: string;   // ISO string
+  is_all_day?: boolean;
+}
+
+export interface UpdateEventData {
+  title?: string;
+  description?: string;
+  location?: string;
+  start_time?: string;
+  end_time?: string;
+}
+
+/**
+ * Create a new calendar event
+ */
+export async function createEvent(eventData: NewEventData): Promise<{
+  success: boolean;
+  event?: { id: string; google_event_id: string };
+  error?: string;
+}> {
+  const response = await post<{
+    success: boolean;
+    event?: { id: string; google_event_id: string };
+    error?: string;
+    message?: string;
+  }>("/data/events", eventData);
+
+  if (!response.ok) {
+    return { success: false, error: response.error || "Failed to create event" };
+  }
+
+  return {
+    success: response.data?.success ?? false,
+    event: response.data?.event,
+    error: response.data?.error,
+  };
+}
+
+/**
+ * Update an existing calendar event
+ */
+export async function updateEvent(
+  eventId: string,
+  eventData: UpdateEventData
+): Promise<{ success: boolean; error?: string }> {
+  const response = await patch<{
+    success: boolean;
+    error?: string;
+    message?: string;
+  }>(`/data/events/${eventId}`, eventData);
+
+  if (!response.ok) {
+    return { success: false, error: response.error || "Failed to update event" };
+  }
+
+  return {
+    success: response.data?.success ?? false,
+    error: response.data?.error,
+  };
+}
+
+/**
+ * Delete a calendar event
+ */
+export async function deleteEvent(
+  eventId: string
+): Promise<{ success: boolean; error?: string }> {
+  const response = await del<{
+    success: boolean;
+    error?: string;
+    message?: string;
+  }>(`/data/events/${eventId}`);
+
+  if (!response.ok) {
+    return { success: false, error: response.error || "Failed to delete event" };
+  }
+
+  return {
+    success: response.data?.success ?? false,
+    error: response.data?.error,
+  };
+}
+
