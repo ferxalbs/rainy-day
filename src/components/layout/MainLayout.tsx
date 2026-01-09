@@ -14,7 +14,7 @@ import { InboxPage } from "../pages/InboxPage";
 import { AgendaPage } from "../pages/AgendaPage";
 import { TaskPage } from "../pages/TaskPage";
 import { ConfigPage } from "../pages/ConfigPage";
-import { SmartDailyPlan } from "../plan/SmartDailyPlan";
+import { DailyBriefing } from "../plan/DailyBriefing";
 
 const PAGE_TITLES: Record<DockPage, string> = {
   plan: "AI Daily Plan",
@@ -116,12 +116,20 @@ export function MainLayout() {
           </div>
 
           {/* Page Content */}
-          {activePage === "plan" && <SmartDailyPlan />}
+          {activePage === "plan" && <DailyBriefing />}
           {activePage === "inbox" && (
-            <InboxPage threads={threads} isLoading={isLoading} onRefresh={refresh} />
+            <InboxPage
+              threads={threads}
+              isLoading={isLoading}
+              onRefresh={refresh}
+            />
           )}
           {activePage === "agenda" && (
-            <AgendaPage events={events} isLoading={isLoading} onRefresh={refresh} />
+            <AgendaPage
+              events={events}
+              isLoading={isLoading}
+              onRefresh={refresh}
+            />
           )}
           {activePage === "task" && (
             <TaskPage tasks={tasks} isLoading={isLoading} onRefresh={refresh} />

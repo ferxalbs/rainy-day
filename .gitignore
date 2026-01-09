@@ -32,3 +32,8 @@ src-tauri/target
 # Server folder (has its own .git)
 server/local.db
 server/local.db-*
+
+# test and scripts
+scripts
+SOLUCION_UPDATER.md
+UPDATER_FIX.md

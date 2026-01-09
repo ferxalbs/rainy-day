@@ -184,6 +184,126 @@ jobs:
     runs-on: ubuntu-latest
     needs: [create-release, build-macos, build-windows, build-linux]
     steps:
+      - uses: actions/checkout@v4
+      
+      - name: Get version
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      
+      - name: Create and upload latest.json
+        uses: actions/github-script@v7
+        env:
+          release_id: ${{ needs.create-release.outputs.release_id }}
+          version: ${{ steps.get_version.outputs.version }}
+        with:
+          script: |
+            const fs = require('fs');
+            const https = require('https');
+            const { promisify } = require('util');
+            
+            // Get release data
+            const { data: release } = await github.rest.repos.getRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: process.env.release_id
+            });
+            
+            const assets = release.assets;
+            const platforms = {};
+            
+            // Helper function to download content from URL
+            async function downloadContent(url) {
+              return new Promise((resolve, reject) => {
+                https.get(url, (res) => {
+                  let data = '';
+                  res.on('data', (chunk) => data += chunk);
+                  res.on('end', () => resolve(data));
+                  res.on('error', reject);
+                });
+              });
+            }
+            
+            // Process assets to build platforms object
+            const bundleAssets = assets.filter(asset => !asset.name.endsWith('.sig'));
+            
+            for (const asset of bundleAssets) {
+              const name = asset.name;
+              let platform = null;
+              
+              // Determine platform based on filename patterns
+              if (name.includes('darwin') || name.includes('macos')) {
+                if (name.includes('x64') || name.includes('x86_64')) {
+                  platform = 'darwin-x86_64';
+                } else if (name.includes('aarch64') || name.includes('arm64')) {
+                  platform = 'darwin-aarch64';
+                }
+              } else if (name.includes('linux')) {
+                if (name.includes('amd64') || name.includes('x86_64')) {
+                  platform = 'linux-x86_64';
+                }
+              } else if (name.includes('windows')) {
+                if (name.includes('x64') || name.includes('x86_64')) {
+                  platform = 'windows-x86_64';
+                }
+              }
+              
+              if (platform) {
+                // Find corresponding signature file
+                const sigAsset = assets.find(a => a.name === name + '.sig');
+                if (sigAsset) {
+                  try {
+                    console.log(`Downloading signature for ${platform}...`);
+                    const signature = await downloadContent(sigAsset.browser_download_url);
+                    platforms[platform] = {
+                      signature: signature.trim(),
+                      url: asset.browser_download_url
+                    };
+                    console.log(`✓ Added platform ${platform}`);
+                  } catch (error) {
+                    console.error(`✗ Failed to download signature for ${name}:`, error.message);
+                  }
+                }
+              }
+            }
+            
+            // Create the update JSON
+            const updateJson = {
+              version: `v${process.env.version}`,
+              notes: "See CHANGELOG.md for release notes.",
+              pub_date: new Date().toISOString(),
+              platforms: platforms
+            };
+            
+            console.log('Generated latest.json:', JSON.stringify(updateJson, null, 2));
+            
+            // Write to file
+            const content = JSON.stringify(updateJson, null, 2);
+            fs.writeFileSync('latest.json', content);
+            
+            // Upload as release asset
+            const { data: uploadedAsset } = await github.rest.repos.uploadReleaseAsset({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: process.env.release_id,
+              name: 'latest.json',
+              data: content,
+              headers: {
+                'content-type': 'application/json'
+              }
+            });
+            
+            console.log('✓ latest.json uploaded successfully:', uploadedAsset.browser_download_url);
+      
       - name: Publish release
         uses: actions/github-script@v7
         env:
