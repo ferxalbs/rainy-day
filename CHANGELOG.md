@@ -38,6 +38,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **SDK Upgrade**: Migrated from `@google/generative-ai` to `@google/genai` for new API capabilities
 - **ModelSelector UI**: Redesigned with organized sections (Gemini 3, Gemini 2.5, Groq) and NEW badges
 - **Billing Plans**: Now import models from central registry instead of hardcoded arrays
+- **Monthly Usage Limits for PRO Models**: Premium models now have monthly caps that reset on the 1st:
+  - Gemini 2.5 Pro: 10 uses/month
+  - Gemini 3 Pro: 10 uses/month
+  - Llama 3.3 70B (Groq): 20 uses/month
 
 ---
 

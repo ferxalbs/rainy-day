@@ -37,6 +37,7 @@ const ALL_MODELS = [
     name: "Gemini 2.5 Pro",
     tier: "pro",
     description: "Most capable 2.5",
+    monthlyLimit: 10,
   },
 
   // Gemini 3 Series
@@ -59,6 +60,7 @@ const ALL_MODELS = [
     tier: "pro",
     description: "Maximum intelligence",
     badge: "NEW",
+    monthlyLimit: 10,
   },
 
   // Groq Models
@@ -67,6 +69,7 @@ const ALL_MODELS = [
     name: "Llama 3.3 70B (Groq)",
     tier: "pro",
     description: "Ultra-fast",
+    monthlyLimit: 20,
   },
   {
     id: "groq-llama-3.1-8b",
@@ -157,7 +160,6 @@ export function ModelSelector({ onUpgradeClick }: ModelSelectorProps) {
             key={model.id}
             model={model}
             currentTierLevel={currentTierLevel}
-            _onUpgradeClick={onUpgradeClick}
           />
         ))}
 
@@ -171,7 +173,6 @@ export function ModelSelector({ onUpgradeClick }: ModelSelectorProps) {
               key={model.id}
               model={model}
               currentTierLevel={currentTierLevel}
-              _onUpgradeClick={onUpgradeClick}
             />
           )
         )}
@@ -186,7 +187,6 @@ export function ModelSelector({ onUpgradeClick }: ModelSelectorProps) {
             key={model.id}
             model={model}
             currentTierLevel={currentTierLevel}
-            _onUpgradeClick={onUpgradeClick}
           />
         ))}
       </SelectContent>
@@ -198,14 +198,13 @@ export function ModelSelector({ onUpgradeClick }: ModelSelectorProps) {
 function ModelItem({
   model,
   currentTierLevel,
-  _onUpgradeClick,
 }: {
   model: (typeof ALL_MODELS)[number];
   currentTierLevel: number;
-  _onUpgradeClick?: () => void;
 }) {
   const modelTierLevel = TIER_ORDER[model.tier as keyof typeof TIER_ORDER];
   const isLocked = modelTierLevel > currentTierLevel;
+  const hasLimit = "monthlyLimit" in model && model.monthlyLimit;
 
   return (
     <SelectItem value={model.id} disabled={isLocked}>
@@ -216,6 +215,11 @@ function ModelItem({
             {"badge" in model && model.badge && (
               <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-primary/20 text-primary">
                 {model.badge}
+              </span>
+            )}
+            {hasLimit && (
+              <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                {model.monthlyLimit}/mo
               </span>
             )}
           </div>

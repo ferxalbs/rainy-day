@@ -13,6 +13,7 @@ _January 10, 2026_
 - **Thinking modes**: Control how deeply the AI reasons through problems (Minimal → High)
 - **Enhanced model selector**: Models are now organized by provider with clear descriptions
 - **Groq integration**: Ultra-fast inference with Llama models for Pro users
+- **Fair usage limits**: Premium models (Gemini 2.5 Pro, Gemini 3 Pro, Llama 3.3 70B) have monthly caps to ensure availability for all Pro users. Limits reset on the 1st of each month.
 
 ---
 
