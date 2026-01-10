@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.4.9] - 2026-01-10
+
+#### Improvements
+
+- **Settings Page Reorganization**: Consolidated duplicate AI model selectors and simplified the settings UI.
+  - New "AI Configuration" card with model selector and usage limits in one place.
+  - Created `UsageLimitsDisplay` component with progress bar and upgrade prompts.
+  - Removed inline model selector from `PlanSettings.tsx`.
+  - Removed redundant Plan Comparison table.
+  - Simplified Actions section (removed duplicate ModelSelector).
+
+---
+
 ### [v0.4.8] - 2026-01-10
 
 #### Refactor

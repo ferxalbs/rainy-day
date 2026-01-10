@@ -7,41 +7,6 @@
 import { useSubscription } from "../../hooks/useSubscription";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-
-interface PlanFeature {
-  name: string;
-  free: boolean | string;
-  plus: boolean | string;
-  pro: boolean | string;
-}
-
-const PLAN_FEATURES: PlanFeature[] = [
-  {
-    name: "Daily AI Plans",
-    free: "5 per day",
-    plus: "Unlimited",
-    pro: "Unlimited",
-  },
-  {
-    name: "AI Models",
-    free: "Gemini 2.5 Flash Lite",
-    plus: "Gemini 2.5 & 3 Flash",
-    pro: "All Models + GPT",
-  },
-  {
-    name: "Priority Support",
-    free: false,
-    plus: true,
-    pro: true,
-  },
-  {
-    name: "Advanced Analytics",
-    free: false,
-    plus: false,
-    pro: true,
-  },
-];
 
 export function PlanSettings() {
   const {
@@ -52,10 +17,8 @@ export function PlanSettings() {
     availableModels,
     currentPeriodEnd,
     cancelAtPeriodEnd,
-    limits,
     isLoading,
     error,
-    setModel,
     startCheckout,
     openBillingPortal,
     cancelSubscription,
@@ -180,148 +143,6 @@ export function PlanSettings() {
               )}
             </>
           )}
-        </div>
-      </div>
-
-      {/* Usage Limits Card */}
-      {limits && (
-        <div className="p-6 rounded-2xl bg-card/30 border-2 border-border/30 backdrop-blur-xl">
-          <h3 className="text-lg font-semibold text-foreground mb-4">
-            Usage & Limits
-          </h3>
-
-          <div className="space-y-4">
-            <div>
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium text-foreground">
-                  Daily AI Plans
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  {limits.planGeneration.limit === -1
-                    ? "Unlimited"
-                    : `${limits.planGeneration.remaining}/${limits.planGeneration.limit} remaining`}
-                </span>
-              </div>
-              {limits.planGeneration.limit !== -1 && (
-                <div className="w-full bg-muted/30 rounded-full h-2">
-                  <div
-                    className="bg-primary h-2 rounded-full transition-all duration-300"
-                    style={{
-                      width: `${
-                        (limits.planGeneration.remaining /
-                          limits.planGeneration.limit) *
-                        100
-                      }%`,
-                    }}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-
-          {!limits.planGeneration.allowed && (
-            <div className="mt-4 p-3 rounded-lg bg-orange-500/10 border border-orange-500/20">
-              <p className="text-sm text-orange-600">
-                You've reached your daily limit. Upgrade for unlimited AI plans.
-              </p>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* AI Model Selection */}
-      {availableModels.length > 1 && (
-        <div className="p-6 rounded-2xl bg-card/30 border-2 border-border/30 backdrop-blur-xl">
-          <h3 className="text-lg font-semibold text-foreground mb-1">
-            AI Model
-          </h3>
-          <p className="text-sm text-muted-foreground mb-6">
-            Choose which AI model to use for generating your daily plans
-          </p>
-
-          <RadioGroup
-            value={selectedModel}
-            onValueChange={(value) => setModel(value)}
-            className="grid grid-cols-1 gap-3"
-          >
-            {availableModels.map((model) => (
-              <div key={model.id} className="relative">
-                <RadioGroupItem
-                  value={model.id}
-                  id={model.id}
-                  className="peer sr-only"
-                />
-                <label
-                  htmlFor={model.id}
-                  className="flex items-center justify-between p-4 rounded-xl border-2 border-border/30 bg-card/20 cursor-pointer transition-all duration-200 hover:bg-card/40 hover:border-primary/30 peer-aria-checked:border-primary/50 peer-aria-checked:bg-primary/5 peer-aria-checked:shadow-[0_0_15px_hsl(var(--primary)/0.1)]"
-                >
-                  <div className="flex flex-col">
-                    <span className="text-sm font-semibold text-foreground">
-                      {model.name}
-                    </span>
-                    <span className="text-xs text-muted-foreground mt-0.5">
-                      {model.id.includes("gemini")
-                        ? "Powered by Google"
-                        : "Powered by Groq"}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-center size-5 rounded-full border border-border/50 peer-aria-checked:border-primary peer-aria-checked:bg-primary transition-colors">
-                    <div className="size-2 rounded-full bg-white opacity-0 peer-aria-checked:opacity-100 transition-opacity" />
-                  </div>
-                </label>
-              </div>
-            ))}
-          </RadioGroup>
-        </div>
-      )}
-
-      {/* Plan Comparison */}
-      <div className="p-6 rounded-2xl bg-card/30 border-2 border-border/30 backdrop-blur-xl">
-        <h3 className="text-lg font-semibold text-foreground mb-4">
-          Plan Comparison
-        </h3>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border/30">
-                <th className="text-left py-2 text-foreground">Feature</th>
-                <th className="text-center py-2 text-foreground">Free</th>
-                <th className="text-center py-2 text-foreground">Plus</th>
-                <th className="text-center py-2 text-foreground">Pro</th>
-              </tr>
-            </thead>
-            <tbody>
-              {PLAN_FEATURES.map((feature, index) => (
-                <tr key={index} className="border-b border-border/10">
-                  <td className="py-3 text-foreground font-medium">
-                    {feature.name}
-                  </td>
-                  <td className="py-3 text-center text-muted-foreground">
-                    {typeof feature.free === "boolean"
-                      ? feature.free
-                        ? "✓"
-                        : "✗"
-                      : feature.free}
-                  </td>
-                  <td className="py-3 text-center text-muted-foreground">
-                    {typeof feature.plus === "boolean"
-                      ? feature.plus
-                        ? "✓"
-                        : "✗"
-                      : feature.plus}
-                  </td>
-                  <td className="py-3 text-center text-muted-foreground">
-                    {typeof feature.pro === "boolean"
-                      ? feature.pro
-                        ? "✓"
-                        : "✗"
-                      : feature.pro}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       </div>
     </div>

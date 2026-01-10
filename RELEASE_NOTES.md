@@ -2,6 +2,15 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
+## Rainy Day 0.4.9
+
+_January 10, 2026_
+
+- **Cleaner Settings Page**: Reorganized the settings with a new "AI Configuration" section that consolidates model selection and usage limits in one place.
+- **Less Clutter**: Removed duplicate controls and unnecessary comparison tables for a simpler experience.
+
+---
+
 ## Rainy Day 0.4.8
 
 _January 10, 2026_

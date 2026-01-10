@@ -27,6 +27,7 @@ import {
   BellOff,
   RefreshCw,
   CreditCard,
+  Bot,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { checkBackendHealth, getBackendInfo } from "../../services/backend/api";
@@ -34,6 +35,7 @@ import { getVersion } from "@tauri-apps/api/app";
 import { ModelSelector } from "../settings/ModelSelector";
 import { UpgradePlanModal } from "../settings/UpgradePlanModal";
 import { PlanSettings } from "../settings/PlanSettings";
+import { UsageLimitsDisplay } from "../settings/UsageLimitsDisplay";
 
 // App name constant
 const APP_NAME = "Rainy Day";
@@ -228,6 +230,39 @@ export function ConfigPage() {
         </CardContent>
       </Card>
 
+      {/* AI Configuration Card */}
+      <Card className="md:col-span-2 border-2 border-border/50 bg-card/30 backdrop-blur-xl shadow-xl shadow-primary/5">
+        <CardHeader className="pb-4">
+          <CardTitle className="flex items-center gap-2">
+            <Bot className="w-5 h-5 text-primary" />
+            AI Configuration
+          </CardTitle>
+          <CardDescription>Model selection and usage limits</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Model Selector */}
+          <div className="space-y-2">
+            <h4 className="text-sm font-medium text-foreground">AI Model</h4>
+            <p className="text-xs text-muted-foreground mb-3">
+              Choose which AI model to use for generating your daily plans
+            </p>
+            <ModelSelector onUpgradeClick={() => setShowUpgradeModal(true)} />
+          </div>
+
+          <Separator />
+
+          {/* Usage Limits */}
+          <div className="space-y-3">
+            <h4 className="text-sm font-medium text-foreground">
+              Daily Limits
+            </h4>
+            <UsageLimitsDisplay
+              onUpgradeClick={() => setShowUpgradeModal(true)}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Subscription & Billing Card */}
       <Card className="md:col-span-2 border-2 border-border/50 bg-card/30 backdrop-blur-xl shadow-xl shadow-primary/5">
         <CardHeader className="pb-4">
@@ -338,10 +373,8 @@ export function ConfigPage() {
           </CardTitle>
           <CardDescription>Manage your session and preferences</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <ModelSelector onUpgradeClick={() => setShowUpgradeModal(true)} />
-
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <button
               onClick={() => setShowUpgradeModal(true)}
               className="group flex items-center gap-3 p-4 rounded-xl border-2 border-border/30 bg-card/20 hover:bg-card/40 hover:border-primary/30 transition-all duration-200 text-left w-full"
@@ -358,9 +391,7 @@ export function ConfigPage() {
                 </span>
               </div>
             </button>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <button
               onClick={() =>
                 window.dispatchEvent(new CustomEvent("open-update-modal"))
