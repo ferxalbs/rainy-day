@@ -360,220 +360,304 @@ export function SmartDailyPlan({
 
   return (
     <div className="space-y-6 relative">
-      {/* Regenerating Overlay with Skeleton */}
-      {isGenerating && plan && (
-        <div className="absolute inset-0 z-10 bg-background/60 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center gap-4 animate-in fade-in duration-300">
-          <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
-          <p className="text-sm font-medium text-foreground/80">
-            Regenerating your plan...
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Using your selected AI model
-          </p>
-        </div>
-      )}
-
-      {/* Notifications - Requirements: 3.4 */}
-      {notifications.length > 0 && (
-        <div className="fixed top-4 right-4 z-50 space-y-2 max-w-sm">
-          {notifications.map((notification) => (
-            <div
-              key={notification.id}
-              className={`px-4 py-3 rounded-lg shadow-lg backdrop-blur-md border transition-all animate-in slide-in-from-right-5 ${
-                notification.type === "success"
-                  ? "bg-green-500/90 text-white border-green-400/50"
-                  : "bg-destructive/90 text-destructive-foreground border-destructive/50"
-              }`}
-            >
-              <div className="flex items-start gap-2">
-                <span className="text-lg flex-shrink-0">
-                  {notification.type === "success" ? "✓" : "✕"}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <span className="text-sm font-medium block">
-                    {notification.message}
-                  </span>
-                  {notification.action && (
-                    <button
-                      onClick={() => {
-                        dismissNotification(notification.id);
-                        notification.action?.onClick();
-                      }}
-                      className="mt-2 text-xs font-semibold underline underline-offset-2 hover:no-underline opacity-90 hover:opacity-100"
-                    >
-                      {notification.action.label}
-                    </button>
-                  )}
-                </div>
-                <button
-                  onClick={() => dismissNotification(notification.id)}
-                  className="flex-shrink-0 p-0.5 rounded hover:bg-white/20 transition-colors"
-                  aria-label="Dismiss notification"
-                >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M18 6L6 18M6 6l12 12" />
-                  </svg>
-                </button>
+      {/* Full Skeleton Loading State when Regenerating */}
+      {isGenerating && (
+        <div className="space-y-6 animate-in fade-in duration-300">
+          {/* Skeleton Summary Card */}
+          <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-purple-500/5 border-2 border-border/30">
+            <div className="space-y-3">
+              <div className="h-4 bg-muted/40 rounded-lg w-full animate-pulse" />
+              <div className="h-4 bg-muted/30 rounded-lg w-5/6 animate-pulse" />
+              <div className="h-4 bg-muted/20 rounded-lg w-4/6 animate-pulse" />
+            </div>
+            <div className="mt-4 flex items-start gap-3 p-3 rounded-xl bg-card/30 border border-border/30">
+              <div className="w-5 h-5 bg-muted/40 rounded-full animate-pulse" />
+              <div className="flex-1 space-y-2">
+                <div className="h-3 bg-muted/30 rounded w-full animate-pulse" />
+                <div className="h-3 bg-muted/20 rounded w-3/4 animate-pulse" />
               </div>
             </div>
-          ))}
+          </div>
+
+          {/* Skeleton Section - Focus Blocks */}
+          <div className="p-5 rounded-2xl bg-card/20 border-2 border-border/30">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-6 h-6 bg-muted/40 rounded animate-pulse" />
+              <div className="h-5 bg-muted/30 rounded w-32 animate-pulse" />
+            </div>
+            <div className="space-y-3">
+              {[1, 2].map((i) => (
+                <div
+                  key={i}
+                  className="p-4 rounded-xl bg-card/30 border border-border/20"
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-4 h-4 bg-muted/40 rounded animate-pulse" />
+                    <div className="h-4 bg-muted/30 rounded flex-1 animate-pulse" />
+                    <div className="w-12 h-4 bg-muted/20 rounded animate-pulse" />
+                  </div>
+                  <div className="flex gap-4 text-xs">
+                    <div className="h-3 bg-muted/20 rounded w-16 animate-pulse" />
+                    <div className="h-3 bg-muted/20 rounded w-12 animate-pulse" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Skeleton Section - Quick Wins */}
+          <div className="p-5 rounded-2xl bg-card/20 border-2 border-border/30">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-6 h-6 bg-muted/40 rounded animate-pulse" />
+              <div className="h-5 bg-muted/30 rounded w-28 animate-pulse" />
+            </div>
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="p-4 rounded-xl bg-card/30 border border-border/20"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-4 h-4 bg-muted/40 rounded animate-pulse" />
+                    <div
+                      className="h-4 bg-muted/30 rounded flex-1 animate-pulse"
+                      style={{ width: `${60 + i * 10}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Generating indicator */}
+          <div className="fixed bottom-24 left-1/2 -translate-x-1/2 px-4 py-2 bg-primary/90 text-primary-foreground rounded-full shadow-lg flex items-center gap-3 z-20 animate-bounce">
+            <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+            <span className="text-sm font-medium">Generating plan...</span>
+          </div>
         </div>
       )}
-      {/* Summary Card */}
-      {plan && (plan.summary || plan.energy_tip) && (
-        <section className="p-5 rounded-2xl bg-gradient-to-br from-primary/10 to-purple-500/10 border-2 border-border/50 backdrop-blur-3xl shadow-xl shadow-primary/5">
-          {plan.summary && (
-            <p className="text-foreground/90 leading-relaxed mb-4 text-base">
-              {plan.summary}
-            </p>
-          )}
-          {plan.energy_tip && (
-            <div className="flex items-start gap-3 p-3 rounded-xl bg-card/30 text-sm text-foreground/80 border border-border/30">
-              <span className="text-lg">💡</span>
-              <span className="leading-snug pt-0.5">{plan.energy_tip}</span>
+
+      {/* Actual Plan Content (hidden when generating) */}
+      {!isGenerating && (
+        <>
+          {/* Notifications - Requirements: 3.4 */}
+          {notifications.length > 0 && (
+            <div className="fixed top-4 right-4 z-50 space-y-2 max-w-sm">
+              {notifications.map((notification) => (
+                <div
+                  key={notification.id}
+                  className={`px-4 py-3 rounded-lg shadow-lg backdrop-blur-md border transition-all animate-in slide-in-from-right-5 ${
+                    notification.type === "success"
+                      ? "bg-green-500/90 text-white border-green-400/50"
+                      : "bg-destructive/90 text-destructive-foreground border-destructive/50"
+                  }`}
+                >
+                  <div className="flex items-start gap-2">
+                    <span className="text-lg flex-shrink-0">
+                      {notification.type === "success" ? "✓" : "✕"}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <span className="text-sm font-medium block">
+                        {notification.message}
+                      </span>
+                      {notification.action && (
+                        <button
+                          onClick={() => {
+                            dismissNotification(notification.id);
+                            notification.action?.onClick();
+                          }}
+                          className="mt-2 text-xs font-semibold underline underline-offset-2 hover:no-underline opacity-90 hover:opacity-100"
+                        >
+                          {notification.action.label}
+                        </button>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => dismissNotification(notification.id)}
+                      className="flex-shrink-0 p-0.5 rounded hover:bg-white/20 transition-colors"
+                      aria-label="Dismiss notification"
+                    >
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M18 6L6 18M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
-        </section>
-      )}
+          {/* Summary Card */}
+          {plan && (plan.summary || plan.energy_tip) && (
+            <section className="p-5 rounded-2xl bg-gradient-to-br from-primary/10 to-purple-500/10 border-2 border-border/50 backdrop-blur-3xl shadow-xl shadow-primary/5">
+              {plan.summary && (
+                <p className="text-foreground/90 leading-relaxed mb-4 text-base">
+                  {plan.summary}
+                </p>
+              )}
+              {plan.energy_tip && (
+                <div className="flex items-start gap-3 p-3 rounded-xl bg-card/30 text-sm text-foreground/80 border border-border/30">
+                  <span className="text-lg">💡</span>
+                  <span className="leading-snug pt-0.5">{plan.energy_tip}</span>
+                </div>
+              )}
+            </section>
+          )}
 
-      {/* Focus Blocks */}
-      <Section
-        title="Focus Blocks"
-        icon="🎯"
-        count={
-          plan ? filterOptimisticallyArchivedTasks(plan.focus_blocks).length : 0
-        }
-      >
-        {!plan ||
-        filterOptimisticallyArchivedTasks(plan.focus_blocks).length === 0 ? (
-          <EmptyState>No focus blocks scheduled</EmptyState>
-        ) : (
-          <div className="space-y-3">
-            {filterOptimisticallyArchivedTasks(plan.focus_blocks).map(
-              (task) => (
-                <TaskCard
-                  key={task.id}
-                  task={task}
-                  itemType="focus_block"
-                  onComplete={onTaskComplete}
-                  onFeedback={submitItemFeedback}
-                  formatTime={formatSuggestedTime}
-                  getPriorityClasses={getPriorityClasses}
-                  getTypeIcon={getTypeIcon}
-                  onArchiveEmail={handleArchiveEmail}
-                  onMarkAsRead={handleMarkAsRead}
-                  onConvertToTask={handleConvertToTask}
-                  emailLoadingState={
-                    task.source_id
-                      ? emailLoadingStates[task.source_id]
-                      : undefined
-                  }
-                  isOptimisticallyRead={isOptimisticallyRead(task.source_id)}
-                />
-              )
-            )}
-          </div>
-        )}
-      </Section>
-
-      {/* Quick Wins */}
-      <Section
-        title="Quick Wins"
-        icon="⚡"
-        count={
-          plan ? filterOptimisticallyArchivedTasks(plan.quick_wins).length : 0
-        }
-      >
-        {!plan ||
-        filterOptimisticallyArchivedTasks(plan.quick_wins).length === 0 ? (
-          <EmptyState>No quick wins available</EmptyState>
-        ) : (
-          <div className="space-y-3">
-            {filterOptimisticallyArchivedTasks(plan.quick_wins).map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                itemType="quick_win"
-                onComplete={onTaskComplete}
-                onFeedback={submitItemFeedback}
-                formatTime={formatSuggestedTime}
-                getPriorityClasses={getPriorityClasses}
-                getTypeIcon={getTypeIcon}
-                onArchiveEmail={handleArchiveEmail}
-                onMarkAsRead={handleMarkAsRead}
-                onConvertToTask={handleConvertToTask}
-                emailLoadingState={
-                  task.source_id
-                    ? emailLoadingStates[task.source_id]
-                    : undefined
-                }
-                isOptimisticallyRead={isOptimisticallyRead(task.source_id)}
-              />
-            ))}
-          </div>
-        )}
-      </Section>
-
-      {/* Meetings */}
-      <Section title="Meetings" icon="📅" count={plan?.meetings?.length ?? 0}>
-        {!plan || plan.meetings.length === 0 ? (
-          <EmptyState>No meetings scheduled</EmptyState>
-        ) : (
-          <div className="space-y-3">
-            {plan.meetings.map((meeting) => (
-              <MeetingCard
-                key={meeting.id}
-                meeting={meeting}
-                onFeedback={submitItemFeedback}
-                formatTime={formatSuggestedTime}
-              />
-            ))}
-          </div>
-        )}
-      </Section>
-
-      {/* Defer Suggestions */}
-      {plan && plan.defer_suggestions.length > 0 && (
-        <Section
-          title="Consider Deferring"
-          icon="📌"
-          count={plan.defer_suggestions.length}
-        >
-          <div className="space-y-2">
-            {plan.defer_suggestions.map((suggestion, index) => (
-              <DeferCard
-                key={index}
-                suggestion={suggestion}
-                index={index}
-                onFeedback={submitItemFeedback}
-              />
-            ))}
-          </div>
-        </Section>
-      )}
-
-      {/* No Plan State */}
-      {!plan && !error && (
-        <section className="p-12 rounded-2xl bg-card/30 border-2 border-border/30 backdrop-blur-2xl text-center shadow-xl">
-          <p className="text-muted-foreground mb-6 text-lg">
-            No plan generated yet for today.
-          </p>
-          <button
-            onClick={regenerate}
-            disabled={isGenerating}
-            className="px-8 py-3 bg-primary text-primary-foreground rounded-xl font-medium
-                         hover:bg-primary/90 transition-all disabled:opacity-50 shadow-lg shadow-primary/20"
+          {/* Focus Blocks */}
+          <Section
+            title="Focus Blocks"
+            icon="🎯"
+            count={
+              plan
+                ? filterOptimisticallyArchivedTasks(plan.focus_blocks).length
+                : 0
+            }
           >
-            {isGenerating ? "Generating..." : "Generate AI Plan"}
-          </button>
-        </section>
+            {!plan ||
+            filterOptimisticallyArchivedTasks(plan.focus_blocks).length ===
+              0 ? (
+              <EmptyState>No focus blocks scheduled</EmptyState>
+            ) : (
+              <div className="space-y-3">
+                {filterOptimisticallyArchivedTasks(plan.focus_blocks).map(
+                  (task) => (
+                    <TaskCard
+                      key={task.id}
+                      task={task}
+                      itemType="focus_block"
+                      onComplete={onTaskComplete}
+                      onFeedback={submitItemFeedback}
+                      formatTime={formatSuggestedTime}
+                      getPriorityClasses={getPriorityClasses}
+                      getTypeIcon={getTypeIcon}
+                      onArchiveEmail={handleArchiveEmail}
+                      onMarkAsRead={handleMarkAsRead}
+                      onConvertToTask={handleConvertToTask}
+                      emailLoadingState={
+                        task.source_id
+                          ? emailLoadingStates[task.source_id]
+                          : undefined
+                      }
+                      isOptimisticallyRead={isOptimisticallyRead(
+                        task.source_id
+                      )}
+                    />
+                  )
+                )}
+              </div>
+            )}
+          </Section>
+
+          {/* Quick Wins */}
+          <Section
+            title="Quick Wins"
+            icon="⚡"
+            count={
+              plan
+                ? filterOptimisticallyArchivedTasks(plan.quick_wins).length
+                : 0
+            }
+          >
+            {!plan ||
+            filterOptimisticallyArchivedTasks(plan.quick_wins).length === 0 ? (
+              <EmptyState>No quick wins available</EmptyState>
+            ) : (
+              <div className="space-y-3">
+                {filterOptimisticallyArchivedTasks(plan.quick_wins).map(
+                  (task) => (
+                    <TaskCard
+                      key={task.id}
+                      task={task}
+                      itemType="quick_win"
+                      onComplete={onTaskComplete}
+                      onFeedback={submitItemFeedback}
+                      formatTime={formatSuggestedTime}
+                      getPriorityClasses={getPriorityClasses}
+                      getTypeIcon={getTypeIcon}
+                      onArchiveEmail={handleArchiveEmail}
+                      onMarkAsRead={handleMarkAsRead}
+                      onConvertToTask={handleConvertToTask}
+                      emailLoadingState={
+                        task.source_id
+                          ? emailLoadingStates[task.source_id]
+                          : undefined
+                      }
+                      isOptimisticallyRead={isOptimisticallyRead(
+                        task.source_id
+                      )}
+                    />
+                  )
+                )}
+              </div>
+            )}
+          </Section>
+
+          {/* Meetings */}
+          <Section
+            title="Meetings"
+            icon="📅"
+            count={plan?.meetings?.length ?? 0}
+          >
+            {!plan || plan.meetings.length === 0 ? (
+              <EmptyState>No meetings scheduled</EmptyState>
+            ) : (
+              <div className="space-y-3">
+                {plan.meetings.map((meeting) => (
+                  <MeetingCard
+                    key={meeting.id}
+                    meeting={meeting}
+                    onFeedback={submitItemFeedback}
+                    formatTime={formatSuggestedTime}
+                  />
+                ))}
+              </div>
+            )}
+          </Section>
+
+          {/* Defer Suggestions */}
+          {plan && plan.defer_suggestions.length > 0 && (
+            <Section
+              title="Consider Deferring"
+              icon="📌"
+              count={plan.defer_suggestions.length}
+            >
+              <div className="space-y-2">
+                {plan.defer_suggestions.map((suggestion, index) => (
+                  <DeferCard
+                    key={index}
+                    suggestion={suggestion}
+                    index={index}
+                    onFeedback={submitItemFeedback}
+                  />
+                ))}
+              </div>
+            </Section>
+          )}
+
+          {/* No Plan State */}
+          {!plan && !error && (
+            <section className="p-12 rounded-2xl bg-card/30 border-2 border-border/30 backdrop-blur-2xl text-center shadow-xl">
+              <p className="text-muted-foreground mb-6 text-lg">
+                No plan generated yet for today.
+              </p>
+              <button
+                onClick={regenerate}
+                disabled={isGenerating}
+                className="px-8 py-3 bg-primary text-primary-foreground rounded-xl font-medium
+                         hover:bg-primary/90 transition-all disabled:opacity-50 shadow-lg shadow-primary/20"
+              >
+                {isGenerating ? "Generating..." : "Generate AI Plan"}
+              </button>
+            </section>
+          )}
+        </>
       )}
     </div>
   );
