@@ -31,6 +31,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `incrementModelUsage` - Records usage after successful generation
 - **Enhanced `/billing/limits` Response**: Now includes `used` count for selected model
 - **Return Type Changed**: `generateDailyPlan()` now returns `{ ...plan, modelUsed, wasDowngraded }`
+- **Tracks ALL Model Usage**: Not just premium - enables analytics on user model preferences
+
+#### Patches
+
+- **UsageLimitsDisplay UI**: Now shows premium model usage bars with reset dates
+- **UsageLimits Interface**: Updated to include `selectedModel` usage info
 
 ---
 

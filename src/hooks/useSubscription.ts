@@ -43,6 +43,15 @@ export interface UsageLimits {
     remaining: number;
     limit: number;
   };
+  selectedModel?: {
+    modelId: string;
+    allowed: boolean;
+    used: number;
+    remaining: number;
+    limit: number;
+    isPremium: boolean;
+    resetsAt: string;
+  };
 }
 
 export function useSubscription() {
