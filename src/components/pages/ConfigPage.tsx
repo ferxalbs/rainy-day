@@ -26,12 +26,14 @@ import {
   Bell,
   BellOff,
   RefreshCw,
+  CreditCard,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { checkBackendHealth, getBackendInfo } from "../../services/backend/api";
 import { getVersion } from "@tauri-apps/api/app";
 import { ModelSelector } from "../settings/ModelSelector";
 import { UpgradePlanModal } from "../settings/UpgradePlanModal";
+import { PlanSettings } from "../settings/PlanSettings";
 
 // App name constant
 const APP_NAME = "Rainy Day";
@@ -223,6 +225,20 @@ export function ConfigPage() {
               </div>
             ))}
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Subscription & Billing Card */}
+      <Card className="md:col-span-2 border-2 border-border/50 bg-card/30 backdrop-blur-xl shadow-xl shadow-primary/5">
+        <CardHeader className="pb-4">
+          <CardTitle className="flex items-center gap-2">
+            <CreditCard className="w-5 h-5 text-primary" />
+            Subscription & Billing
+          </CardTitle>
+          <CardDescription>Manage your plan, usage, and billing</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <PlanSettings />
         </CardContent>
       </Card>
 
