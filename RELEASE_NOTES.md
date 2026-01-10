@@ -2,6 +2,20 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
+## Rainy Day 0.5.0 🚀
+
+_January 10, 2026_
+
+**The AI Model Expansion Update**
+
+- **More AI models**: Access to 8 different AI models based on your plan tier
+- **Gemini 3 support**: The latest Gemini 3 Flash and Pro models with advanced reasoning
+- **Thinking modes**: Control how deeply the AI reasons through problems (Minimal → High)
+- **Enhanced model selector**: Models are now organized by provider with clear descriptions
+- **Groq integration**: Ultra-fast inference with Llama models for Pro users
+
+---
+
 ## Rainy Day 0.4.9
 
 _January 10, 2026_

@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.5.0] - 2026-01-10
+
+#### Added
+
+- **Unified Model Router Architecture**: New `models.ts` as central registry for all AI providers
+
+  - Provider support: Gemini, Groq (extensible to OpenRouter, OpenAI, Cerebras, xAI)
+  - Model definitions with tier-based access control
+  - Thinking configuration support (levels for Gemini 3, budgets for Gemini 2.5)
+  - Helper functions: `getModel()`, `getModelsForTier()`, `buildThinkingConfig()`
+
+- **Gemini 3 Thinking Levels**: Full support for Gemini 3 Flash and Pro thinking modes
+
+  - MINIMAL - Fastest, minimal reasoning (Gemini 3 Flash only)
+  - LOW - Simple tasks, reduced latency
+  - MEDIUM - Balanced approach (Gemini 3 Flash only)
+  - HIGH - Maximum reasoning depth (default)
+
+- **New Models Available**:
+  - Gemini 2.5 Flash (Plus tier) - Dynamic thinking budget
+  - Gemini 2.5 Pro (Pro tier) - Most capable 2.5 series
+  - Gemini 3 Flash Minimal (Plus tier) - Fastest Gemini 3
+  - Gemini 3 Pro (Pro tier) - Maximum intelligence
+  - Llama 3.3 70B via Groq (Pro tier) - Ultra-fast inference
+  - Llama 3.1 8B via Groq (Plus tier) - Lightning-fast small model
+
+#### Improvements
+
+- **SDK Upgrade**: Migrated from `@google/generative-ai` to `@google/genai` for new API capabilities
+- **ModelSelector UI**: Redesigned with organized sections (Gemini 3, Gemini 2.5, Groq) and NEW badges
+- **Billing Plans**: Now import models from central registry instead of hardcoded arrays
+
+---
+
 ### [v0.4.9] - 2026-01-10
 
 #### Improvements
