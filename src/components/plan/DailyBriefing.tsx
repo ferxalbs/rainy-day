@@ -585,10 +585,10 @@ export function DailyBriefing({ onTaskComplete }: DailyBriefingProps) {
   };
 
   // =============================================================================
-  // Loading State
+  // Loading State (initial load only)
   // =============================================================================
 
-  if (isLoading) {
+  if (isLoading && !plan) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4 text-muted-foreground">
         <div className="w-8 h-8 border-4 border-muted/30 border-t-primary rounded-full animate-spin" />
@@ -634,151 +634,158 @@ export function DailyBriefing({ onTaskComplete }: DailyBriefingProps) {
   const actionItems = getAllActionItems();
 
   return (
-    <div className="space-y-4">
-      {/* Notifications */}
-      {notifications.length > 0 && (
-        <div className="fixed top-4 right-4 z-50 space-y-2 max-w-sm">
-          {notifications.map((notification) => (
-            <div
-              key={notification.id}
-              className={`px-4 py-3 rounded-lg shadow-lg backdrop-blur-md border transition-all animate-in slide-in-from-right-5 ${
-                notification.type === "success"
-                  ? "bg-green-500/90 text-white border-green-400/50"
-                  : "bg-destructive/90 text-destructive-foreground border-destructive/50"
-              }`}
-            >
-              <div className="flex items-start gap-2">
-                <span className="text-sm font-medium flex-1">
-                  {notification.message}
-                </span>
-                {notification.action && (
-                  <button
-                    onClick={() => {
-                      dismissNotification(notification.id);
-                      notification.action?.onClick();
-                    }}
-                    className="text-xs font-semibold underline underline-offset-2 hover:no-underline"
-                  >
-                    {notification.action.label}
-                  </button>
-                )}
-                <button
-                  onClick={() => dismissNotification(notification.id)}
-                  className="p-0.5 rounded hover:bg-white/20 transition-colors"
-                  aria-label="Dismiss"
+    <div className="space-y-4 relative">
+      {/* Skeleton Loading State when Regenerating */}
+      {isGenerating && (
+        <div className="space-y-4 animate-in fade-in duration-300">
+          {/* Skeleton Card */}
+          <div className="p-6 rounded-2xl backdrop-blur-xl border-2 border-border/50 bg-card/30 shadow-xl">
+            {/* Skeleton Summary */}
+            <div className="space-y-3 mb-6">
+              <div className="h-4 bg-muted/40 rounded-lg w-full animate-pulse" />
+              <div className="h-4 bg-muted/30 rounded-lg w-5/6 animate-pulse" />
+              <div className="h-4 bg-muted/20 rounded-lg w-4/6 animate-pulse" />
+            </div>
+
+            {/* Skeleton Action Items */}
+            <div className="space-y-2">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-4 p-3 rounded-xl bg-background/30"
                 >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M18 6L6 18M6 6l12 12" />
-                  </svg>
-                </button>
+                  <div className="w-5 h-5 rounded-md bg-muted/40 animate-pulse" />
+                  <div className="flex-1 space-y-2">
+                    <div
+                      className="h-4 bg-muted/30 rounded animate-pulse"
+                      style={{ width: `${50 + i * 8}%` }}
+                    />
+                    <div className="flex gap-3">
+                      <div className="h-3 bg-muted/20 rounded w-16 animate-pulse" />
+                      <div className="h-3 bg-muted/20 rounded w-12 animate-pulse" />
+                    </div>
+                  </div>
+                  <div className="w-12 h-4 bg-muted/20 rounded animate-pulse" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Energy Tip Skeleton */}
+          <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
+            <div className="flex items-start gap-3">
+              <div className="w-5 h-5 bg-amber-500/30 rounded animate-pulse" />
+              <div className="flex-1 space-y-2">
+                <div className="h-3 bg-amber-500/20 rounded w-full animate-pulse" />
+                <div className="h-3 bg-amber-500/10 rounded w-3/4 animate-pulse" />
               </div>
             </div>
-          ))}
+          </div>
+
+          {/* Generating indicator */}
+          <div className="fixed bottom-24 left-1/2 -translate-x-1/2 px-4 py-2 bg-primary/90 text-primary-foreground rounded-full shadow-lg flex items-center gap-3 z-20">
+            <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+            <span className="text-sm font-medium">Regenerating plan...</span>
+          </div>
         </div>
       )}
 
-      {/* Main Briefing Card */}
-      <div className="daily-briefing-container p-6 rounded-2xl backdrop-blur-xl border-2 border-border/50 bg-card/30 shadow-xl">
-        {/* AI Summary */}
-        {plan.summary && (
-          <p className="text-foreground/80 leading-relaxed mb-6 text-[15px]">
-            {plan.summary}
-          </p>
-        )}
-
-        {/* Action Items List */}
-        {actionItems.length > 0 && (
-          <div className="space-y-2">
-            {actionItems.map((task) => (
-              <BriefingItem
-                key={task.id}
-                task={task}
-                onComplete={onTaskComplete}
-                onFeedback={submitItemFeedback}
-                formatTime={formatSuggestedTime}
-                getTypeIcon={getTypeIcon}
-                getPriorityColor={getPriorityColor}
-                onArchiveEmail={handleArchiveEmail}
-                onMarkAsRead={handleMarkAsRead}
-                onConvertToTask={handleConvertToTask}
-                emailLoadingState={
-                  task.source_id
-                    ? emailLoadingStates[task.source_id]
-                    : undefined
-                }
-                isOptimisticallyRead={
-                  task.source_id
-                    ? optimisticStates[task.source_id]?.markedRead ?? false
-                    : false
-                }
-              />
-            ))}
-          </div>
-        )}
-
-        {actionItems.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-              <svg
-                className="w-8 h-8 text-primary"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
-                />
-              </svg>
+      {/* Actual Content (hidden when regenerating) */}
+      {!isGenerating && (
+        <>
+          {/* Notifications */}
+          {notifications.length > 0 && (
+            <div className="fixed top-4 right-4 z-50 space-y-2 max-w-sm">
+              {notifications.map((notification) => (
+                <div
+                  key={notification.id}
+                  className={`px-4 py-3 rounded-lg shadow-lg backdrop-blur-md border transition-all animate-in slide-in-from-right-5 ${
+                    notification.type === "success"
+                      ? "bg-green-500/90 text-white border-green-400/50"
+                      : "bg-destructive/90 text-destructive-foreground border-destructive/50"
+                  }`}
+                >
+                  <div className="flex items-start gap-2">
+                    <span className="text-sm font-medium flex-1">
+                      {notification.message}
+                    </span>
+                    {notification.action && (
+                      <button
+                        onClick={() => {
+                          dismissNotification(notification.id);
+                          notification.action?.onClick();
+                        }}
+                        className="text-xs font-semibold underline underline-offset-2 hover:no-underline"
+                      >
+                        {notification.action.label}
+                      </button>
+                    )}
+                    <button
+                      onClick={() => dismissNotification(notification.id)}
+                      className="p-0.5 rounded hover:bg-white/20 transition-colors"
+                      aria-label="Dismiss"
+                    >
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M18 6L6 18M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
-            <h3 className="text-lg font-medium text-foreground mb-2">
-              Your day is clear!
-            </h3>
-            <p className="text-sm text-muted-foreground max-w-sm mb-4">
-              No pending tasks, meetings, or important emails for today. Enjoy
-              your free time or generate a new plan.
-            </p>
-            <button
-              onClick={regenerate}
-              disabled={isGenerating}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium disabled:opacity-50"
-            >
-              {isGenerating ? (
-                <>
+          )}
+
+          {/* Main Briefing Card */}
+          <div className="daily-briefing-container p-6 rounded-2xl backdrop-blur-xl border-2 border-border/50 bg-card/30 shadow-xl">
+            {/* AI Summary */}
+            {plan.summary && (
+              <p className="text-foreground/80 leading-relaxed mb-6 text-[15px]">
+                {plan.summary}
+              </p>
+            )}
+
+            {/* Action Items List */}
+            {actionItems.length > 0 && (
+              <div className="space-y-2">
+                {actionItems.map((task) => (
+                  <BriefingItem
+                    key={task.id}
+                    task={task}
+                    onComplete={onTaskComplete}
+                    onFeedback={submitItemFeedback}
+                    formatTime={formatSuggestedTime}
+                    getTypeIcon={getTypeIcon}
+                    getPriorityColor={getPriorityColor}
+                    onArchiveEmail={handleArchiveEmail}
+                    onMarkAsRead={handleMarkAsRead}
+                    onConvertToTask={handleConvertToTask}
+                    emailLoadingState={
+                      task.source_id
+                        ? emailLoadingStates[task.source_id]
+                        : undefined
+                    }
+                    isOptimisticallyRead={
+                      task.source_id
+                        ? optimisticStates[task.source_id]?.markedRead ?? false
+                        : false
+                    }
+                  />
+                ))}
+              </div>
+            )}
+
+            {actionItems.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
+                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
                   <svg
-                    className="w-4 h-4 animate-spin"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    />
-                  </svg>
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <svg
-                    className="w-4 h-4"
+                    className="w-8 h-8 text-primary"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -786,50 +793,105 @@ export function DailyBriefing({ onTaskComplete }: DailyBriefingProps) {
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      strokeWidth={1.5}
+                      d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
                     />
                   </svg>
-                  Generate Plan
-                </>
-              )}
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* Energy Tip / Recommendations */}
-      {plan.energy_tip && (
-        <div className="p-4 rounded-xl backdrop-blur-xl border-2 border-border/30 bg-card/20 flex items-start gap-3">
-          <LightbulbIcon className="text-primary mt-0.5" />
-          <p className="text-sm text-foreground/80 leading-relaxed">
-            {plan.energy_tip}
-          </p>
-        </div>
-      )}
-
-      {/* Defer Suggestions */}
-      {plan.defer_suggestions && plan.defer_suggestions.length > 0 && (
-        <div className="p-4 rounded-xl backdrop-blur-xl border-2 border-border/30 bg-card/20">
-          <h3 className="text-sm font-medium text-muted-foreground mb-3">
-            Consider Deferring
-          </h3>
-          <div className="space-y-2">
-            {plan.defer_suggestions.map((suggestion, index) => {
-              const text =
-                typeof suggestion === "string" ? suggestion : suggestion.title;
-              return (
-                <div
-                  key={index}
-                  className="flex items-center gap-2 text-sm text-muted-foreground/80"
-                >
-                  <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40" />
-                  {text}
                 </div>
-              );
-            })}
+                <h3 className="text-lg font-medium text-foreground mb-2">
+                  Your day is clear!
+                </h3>
+                <p className="text-sm text-muted-foreground max-w-sm mb-4">
+                  No pending tasks, meetings, or important emails for today.
+                  Enjoy your free time or generate a new plan.
+                </p>
+                <button
+                  onClick={regenerate}
+                  disabled={isGenerating}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium disabled:opacity-50"
+                >
+                  {isGenerating ? (
+                    <>
+                      <svg
+                        className="w-4 h-4 animate-spin"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                        />
+                      </svg>
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                        />
+                      </svg>
+                      Generate Plan
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
           </div>
-        </div>
+
+          {/* Energy Tip / Recommendations */}
+          {plan.energy_tip && (
+            <div className="p-4 rounded-xl backdrop-blur-xl border-2 border-border/30 bg-card/20 flex items-start gap-3">
+              <LightbulbIcon className="text-primary mt-0.5" />
+              <p className="text-sm text-foreground/80 leading-relaxed">
+                {plan.energy_tip}
+              </p>
+            </div>
+          )}
+
+          {/* Defer Suggestions */}
+          {plan.defer_suggestions && plan.defer_suggestions.length > 0 && (
+            <div className="p-4 rounded-xl backdrop-blur-xl border-2 border-border/30 bg-card/20">
+              <h3 className="text-sm font-medium text-muted-foreground mb-3">
+                Consider Deferring
+              </h3>
+              <div className="space-y-2">
+                {plan.defer_suggestions.map((suggestion, index) => {
+                  const text =
+                    typeof suggestion === "string"
+                      ? suggestion
+                      : suggestion.title;
+                  return (
+                    <div
+                      key={index}
+                      className="flex items-center gap-2 text-sm text-muted-foreground/80"
+                    >
+                      <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40" />
+                      {text}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

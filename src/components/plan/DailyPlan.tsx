@@ -1,3 +1,10 @@
+/**
+ * This component is the main component of the app.
+ * It displays the daily plan in a glassy interface.
+ * It also handles the loading of the daily plan data.
+ * THIS IS A COMPONENT LEGACY, IT IS NOT USED ANYMORE AND WILL BE REMOVED SOON USE DailyBriefing instead
+ */
+
 import { useState, useEffect } from "react";
 import {
   getTodayEvents,
