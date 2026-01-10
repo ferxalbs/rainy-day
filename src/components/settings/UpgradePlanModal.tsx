@@ -58,7 +58,7 @@ function PlanCard({
     <div
       className={`relative flex flex-col h-full rounded-3xl border transition-all duration-300 ${
         isPopular
-          ? "border-primary/50 bg-primary/5 shadow-2xl shadow-primary/10 z-10 scale-105"
+          ? "border-primary/50 bg-primary/5 shadow-2xl shadow-primary/10 z-10 scale-[1.02]"
           : "border-border/40 bg-card/20 hover:bg-card/40 hover:border-primary/20"
       } ${
         isCurrent
@@ -85,9 +85,9 @@ function PlanCard({
         </div>
       )}
 
-      <div className="flex-1 p-6 flex flex-col items-center text-center">
+      <div className="flex-1 p-5 flex flex-col items-center text-center">
         <div
-          className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-5 transition-colors duration-300 ${
+          className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 transition-colors duration-300 ${
             isPopular
               ? "bg-primary/20 text-primary"
               : isCurrent
@@ -98,19 +98,19 @@ function PlanCard({
           {icon}
         </div>
 
-        <h3 className="text-xl font-bold tracking-tight mb-2">{name}</h3>
-        <p className="text-sm text-muted-foreground mb-6 leading-relaxed max-w-[200px]">
+        <h3 className="text-xl font-bold tracking-tight mb-1">{name}</h3>
+        <p className="text-sm text-muted-foreground mb-4 leading-relaxed max-w-[200px]">
           {description}
         </p>
 
-        <div className="flex items-baseline gap-1 mb-6">
+        <div className="flex items-baseline gap-1 mb-4">
           <span className="text-4xl font-extrabold tracking-tight">
             ${price}
           </span>
           <span className="text-muted-foreground text-sm font-medium">/mo</span>
         </div>
 
-        <ul className="space-y-3 w-full text-left mb-8 flex-1 px-1">
+        <ul className="space-y-2.5 w-full text-left mb-6 flex-1 px-1">
           {features.map((feature, index) => (
             <li key={index} className="flex items-start gap-3">
               <Check
@@ -135,7 +135,7 @@ function PlanCard({
             disabled={isCurrent || isLoading}
             variant={isPopular ? "default" : "outline"}
             size="lg"
-            className={`w-full font-bold h-11 text-sm rounded-xl transition-all duration-300 ${
+            className={`w-full font-bold h-10 text-sm rounded-xl transition-all duration-300 ${
               isPopular
                 ? "shadow-md shadow-primary/20 hover:shadow-primary/30 text-white hover:scale-[1.02]"
                 : "hover:bg-primary/5 hover:text-primary hover:border-primary/20"
@@ -158,7 +158,7 @@ function PlanCard({
             )}
           </Button>
           {!isCurrent && price !== 0 && (
-            <p className="text-[10px] text-center text-muted-foreground mt-3 font-medium">
+            <p className="text-[10px] text-center text-muted-foreground mt-2 font-medium">
               14-day money-back guarantee
             </p>
           )}
@@ -251,9 +251,9 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[calc(100vw-2rem)] w-full sm:max-w-[90vw] md:max-w-5xl lg:max-w-6xl p-0 gap-0 border-none bg-transparent shadow-none [&>button]:hidden">
+      <DialogContent className="max-w-[calc(100vw-2rem)] w-full sm:max-w-[90vw] md:max-w-5xl lg:max-w-6xl p-0 gap-0 border-none bg-transparent shadow-none [&>button]:hidden h-auto max-h-[85vh] flex flex-col">
         {/* Main Content Container with Glass Effect */}
-        <div className="bg-background/80 backdrop-blur-3xl border border-white/10 sm:rounded-[2.5rem] overflow-hidden shadow-2xl relative flex flex-col max-h-[90vh]">
+        <div className="bg-background/80 backdrop-blur-3xl border border-white/10 sm:rounded-[2.5rem] overflow-hidden shadow-2xl relative flex flex-col max-h-full">
           {/* Background Gradients */}
           <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
             <div className="absolute top-[-20%] left-[20%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] mix-blend-screen opacity-30 animate-pulse" />
@@ -261,17 +261,17 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
           </div>
 
           {/* Close Button Override */}
-          <div className="absolute top-6 right-6 z-50">
+          <div className="absolute top-4 right-4 z-50">
             <Button
               variant="ghost"
               size="icon"
-              className="rounded-full w-10 h-10 bg-black/5 hover:bg-black/10 backdrop-blur-sm border border-white/10"
+              className="rounded-full w-8 h-8 bg-black/5 hover:bg-black/10 backdrop-blur-sm border border-white/10"
               onClick={onClose}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
+                width="16"
+                height="16"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -286,29 +286,25 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
             </Button>
           </div>
 
-          <div className="p-6 md:p-10 relative flex-1 flex flex-col overflow-y-auto custom-scrollbar">
-            <DialogHeader className="mb-8 text-center max-w-2xl mx-auto">
-              <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-primary/10 text-primary mb-5 ring-1 ring-primary/20">
-                <Sparkles className="w-6 h-6" />
-              </div>
-              <DialogTitle className="text-3xl md:text-4xl font-bold tracking-tight mb-3 bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70">
+          <div className="p-6 md:p-1 mt-3 relative flex-1 flex flex-col overflow-y-auto custom-scrollbar">
+            <DialogHeader className="mb-6 text-center max-w-2xl mx-auto shrink-0">
+              <DialogTitle className="text-2xl md:text-3xl font-bold tracking-tight mb-2 bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70">
                 Upgrade Your Workspace
               </DialogTitle>
-              <DialogDescription className="text-base text-muted-foreground/80 leading-relaxed max-w-lg mx-auto">
-                Unlock the full potential of your AI assistant with our premium
-                tiers. Cancel anytime, no questions asked.
+              <DialogDescription className="text-sm text-muted-foreground/80 leading-relaxed max-w-lg mx-auto">
+                Unlock the full potential of your AI assistant. Cancel anytime.
               </DialogDescription>
             </DialogHeader>
 
             {cancelAtPeriodEnd && (
-              <div className="max-w-lg mx-auto mb-8 p-4 bg-yellow-500/5 border border-yellow-500/20 rounded-2xl flex items-center justify-between gap-4">
+              <div className="max-w-lg mx-auto mb-6 p-3 bg-yellow-500/5 border border-yellow-500/20 rounded-xl flex items-center justify-between gap-4 shrink-0">
                 <div className="flex items-center gap-3">
-                  <Zap className="w-5 h-5 text-yellow-500" />
+                  <Zap className="w-4 h-4 text-yellow-500" />
                   <div className="text-left">
                     <p className="text-sm font-semibold text-yellow-500">
                       Cancellation Pending
                     </p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-[10px] text-muted-foreground">
                       Ends next billing cycle
                     </p>
                   </div>
@@ -316,16 +312,16 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="text-yellow-500 hover:text-yellow-400 hover:bg-yellow-500/10 font-bold"
+                  className="text-yellow-500 hover:text-yellow-400 hover:bg-yellow-500/10 font-bold h-7 text-xs"
                   onClick={openBillingPortal}
                 >
-                  Manage Subscription
+                  Manage
                 </Button>
               </div>
             )}
 
             {/* Grid Layout - Refined */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch pt-2 pb-4 flex-1 max-w-5xl mx-auto w-full">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch pt-2 pb-2 flex-1 max-w-5xl mx-auto w-full">
               {plans.map((planConfig) => (
                 <PlanCard
                   key={planConfig.id}
@@ -339,13 +335,13 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
           </div>
 
           {/* Footer */}
-          <div className="px-8 py-5 bg-muted/20 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="px-8 py-4 bg-muted/20 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <div className="flex -space-x-2">
                 {[1, 2, 3, 4].map((i) => (
                   <div
                     key={i}
-                    className="w-6 h-6 rounded-full bg-muted border-2 border-background flex items-center justify-center text-[8px] font-bold shadow-sm"
+                    className="w-5 h-5 rounded-full bg-muted border-2 border-background flex items-center justify-center text-[8px] font-bold shadow-sm"
                   >
                     U{i}
                   </div>
