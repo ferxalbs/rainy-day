@@ -4,6 +4,14 @@ User-friendly release notes for Rainy Day. For detailed technical changes, see [
 
 ---
 
+## Rainy Day 0.4.2
+
+_January 10, 2026_
+
+- **Fixed upgrade confirmation**: After paying for Plus or Pro, a success modal now appears to confirm your upgrade.
+
+---
+
 ## Rainy Day 0.4.1
 
 _January 10, 2026_

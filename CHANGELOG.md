@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.4.2] - 2026-01-10
+
+#### Fixes
+
+- **Deep Link Plugin**: Added missing `tauri_plugin_deep_link::init()` to Tauri builder
+  - Fixes Stripe checkout success redirect not being captured by the app
+  - The `rainyday://billing/success` URL now properly triggers the `UpgradeSuccessModal`
+  - Users will now see a confirmation modal after successful subscription payment
+
+---
+
 ### [v0.4.1] - 2026-01-10
 
 #### Fixes

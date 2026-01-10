@@ -69,6 +69,7 @@ pub fn run() {
         .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_updater::Builder::default().build())
         .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_deep_link::init())
         .manage(AuthState::new(client_id, client_secret))
         .manage(TokenStore::new())
         .manage(GoogleClient::new())
