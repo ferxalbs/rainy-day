@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.5.1] - 2026-01-10
+
+#### Added
+
+- **Dedicated Model Usage Table**: New `model_usage` table for precise monthly tracking
+  - Stores usage per model per month with `period_year` and `period_month`
+  - Automatic upsert with `ON CONFLICT DO UPDATE` for atomic increments
+  - Provides `last_used_at` timestamp for each model
+- **New Functions**:
+  - `getModelUsage()` - Get current usage count for a model
+  - `incrementModelUsage()` - Atomically increment usage after generation
+  - `getUserModelUsageSummary()` - Get all model usage for the month
+- **New API Endpoints**:
+  - `GET /billing/model-usage-summary` - Returns all models used this month
+
+#### Improvements
+
+- **Plan Generation Now Uses All Imports Properly**:
+  - `checkUsageLimit` - Enforces daily limits for free tier (5/day)
+  - `getModel` - Validates model exists in registry before use
+  - `checkMonthlyModelUsage` - Checks monthly limits for premium models
+  - `incrementModelUsage` - Records usage after successful generation
+- **Enhanced `/billing/limits` Response**: Now includes `used` count for selected model
+- **Return Type Changed**: `generateDailyPlan()` now returns `{ ...plan, modelUsed, wasDowngraded }`
+
+---
+
 ### [v0.5.0] - 2026-01-10
 
 #### Added

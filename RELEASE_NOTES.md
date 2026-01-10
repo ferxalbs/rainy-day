@@ -2,6 +2,18 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
+## Rainy Day 0.5.1 🛡️
+
+_January 10, 2026_
+
+**Improved Model Usage Tracking**
+
+- **Precise usage tracking**: Your premium model usage is now tracked in a dedicated system that resets reliably on the 1st of each month
+- **Smarter fallback**: If you hit your monthly limit on a premium model, the app automatically uses the free model instead of failing
+- **Usage visibility**: You can now see exactly how many times you've used each model this month
+
+---
+
 ## Rainy Day 0.5.0 🚀
 
 _January 10, 2026_
