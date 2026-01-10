@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+2026-01-10
+
+### [v0.4.3] - 2026-01-10
+
+#### Improvements
+
+- **AI Model Selection UI**: Redesigned model selection in Plan Settings
+  - Replaced native radio buttons with a premium `RadioGroup` component
+  - Added glassmorphism effects and "perfect blue borders" (`border-blue-500/50`)
+  - Improved layout with responsive card-like items for each model
+  - Native macOS feel with refined typography and spacing
+
+---
+
 ### [v0.4.2] - 2026-01-10
 
 #### Fixes

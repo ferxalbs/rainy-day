@@ -2,6 +2,13 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
+## Rainy Day 0.4.3
+
+_January 10, 2026_
+
+- **AI Model Selection Redesign**: A much cleaner and more professional interface for switching AI models.
+- **Premium Design**: Added glassmorphism and subtle blue borders for a native macOS experience.
+
 ---
 
 ## Rainy Day 0.4.2

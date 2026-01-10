@@ -2,6 +2,8 @@
 
 AI-powered productivity agent that turns your inbox into an actionable daily plan.
 
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/ferxalbs/rainy-day?utm_source=oss&utm_medium=github&utm_campaign=ferxalbs%2Frainy-day&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+
 ## Architecture
 
 The application consists of two main parts:
