@@ -2,6 +2,32 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
+## Rainy Day 0.4.8
+
+_January 10, 2026_
+
+- **Solid & Reliable Pricing UI**: We've rebuilt the plan selection screen from the ground up using our core design system. It's now cleaner, faster, and perfectly aligned on every screen size.
+
+---
+
+## Rainy Day 0.4.7
+
+_January 10, 2026_
+
+- **Responsive Pricing Layout**: The upgrade modal now adapts perfectly to any window size, ensuring no text is squashed or overlapping.
+- **Better Breathing Room**: Improved spacing and layout management for a cleaner, more readable plan selection experience.
+
+---
+
+## Rainy Day 0.4.6
+
+_January 10, 2026_
+
+- **Stunning New Pricing Experience**: The plan upgrade modal has been completely redesigned with a more professional, premium look.
+- **Improved Visual Clarity**: Pricing cards now feature better layouts and theme-aware accents to help you choose the best plan.
+
+---
+
 ## Rainy Day 0.4.5
 
 _January 10, 2026_

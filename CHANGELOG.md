@@ -7,6 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.4.8] - 2026-01-10
+
+#### Refactor
+
+- **Upgrade Plan Modal**: Completely rebuilt the upgrade modal using native Shadcn UI components.
+  - Replaced custom CSS cards with standard `Card` components for better stability.
+  - Fixed `DialogContent` width constraints to prevent content squashing.
+  - Implemented a clean, robust 3-column grid layout.
+
+---
+
+### [v0.4.7] - 2026-01-10
+
+#### Fixes
+
+- **Upgrade Modal**: Fixed "compressed" layout and improved responsiveness.
+  - Implemented an adaptive grid (1 to 3 columns) for better layout on all screen sizes.
+  - Resolved content squashing and text overlapping in pricing cards.
+  - Added internal scrolling for smaller viewports.
+
+---
+
+### [v0.4.6] - 2026-01-10
+
+#### Improvements
+
+- **Upgrade Plan Modal**: Completely redesigned the pricing modal with a premium, glassy aesthetic.
+  - Implemented sophisticated `PlanCard` components with glassmorphism and theme-aware highlights.
+  - Refined price display and feature lists for better readability.
+  - Added subtle animations and improved responsive layouts.
+
+---
+
 ### [v0.4.5] - 2026-01-10
 
 #### Improvements
