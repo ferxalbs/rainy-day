@@ -6,7 +6,6 @@
 
 import { useState } from "react";
 import { useSubscription } from "../../hooks/useSubscription";
-import { Button } from "../ui/button";
 import {
   Select,
   SelectContent,
@@ -14,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Bot, Lock, Loader2 } from "lucide-react";
+import { Lock, Loader2 } from "lucide-react";
 
 // All models with their plan requirements
 const ALL_MODELS = [
@@ -65,72 +64,52 @@ export function ModelSelector({ onUpgradeClick }: ModelSelectorProps) {
 
   if (isLoading) {
     return (
-      <Button
-        variant="outline"
-        disabled
-        className="w-full justify-start gap-2 h-auto py-3"
-      >
+      <div className="flex items-center gap-2 text-sm text-muted-foreground py-2">
         <Loader2 className="w-4 h-4 animate-spin" />
         <span>Loading models...</span>
-      </Button>
+      </div>
     );
   }
 
   return (
-    <div className="w-full">
-      <Select
-        value={selectedModel}
-        onValueChange={handleValueChange}
-        disabled={updating}
-      >
-        <SelectTrigger className="w-full h-auto py-3 px-4 rounded-xl border-2 border-border/30 bg-card/20 hover:bg-card/40 hover:border-primary/30 transition-all duration-200">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center size-8 rounded-lg bg-primary/10 text-primary">
-              {updating ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Bot className="w-4 h-4" />
-              )}
-            </div>
-            <div className="flex flex-col items-start gap-0.5">
-              <span className="font-semibold text-sm text-foreground leading-none">
-                AI Model
-              </span>
-              <SelectValue>
-                <span className="text-xs text-muted-foreground leading-none">
-                  {currentModel?.name || "Select model"}
-                </span>
-              </SelectValue>
-            </div>
+    <Select
+      value={selectedModel}
+      onValueChange={handleValueChange}
+      disabled={updating}
+    >
+      <SelectTrigger className="w-full border-primary/50 focus:border-primary focus:ring-primary/20">
+        {updating ? (
+          <div className="flex items-center gap-2">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span>Updating...</span>
           </div>
-        </SelectTrigger>
-        <SelectContent>
-          {ALL_MODELS.map((model) => {
-            const modelTierLevel =
-              TIER_ORDER[model.tier as keyof typeof TIER_ORDER];
-            const isLocked = modelTierLevel > currentTierLevel;
+        ) : (
+          <SelectValue placeholder="Select a model">
+            {currentModel?.name || "Select a model"}
+          </SelectValue>
+        )}
+      </SelectTrigger>
+      <SelectContent>
+        {ALL_MODELS.map((model) => {
+          const modelTierLevel =
+            TIER_ORDER[model.tier as keyof typeof TIER_ORDER];
+          const isLocked = modelTierLevel > currentTierLevel;
 
-            return (
-              <SelectItem
-                key={model.id}
-                value={model.id}
-                disabled={isLocked}
-                className={isLocked ? "opacity-60" : ""}
-              >
-                <div className="flex items-center justify-between w-full gap-4">
-                  <span>{model.name}</span>
-                  {isLocked && (
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Lock className="w-3 h-3" />
-                      <span>{model.tier}</span>
-                    </div>
-                  )}
-                </div>
-              </SelectItem>
-            );
-          })}
-        </SelectContent>
-      </Select>
-    </div>
+          return (
+            <SelectItem key={model.id} value={model.id} disabled={isLocked}>
+              <div className="flex items-center justify-between w-full gap-4">
+                <span>{model.name}</span>
+                {isLocked && (
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Lock className="w-3 h-3" />
+                    <span className="capitalize">{model.tier}</span>
+                  </div>
+                )}
+              </div>
+            </SelectItem>
+          );
+        })}
+      </SelectContent>
+    </Select>
   );
 }
