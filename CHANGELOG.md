@@ -7,7 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-2026-01-10
+### [v0.4.5] - 2026-01-10
+
+#### Improvements
+
+- **Actions UI**: Redesigned the "Actions" section in Config Page for a more premium experience.
+  - New theme-aware Action Cards for "Upgrade Plan" and "Check for Updates".
+  - Refined `ModelSelector` trigger with consistent styling and improved layouts.
+  - Enhanced "Sign Out" button with native macOS aesthetics.
+
+---
+
+### [v0.4.4] - 2026-01-10
+
+#### Fixes
+
+- **Theming**: Replaced hardcoded blue colors with dynamic `primary` theme variable in AI Model selection.
+- **UI**: Fixed typo in hover border styles in `PlanSettings.tsx`.
+
+---
 
 ### [v0.4.3] - 2026-01-10
 

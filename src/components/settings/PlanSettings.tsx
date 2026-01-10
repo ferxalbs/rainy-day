@@ -253,7 +253,7 @@ export function PlanSettings() {
                 />
                 <label
                   htmlFor={model.id}
-                  className="flex items-center justify-between p-4 rounded-xl border-2 border-border/30 bg-card/20 cursor-pointer transition-all duration-200 hover:bg-card/40 hover:border-500/30 peer-aria-checked:border-blue-500/50 peer-aria-checked:bg-blue-500/5 peer-aria-checked:shadow-[0_0_15px_rgba(59,130,246,0.1)]"
+                  className="flex items-center justify-between p-4 rounded-xl border-2 border-border/30 bg-card/20 cursor-pointer transition-all duration-200 hover:bg-card/40 hover:border-primary/30 peer-aria-checked:border-primary/50 peer-aria-checked:bg-primary/5 peer-aria-checked:shadow-[0_0_15px_hsl(var(--primary)/0.1)]"
                 >
                   <div className="flex flex-col">
                     <span className="text-sm font-semibold text-foreground">
@@ -265,7 +265,7 @@ export function PlanSettings() {
                         : "Powered by Groq"}
                     </span>
                   </div>
-                  <div className="flex items-center justify-center size-5 rounded-full border border-border/50 peer-aria-checked:border-blue-500 peer-aria-checked:bg-blue-500 transition-colors">
+                  <div className="flex items-center justify-center size-5 rounded-full border border-border/50 peer-aria-checked:border-primary peer-aria-checked:bg-primary transition-colors">
                     <div className="size-2 rounded-full bg-white opacity-0 peer-aria-checked:opacity-100 transition-opacity" />
                   </div>
                 </label>

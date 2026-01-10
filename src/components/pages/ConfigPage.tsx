@@ -235,7 +235,9 @@ export function ConfigPage() {
             <CreditCard className="w-5 h-5 text-primary" />
             Subscription & Billing
           </CardTitle>
-          <CardDescription>Manage your plan, usage, and billing</CardDescription>
+          <CardDescription>
+            Manage your plan, usage, and billing
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <PlanSettings />
@@ -336,55 +338,59 @@ export function ConfigPage() {
           </CardTitle>
           <CardDescription>Manage your session and preferences</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <ModelSelector onUpgradeClick={() => setShowUpgradeModal(true)} />
 
-            <Button
-              variant="outline"
-              className="w-full justify-start gap-2 h-auto py-3"
+            <button
               onClick={() => setShowUpgradeModal(true)}
+              className="group flex items-center gap-3 p-4 rounded-xl border-2 border-border/30 bg-card/20 hover:bg-card/40 hover:border-primary/30 transition-all duration-200 text-left w-full"
             >
-              <Rocket className="w-4 h-4" />
+              <div className="flex items-center justify-center size-8 rounded-lg bg-primary/10 text-primary group-hover:scale-110 transition-transform">
+                <Rocket className="w-4 h-4" />
+              </div>
               <div className="flex flex-col items-start gap-0.5">
-                <span className="font-medium">Upgrade Plan</span>
-                <span className="text-xs text-muted-foreground">
+                <span className="font-semibold text-sm text-foreground leading-none">
+                  Upgrade Plan
+                </span>
+                <span className="text-xs text-muted-foreground leading-none">
                   Current: {planName} {plan !== "free" && "✓"}
                 </span>
               </div>
-            </Button>
+            </button>
           </div>
 
-          <Separator />
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Button
-              variant="outline"
-              className="w-full justify-start gap-2 h-auto py-3"
+            <button
               onClick={() =>
                 window.dispatchEvent(new CustomEvent("open-update-modal"))
               }
+              className="group flex items-center gap-3 p-4 rounded-xl border-2 border-border/30 bg-card/20 hover:bg-card/40 hover:border-primary/30 transition-all duration-200 text-left w-full"
             >
-              <RefreshCw className="w-4 h-4" />
+              <div className="flex items-center justify-center size-8 rounded-lg bg-primary/10 text-primary group-hover:rotate-12 transition-transform">
+                <RefreshCw className="w-4 h-4" />
+              </div>
               <div className="flex flex-col items-start gap-0.5">
-                <span className="font-medium">Check for Updates</span>
-                <span className="text-xs text-muted-foreground">
+                <span className="font-semibold text-sm text-foreground leading-none">
+                  Check for Updates
+                </span>
+                <span className="text-xs text-muted-foreground leading-none">
                   Current: v{appVersion}
                 </span>
               </div>
-            </Button>
+            </button>
           </div>
 
-          <Separator />
-
-          <Button
-            variant="destructive"
-            className="w-full gap-2"
-            onClick={handleLogout}
-          >
-            <LogOut className="w-4 h-4" />
-            Sign Out
-          </Button>
+          <div className="pt-2">
+            <Button
+              variant="destructive"
+              className="w-full gap-2 h-11 border-2 border-destructive/20 hover:bg-destructive/90 transition-all duration-200 shadow-lg shadow-destructive/10"
+              onClick={handleLogout}
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="font-semibold">Sign Out</span>
+            </Button>
+          </div>
         </CardContent>
       </Card>
 

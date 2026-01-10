@@ -2,6 +2,24 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
+## Rainy Day 0.4.5
+
+_January 10, 2026_
+
+- **Refined Actions Interface**: The "Actions" section in settings has been redesigned with premium cards and better typography.
+- **Dynamic Action Styling**: Plan upgrades and update checks now adapt perfectly to your chosen theme.
+
+---
+
+## Rainy Day 0.4.4
+
+_January 10, 2026_
+
+- **True Dynamic Theming**: The AI Model selection now perfectly adapts to your chosen theme colors.
+- **Improved Visual Consistency**: Fixed minor styling issues in the subscription settings.
+
+---
+
 ## Rainy Day 0.4.3
 
 _January 10, 2026_

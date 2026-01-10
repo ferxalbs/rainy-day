@@ -83,17 +83,21 @@ export function ModelSelector({ onUpgradeClick }: ModelSelectorProps) {
         onValueChange={handleValueChange}
         disabled={updating}
       >
-        <SelectTrigger className="w-full h-auto py-3">
-          <div className="flex items-center gap-2">
-            {updating ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Bot className="w-4 h-4" />
-            )}
+        <SelectTrigger className="w-full h-auto py-3 px-4 rounded-xl border-2 border-border/30 bg-card/20 hover:bg-card/40 hover:border-primary/30 transition-all duration-200">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center size-8 rounded-lg bg-primary/10 text-primary">
+              {updating ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Bot className="w-4 h-4" />
+              )}
+            </div>
             <div className="flex flex-col items-start gap-0.5">
-              <span className="font-medium text-sm">AI Model</span>
+              <span className="font-semibold text-sm text-foreground leading-none">
+                AI Model
+              </span>
               <SelectValue>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-xs text-muted-foreground leading-none">
                   {currentModel?.name || "Select model"}
                 </span>
               </SelectValue>
