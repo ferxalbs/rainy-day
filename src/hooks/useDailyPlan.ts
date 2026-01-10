@@ -93,17 +93,23 @@ export function useDailyPlan(): UseDailyPlanReturn {
     setError(null);
 
     try {
+      console.log('[useDailyPlan] Starting plan regeneration...');
       const newPlan = await regeneratePlan();
+      console.log('[useDailyPlan] Plan received:', newPlan ? 'success' : 'null');
+      
       if (newPlan) {
-        setPlan(newPlan);
+        // Force state update by creating new object
+        setPlan({ ...newPlan });
         setFromCache(false);
         setIsStale(false);
         setCachedAt(undefined);
+        console.log('[useDailyPlan] Plan state updated successfully');
       } else {
+        console.error('[useDailyPlan] No plan returned from regeneration');
         setError("Failed to generate plan. Please try again.");
       }
     } catch (err) {
-      console.error("Failed to regenerate plan:", err);
+      console.error("[useDailyPlan] Failed to regenerate plan:", err);
       setError("Failed to regenerate plan. Please try again.");
     } finally {
       setIsGenerating(false);

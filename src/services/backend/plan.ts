@@ -127,12 +127,21 @@ export function getCachedPlan(): CacheResult<DailyPlan> | null {
  * Caches the new plan on success
  */
 export async function regeneratePlan(): Promise<DailyPlan | null> {
-  const response = await post<{ plan: DailyPlan }>("/plan/generate");
+  console.log('[PlanService] Calling /plan/generate...');
+  
+  const response = await post<{ plan: DailyPlan; plan_id?: string; message?: string }>("/plan/generate");
+  
+  console.log('[PlanService] Response:', { ok: response.ok, hasPlan: !!response.data?.plan });
+  
   if (response.ok && response.data?.plan) {
-    cacheSet(CACHE_KEYS.PLAN, response.data.plan, CACHE_EXPIRATION.PLAN);
-    return response.data.plan;
+    const plan = response.data.plan;
+    console.log('[PlanService] Plan received, caching...', { date: plan.date, summary: plan.summary?.substring(0, 50) });
+    cacheSet(CACHE_KEYS.PLAN, plan, CACHE_EXPIRATION.PLAN);
+    return plan;
   }
-  return response.ok ? response.data?.plan ?? null : null;
+  
+  console.error('[PlanService] Failed to get plan:', response.error);
+  return null;
 }
 
 /**
