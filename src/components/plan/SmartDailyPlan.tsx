@@ -359,7 +359,20 @@ export function SmartDailyPlan({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {/* Regenerating Overlay with Skeleton */}
+      {isGenerating && plan && (
+        <div className="absolute inset-0 z-10 bg-background/60 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center gap-4 animate-in fade-in duration-300">
+          <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+          <p className="text-sm font-medium text-foreground/80">
+            Regenerating your plan...
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Using your selected AI model
+          </p>
+        </div>
+      )}
+
       {/* Notifications - Requirements: 3.4 */}
       {notifications.length > 0 && (
         <div className="fixed top-4 right-4 z-50 space-y-2 max-w-sm">
