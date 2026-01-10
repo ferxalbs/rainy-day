@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.4.1] - 2026-01-10
+
+#### Fixes
+
+- **Stripe Payment Flow**: Complete fix for subscription upgrade process
+  - Fixed URL scheme mismatch (`rainy-day://` → `rainyday://`) to match Tauri config
+  - Replaced `window.open` with Tauri's `openUrl` from `@tauri-apps/plugin-opener`
+  - Added deep link handling for `rainyday://billing/success` and `rainyday://billing/cancel`
+  - New `useDeepLinks` hook to capture billing callbacks
+  - Plan polling after Stripe checkout to detect webhook updates
+  - New `UpgradeSuccessModal` with confetti animation and plan benefits display
+  - Shows renewal date and plan features after successful upgrade
+
+---
+
 ### [v0.4.0] - 2026-01-09
 
 #### Added

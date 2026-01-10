@@ -4,6 +4,27 @@ User-friendly release notes for Rainy Day. For detailed technical changes, see [
 
 ---
 
+## Rainy Day 0.4.1
+
+_January 10, 2026_
+
+- **Fixed subscription upgrade**: Clicking "Upgrade to Plus/Pro" now opens the payment page correctly.
+- **Success celebration**: After upgrading, you'll see a celebration modal showing your new plan benefits.
+- **Renewal date display**: See when your subscription renews right after upgrading.
+
+---
+
+## Rainy Day 0.4.0
+
+_January 9, 2026_
+
+- **Subscription plans**: Choose between Free, Plus ($4/mo), or Pro ($8/mo) plans.
+- **AI model selection**: Pro users can switch between 5 different AI models.
+- **Usage limits**: Free plan now limited to 5 AI plan generations per day.
+- **Billing portal**: Manage your subscription and invoices directly from the app.
+
+---
+
 ## Rainy Day 0.3.4
 
 _January 9, 2026_

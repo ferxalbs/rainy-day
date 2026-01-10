@@ -5,7 +5,10 @@ import { GoogleSignIn } from "./components/auth/GoogleSignIn";
 import { MainLayout } from "./components/layout/MainLayout";
 import { CommandPalette } from "./components/CommandPalette";
 import { UpdateModal } from "./components/update";
+import { UpgradeSuccessModal } from "./components/settings/UpgradeSuccessModal";
 import { useNativeNotifications } from "./hooks/useNativeNotifications";
+import { useDeepLinks } from "./hooks/useDeepLinks";
+import { useSubscription } from "./hooks/useSubscription";
 import { checkForUpdate } from "./services/update";
 import "./App.css";
 
@@ -15,10 +18,46 @@ export const OPEN_UPDATE_MODAL_EVENT = "open-update-modal";
 function AppContent() {
   const { isAuthenticated, isLoading } = useAuth();
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showUpgradeSuccessModal, setShowUpgradeSuccessModal] = useState(false);
+
+  const {
+    plan,
+    planName,
+    currentPeriodEnd,
+    pollForPlanUpdate,
+    refresh: refreshPlan,
+  } = useSubscription();
 
   // Initialize native notifications when authenticated
   useNativeNotifications({
     enabled: isAuthenticated,
+  });
+
+  // Handle billing deep links
+  const handleBillingSuccess = useCallback(async () => {
+    console.log("[App] Billing success deep link received");
+
+    // Poll for plan update from webhook
+    const updated = await pollForPlanUpdate();
+
+    if (updated) {
+      // Show success modal
+      setShowUpgradeSuccessModal(true);
+    } else {
+      // Still refresh to get latest state
+      await refreshPlan();
+    }
+  }, [pollForPlanUpdate, refreshPlan]);
+
+  const handleBillingCancel = useCallback(() => {
+    console.log("[App] Billing cancelled");
+    // User cancelled, no action needed
+  }, []);
+
+  // Initialize deep link handling
+  useDeepLinks({
+    onBillingSuccess: handleBillingSuccess,
+    onBillingCancel: handleBillingCancel,
   });
 
   // Listen for update modal open event (from Command Palette)
@@ -55,6 +94,10 @@ function AppContent() {
     setShowUpdateModal(false);
   }, []);
 
+  const handleCloseUpgradeSuccessModal = useCallback(() => {
+    setShowUpgradeSuccessModal(false);
+  }, []);
+
   if (isLoading) {
     return (
       <div className="app-loading">
@@ -72,6 +115,13 @@ function AppContent() {
       <MainLayout />
       <CommandPalette />
       <UpdateModal isOpen={showUpdateModal} onClose={handleCloseUpdateModal} />
+      <UpgradeSuccessModal
+        isOpen={showUpgradeSuccessModal}
+        onClose={handleCloseUpgradeSuccessModal}
+        plan={plan}
+        planName={planName}
+        currentPeriodEnd={currentPeriodEnd}
+      />
     </>
   );
 }
