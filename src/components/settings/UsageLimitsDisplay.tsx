@@ -34,9 +34,12 @@ export function UsageLimitsDisplay({
 
   const { planGeneration } = limits;
   const isUnlimited = planGeneration.limit === -1;
-  const percentUsed = isUnlimited
+  const limit = planGeneration.limit;
+  const percentConsumed = isUnlimited
+    ? 0
+    : limit === 0
     ? 100
-    : (planGeneration.remaining / planGeneration.limit) * 100;
+    : Math.min(100, Math.max(0, ((limit - planGeneration.remaining) / limit) * 100));
 
   return (
     <div className="space-y-3">
@@ -54,13 +57,13 @@ export function UsageLimitsDisplay({
           <div className="w-full bg-muted/30 rounded-full h-2 overflow-hidden">
             <div
               className={`h-2 rounded-full transition-all duration-300 ${
-                percentUsed > 20
-                  ? "bg-primary"
-                  : percentUsed > 0
+                percentConsumed > 80
+                  ? "bg-red-500"
+                  : percentConsumed > 50
                   ? "bg-orange-500"
-                  : "bg-red-500"
+                  : "bg-primary"
               }`}
-              style={{ width: `${percentUsed}%` }}
+              style={{ width: `${percentConsumed}%` }}
             />
           </div>
         )}
