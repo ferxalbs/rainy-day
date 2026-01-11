@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.5.3] - 2026-01-11
+
+#### Added
+
+- **Daily Plan Productivity Insights**: Enhanced AI-generated plans with smarter context
+
+  - New `productivity_insights` field: focus hours, meeting load, suggested breaks, batch suggestions
+  - New `stats` field: total tasks, high priority count, estimated minutes, emails pending, completion %
+  - AI prompt now requests optimal focus windows and task batching suggestions
+
+- **PlanQuickStats Component**: Compact stats bar displaying key daily metrics
+
+  - Tasks count with icon
+  - High priority items (warning indicator)
+  - Estimated time remaining
+  - Pending emails count
+
+- **PlanProgressBar Component**: Animated daily progress indicator
+
+  - Visual percentage completion bar
+  - Time remaining estimate
+  - Color-coded by progress level (blue → amber → green)
+
+- **PlanQuickActions Component**: Quick workflow action buttons
+  - Focus Mode toggle with timer preparation
+  - Email Triage mode for batch email processing
+  - Quick Wins mode for fast task completion
+
+#### Improvements
+
+- **DailyBriefing Integration**: Stats bar and progress bar now display at top of daily briefing
+- **Enhanced Server AI Prompt**: Requests suggested breaks, batch groupings, and optimal focus windows
+
+---
+
 ### [v0.5.2] - 2026-01-10
 
 #### Added

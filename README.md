@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./logo.jpeg" alt="Rainy Day Logo" width="120" />
+  <img src="./RAINY-BANNER.jpeg" alt="Rainy Day Logo" width="600" style="border-radius: 10px;" />
 </p>
 
 <h1 align="center">Rainy Day</h1>
@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://github.com/ferxalbs/rainy-day/releases">
-    <img src="https://img.shields.io/badge/version-0.5.2-blue.svg?style=flat-square" alt="Version" />
+    <img src="https://img.shields.io/badge/version-0.5.3-blue.svg?style=flat-square" alt="Version" />
   </a>
   <a href="https://opensource.org/licenses/MIT">
     <img src="https://img.shields.io/badge/license-MIT-yellow.svg?style=flat-square" alt="License" />

@@ -2,6 +2,19 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
+## Rainy Day 0.5.3 📊
+
+_January 11, 2026_
+
+**Smarter Daily Plans**
+
+- **Quick Stats at a Glance**: See your task count, high-priority items, estimated time, and pending emails in a compact bar at the top of your daily plan
+- **Progress Tracking**: A visual progress bar shows how much of your day you've completed
+- **Productivity Insights**: Your AI plan now includes suggested break times, task batching recommendations, and optimal focus windows
+- **Focus Mode Ready**: New quick action buttons for Focus Mode, Email Triage, and Quick Wins (coming soon!)
+
+---
+
 ## Rainy Day 0.5.2 ⚡
 
 _January 10, 2026_
