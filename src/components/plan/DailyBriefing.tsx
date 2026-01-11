@@ -318,21 +318,33 @@ interface OptimisticEmailState {
 
 interface DailyBriefingProps {
   onTaskComplete?: (taskId: string) => void;
+  /** Externally controlled regenerating state (from Topbar) */
+  isRegenerating?: boolean;
+  /** Externally provided regenerate function (from Topbar) */
+  onRegenerate?: () => void;
 }
 
 // =============================================================================
 // Main Component
 // =============================================================================
 
-export function DailyBriefing({ onTaskComplete }: DailyBriefingProps) {
+export function DailyBriefing({
+  onTaskComplete,
+  isRegenerating,
+  onRegenerate,
+}: DailyBriefingProps) {
   const {
     plan,
     isLoading,
-    isGenerating,
+    isGenerating: internalIsGenerating,
     error,
-    regenerate,
+    regenerate: internalRegenerate,
     submitItemFeedback,
   } = useDailyPlan();
+
+  // Use external state if provided, otherwise use internal
+  const isGenerating = isRegenerating ?? internalIsGenerating;
+  const regenerate = onRegenerate ?? internalRegenerate;
 
   const {
     archiveEmail,

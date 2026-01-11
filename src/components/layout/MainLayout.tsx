@@ -116,7 +116,12 @@ export function MainLayout() {
           </div>
 
           {/* Page Content */}
-          {activePage === "plan" && <DailyBriefing />}
+          {activePage === "plan" && (
+            <DailyBriefing
+              isRegenerating={isGenerating}
+              onRegenerate={regenerate}
+            />
+          )}
           {activePage === "inbox" && (
             <InboxPage
               threads={threads}
