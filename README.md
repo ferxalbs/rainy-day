@@ -1,136 +1,122 @@
-# Rainy Day
+<p align="center">
+  <img src="./logo.jpeg" alt="Rainy Day Logo" width="120" />
+</p>
 
-AI-powered productivity agent that turns your inbox into an actionable daily plan.
+<h1 align="center">Rainy Day</h1>
 
-![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/ferxalbs/rainy-day?utm_source=oss&utm_medium=github&utm_campaign=ferxalbs%2Frainy-day&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+<p align="center">
+  <strong>Your AI-powered executive assistant that transforms chaos into clarity.</strong>
+</p>
 
-## Architecture
+<p align="center">
+  <a href="https://github.com/ferxalbs/rainy-day/releases">
+    <img src="https://img.shields.io/badge/version-0.5.2-blue.svg?style=flat-square" alt="Version" />
+  </a>
+  <a href="https://opensource.org/licenses/MIT">
+    <img src="https://img.shields.io/badge/license-MIT-yellow.svg?style=flat-square" alt="License" />
+  </a>
+  <a href="https://coderabbit.ai">
+    <img src="https://img.shields.io/coderabbit/prs/github/ferxalbs/rainy-day?utm_source=oss&utm_medium=github&utm_campaign=ferxalbs%2Frainy-day&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews&style=flat-square" alt="CodeRabbit reviews" />
+  </a>
+</p>
 
-The application consists of two main parts:
+<p align="center">
+  <a href="#-key-features">Key Features</a> •
+  <a href="#-roadmap">Roadmap</a> •
+  <a href="#-getting-started">Getting Started</a> •
+  <a href="#-community--support">Community</a>
+</p>
 
-1. **Frontend (Tauri + React)** - Desktop application built with Tauri and React
-2. **Backend (Bun + Hono)** - HTTP API server that handles authentication, data sync, and AI features
+---
 
-## Prerequisites
+## 🌧️ About Rainy Day
 
-- [Node.js](https://nodejs.org/) (v18+)
-- [pnpm](https://pnpm.io/) - Package manager for frontend
-- [Bun](https://bun.sh/) - Runtime for backend
-- [Rust](https://rustup.rs/) - Required for Tauri (only for keychain access)
+Rainy Day is a next-generation desktop application designed to reclaim your time. By leveraging advanced AI models (Gemini, Groq), it analyzes your inbox, calendar, and tasks to generate intelligent, actionable daily plans.
 
-## Quick Start
+This repository contains the **Open Source Client** for Rainy Day.
 
-### 1. Setup Backend
+### 🔮 Future Roadmap: Community Mode
+
+We are currently building **Community Mode** — a fully self-hosted, offline-capable version where all application logic will be moved to **Rust**. This will allow users to run Rainy Day locally offering a true "Local First" experience without external dependencies.
+
+## ✨ Key Features
+
+### 🤖 AI Core & Planning
+
+- **Intelligent Daily Briefing**: Starts your day with a prioritized plan derived from your actual workload.
+- **Multi-Model Intelligence**: Seamlessly switches between Gemini 2.5/3.0 for deep reasoning and Groq (Llama 3.3) for instant responses.
+- **Context Aware**: Understands the difference between a "quick reply" email and a "deep work" project.
+
+### ⚡ Productivity Engine
+
+- **Unified Inbox Zero**: Process Gmail threads with one-click actions (Reply, Task, Archive).
+- **Smart Calendar**: Native Google Calendar integration with "Join Meeting" automation and smart scheduling.
+- **Optimistic Task Management**: A responsive task system that syncs with Google Tasks in real-time.
+
+### 🔒 Native & Secure
+
+- **Local First**: Heavy caching ensures you can work offline.
+- **Privacy Centric**: Your data is processed securely with enterprise-grade standards.
+- **Rust Powered**: Built on Tauri v2 for a tiny footprint and blazing fast performance on macOS.
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Tauri v2](https://tauri.app) (Rust + Web)
+- **UI Library**: React 19 + TypeScript
+- **Styling**: Tailwind CSS v4 (Glassmorphism & Native aesthetics)
+- **State**: Custom hook-based store with optimistic updates
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 20+ & pnpm
+- Rust (latest stable)
+
+### Client Setup
+
+Run the desktop application in development mode:
 
 ```bash
-cd server
-cp .env.example .env
-# Edit .env with your credentials (Turso, Google OAuth, Gemini, etc.)
-bun install
-bun run dev
-```
+# Clone the repository
+git clone https://github.com/ferxalbs/rainy-day.git
+cd rainy-day
 
-The backend will start at `http://localhost:3000`
-
-### 2. Setup Frontend
-
-```bash
-# From root directory
-cp .env.example .env
-# Edit .env if needed (VITE_API_URL defaults to http://localhost:3000)
+# Install dependencies
 pnpm install
+
+# Run Tauri development window
 pnpm tauri dev
 ```
 
-## Environment Variables
+### 2. Development API (Backend)
 
-### Backend (`server/.env`)
+We offer a hosted **Development API** for contributors who want to test the full syncing capabilities without self-hosting.
 
-| Variable | Description |
-|----------|-------------|
-| `TURSO_DATABASE_URL` | Turso database URL |
-| `TURSO_AUTH_TOKEN` | Turso auth token |
-| `GOOGLE_CLIENT_ID` | Google OAuth client ID |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret |
-| `GOOGLE_REDIRECT_URI` | OAuth callback URL |
-| `GEMINI_API_KEY` | Google Gemini API key |
-| `JWT_SECRET` | Secret for JWT tokens |
-| `PORT` | Server port (default: 3000) |
+To request access:
 
-### Frontend (`.env`)
+1.  Open a **New Issue** with the label `api-access`.
+2.  Briefly describe your contribution or use case.
+3.  We will provide you with a unique `API_KEY` to configure your `.env` file.
 
-| Variable | Description |
-|----------|-------------|
-| `VITE_API_URL` | Backend API URL (default: http://localhost:3000) |
+_Note: This API will eventually be made public and free for all developers._
 
-## API Endpoints
+## 🤝 Community & Support
 
-### Authentication
-- `POST /auth/init` - Start OAuth flow
-- `GET /auth/poll` - Poll for auth completion
-- `POST /auth/session/exchange` - Exchange code for tokens
-- `POST /auth/refresh` - Refresh access token
-- `GET /auth/me` - Get current user
+This repository is the central hub for the Rainy Day community.
 
-### Data
-- `GET /data/emails` - Get synced emails
-- `GET /data/events` - Get calendar events
-- `GET /data/tasks` - Get tasks
-- `GET /data/task-lists` - Get task lists
+- 📥 **Releases**: Download the latest official builds for macOS, Windows, and Linux from [Releases](https://github.com/ferxalbs/rainy-day/releases).
+- 💬 **Discussions**: Share ideas, ask questions, and engage with other users in [GitHub Discussions](https://github.com/ferxalbs/rainy-day/discussions).
+- 🐛 **Issues**: Report bugs or request features via [GitHub Issues](https://github.com/ferxalbs/rainy-day/issues).
 
-### Actions
-- `POST /actions/tasks` - Create task
-- `PATCH /actions/tasks/:id` - Update task
-- `POST /actions/tasks/:id/complete` - Complete task
-- `DELETE /actions/tasks/:id` - Delete task
+We welcome contributions! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-### Sync
-- `POST /sync/trigger` - Trigger data sync
-- `GET /sync/status` - Get sync status
+## 📄 License
 
-### Plan
-- `GET /plan/today` - Get today's AI plan
-- `POST /plan/generate` - Generate new plan
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for more information.
 
-## Development
+---
 
-### Frontend Development
-```bash
-pnpm dev          # Start Vite dev server only
-pnpm tauri dev    # Start full Tauri app
-```
-
-### Backend Development
-```bash
-cd server
-bun run dev       # Start with hot reload
-```
-
-### Type Checking
-```bash
-pnpm typecheck    # Frontend
-cd server && bun run typecheck  # Backend
-```
-
-## Project Structure
-
-```
-├── src/                    # Frontend React code
-│   ├── components/         # UI components
-│   ├── contexts/           # React contexts (Auth, Theme)
-│   ├── hooks/              # Custom hooks
-│   ├── services/           # API services
-│   │   └── backend/        # HTTP backend services
-│   └── types/              # TypeScript types
-├── server/                 # Backend API
-│   └── src/
-│       ├── routes/         # API routes
-│       ├── services/       # Business logic
-│       ├── db/             # Database schema & migrations
-│       └── jobs/           # Background jobs (Inngest)
-└── src-tauri/              # Tauri/Rust code (keychain only)
-```
-
-## License
-
-MIT
+<p align="center">
+  Built with ❤️ for those who love clear skies and organized minds.
+</p>
