@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useDailyData } from "../../hooks/useDailyData";
 import { useSyncStatus } from "../../hooks/useSyncStatus";
 import { useDailyPlan } from "../../hooks/useDailyPlan";
+import { useAuth } from "../../contexts/AuthContext";
 import {
   useKeyboardShortcuts,
   FOCUS_QUICK_TASK_EVENT,
@@ -29,6 +30,22 @@ export function MainLayout() {
   const { events, threads, tasks, isLoading, refresh } = useDailyData();
   const { triggerSync } = useSyncStatus();
   const { isGenerating, regenerate } = useDailyPlan();
+  const { user } = useAuth();
+
+  // Dynamic greeting based on time of day
+  const greeting = useMemo(() => {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) return "Good morning";
+    if (hour >= 12 && hour < 17) return "Good afternoon";
+    if (hour >= 17 && hour < 21) return "Good evening";
+    return "Good night"; // 21:00 - 04:59
+  }, []);
+
+  // Get user's first name from Google
+  const firstName = useMemo(() => {
+    if (!user?.name) return "";
+    return user.name.split(" ")[0];
+  }, [user?.name]);
 
   // Keyboard shortcut handlers
   const handleRegeneratePlan = useCallback(() => {
@@ -97,11 +114,8 @@ export function MainLayout() {
           {/* Greeting Section */}
           <div className="mb-8 pt-4">
             <h1 className="text-3xl font-bold text-foreground">
-              {new Date().getHours() < 12
-                ? "Good morning"
-                : new Date().getHours() < 18
-                ? "Good afternoon"
-                : "Good evening"}
+              {greeting}
+              {firstName ? `, ${firstName}` : ""}
             </h1>
             <div className="flex items-center gap-2 mt-2">
               <span className="w-1.5 h-1.5 rounded-full bg-primary" />

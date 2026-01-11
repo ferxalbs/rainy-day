@@ -2,10 +2,12 @@
  * PlanProgressBar Component
  *
  * Visual progress indicator showing daily completion percentage.
- * Displays a smooth animated progress bar with percentage label.
+ * Uses shadcn Progress component with theme-aware colors.
  *
  * Uses Tailwind CSS v4 for styling with responsive design.
  */
+
+import { Progress } from "../ui/progress";
 
 interface PlanProgressBarProps {
   /** Completion percentage (0-100) */
@@ -29,16 +31,6 @@ function formatTimeRemaining(minutes: number): string {
   return mins > 0 ? `${hours}h ${mins}m left` : `${hours}h left`;
 }
 
-/**
- * Get progress bar color based on completion percentage
- */
-function getProgressColor(percentage: number): string {
-  if (percentage >= 80) return "bg-green-500";
-  if (percentage >= 50) return "bg-primary";
-  if (percentage >= 25) return "bg-amber-500";
-  return "bg-blue-500";
-}
-
 export function PlanProgressBar({
   percentage,
   estimatedMinutes,
@@ -47,7 +39,6 @@ export function PlanProgressBar({
 }: PlanProgressBarProps) {
   // Clamp percentage between 0 and 100
   const clampedPercentage = Math.max(0, Math.min(100, percentage));
-  const progressColor = getProgressColor(clampedPercentage);
 
   return (
     <div className={`space-y-1.5 ${className}`}>
@@ -70,13 +61,8 @@ export function PlanProgressBar({
         </div>
       </div>
 
-      {/* Progress bar track */}
-      <div className="h-2 w-full rounded-full bg-muted/30 overflow-hidden">
-        <div
-          className={`h-full rounded-full transition-all duration-500 ease-out ${progressColor}`}
-          style={{ width: `${clampedPercentage}%` }}
-        />
-      </div>
+      {/* Shadcn Progress component - uses theme primary color */}
+      <Progress value={clampedPercentage} className="h-2" />
     </div>
   );
 }
@@ -92,16 +78,10 @@ export function PlanProgressBarInline({
   className?: string;
 }) {
   const clampedPercentage = Math.max(0, Math.min(100, percentage));
-  const progressColor = getProgressColor(clampedPercentage);
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      <div className="h-1.5 w-16 rounded-full bg-muted/30 overflow-hidden">
-        <div
-          className={`h-full rounded-full transition-all duration-500 ease-out ${progressColor}`}
-          style={{ width: `${clampedPercentage}%` }}
-        />
-      </div>
+      <Progress value={clampedPercentage} className="h-1.5 w-16" />
       <span className="text-xs font-medium text-muted-foreground tabular-nums">
         {clampedPercentage}%
       </span>

@@ -12,6 +12,7 @@ _January 11, 2026_
 - **Progress Tracking**: A visual progress bar shows how much of your day you've completed
 - **Productivity Insights**: Your AI plan now includes suggested break times, task batching recommendations, and optimal focus windows
 - **Focus Mode Ready**: New quick action buttons for Focus Mode, Email Triage, and Quick Wins (coming soon!)
+- **Personalized Greeting**: The app now greets you by your first name with the correct time of day
 
 ---
 

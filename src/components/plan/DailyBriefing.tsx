@@ -14,7 +14,7 @@
  * Requirements: 1.6, 1.7, 5.1, 5.5, 6.4, 8.4, 8.5
  */
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useDailyPlan } from "../../hooks/useDailyPlan";
 import { useEmailActions } from "../../hooks/useEmailActions";
 import { REGENERATE_PLAN_EVENT } from "../../hooks/useKeyboardShortcuts";
@@ -360,6 +360,91 @@ export function DailyBriefing({
   const [optimisticStates, setOptimisticStates] = useState<
     Record<string, OptimisticEmailState>
   >({});
+
+  const [completedTaskIds, setCompletedTaskIds] = useState<Set<string>>(() => {
+    // Initialize from localStorage
+    if (typeof window !== "undefined" && plan?.date) {
+      try {
+        const stored = localStorage.getItem(`plan_completed_${plan.date}`);
+        if (stored) {
+          return new Set(JSON.parse(stored));
+        }
+      } catch (e) {
+        console.warn("Failed to load completed tasks from localStorage:", e);
+      }
+    }
+    return new Set();
+  });
+
+  // Load completed tasks when plan changes (new day)
+  useEffect(() => {
+    if (plan?.date) {
+      const key = `plan_completed_${plan.date}`;
+      try {
+        const stored = localStorage.getItem(key);
+        if (stored) {
+          setCompletedTaskIds(new Set(JSON.parse(stored)));
+        } else {
+          setCompletedTaskIds(new Set()); // Reset for new day
+        }
+      } catch (e) {
+        console.warn("Failed to load completed tasks:", e);
+        setCompletedTaskIds(new Set());
+      }
+    }
+  }, [plan?.date]);
+
+  // Save completed tasks to localStorage whenever they change
+  useEffect(() => {
+    if (plan?.date && completedTaskIds.size >= 0) {
+      const key = `plan_completed_${plan.date}`;
+      try {
+        localStorage.setItem(key, JSON.stringify([...completedTaskIds]));
+      } catch (e) {
+        console.warn("Failed to save completed tasks:", e);
+      }
+    }
+  }, [plan?.date, completedTaskIds]);
+
+  // Calculate dynamic completion percentage
+  const { completionPercentage, remainingMinutes } = useMemo(() => {
+    if (!plan?.stats) return { completionPercentage: 0, remainingMinutes: 0 };
+
+    const totalTasks = plan.stats.total_tasks;
+    if (totalTasks === 0)
+      return { completionPercentage: 100, remainingMinutes: 0 };
+
+    const completedCount = completedTaskIds.size;
+    const percentage = Math.round((completedCount / totalTasks) * 100);
+
+    // Calculate remaining minutes (estimate based on uncompleted tasks)
+    const totalMinutes = plan.stats.estimated_minutes;
+    const completedRatio = completedCount / totalTasks;
+    const remaining = Math.round(totalMinutes * (1 - completedRatio));
+
+    return { completionPercentage: percentage, remainingMinutes: remaining };
+  }, [plan?.stats, completedTaskIds]);
+
+  // Handle task completion - track locally for progress bar
+  const handleTaskComplete = useCallback(
+    (taskId: string) => {
+      setCompletedTaskIds((prev) => {
+        const newSet = new Set(prev);
+        if (newSet.has(taskId)) {
+          newSet.delete(taskId); // Toggle off if already completed
+        } else {
+          newSet.add(taskId);
+        }
+        return newSet;
+      });
+
+      // Also call the parent handler if provided
+      if (onTaskComplete) {
+        onTaskComplete(taskId);
+      }
+    },
+    [onTaskComplete]
+  );
 
   // Listen for keyboard shortcut to regenerate plan (Cmd+R)
   useEffect(() => {
@@ -770,8 +855,8 @@ export function DailyBriefing({
             {plan.stats && (
               <div className="mb-5">
                 <PlanProgressBar
-                  percentage={plan.stats.completion_percentage}
-                  estimatedMinutes={plan.stats.estimated_minutes}
+                  percentage={completionPercentage}
+                  estimatedMinutes={remainingMinutes}
                 />
               </div>
             )}
@@ -790,7 +875,8 @@ export function DailyBriefing({
                   <BriefingItem
                     key={task.id}
                     task={task}
-                    onComplete={onTaskComplete}
+                    isCompleted={completedTaskIds.has(task.id)}
+                    onComplete={handleTaskComplete}
                     onFeedback={submitItemFeedback}
                     formatTime={formatSuggestedTime}
                     getTypeIcon={getTypeIcon}
@@ -935,6 +1021,7 @@ export function DailyBriefing({
 
 interface BriefingItemProps {
   task: PlanTask;
+  isCompleted?: boolean;
   onComplete?: (taskId: string) => void;
   onFeedback?: (
     itemId: string,
@@ -958,6 +1045,7 @@ interface BriefingItemProps {
 
 function BriefingItem({
   task,
+  isCompleted = false,
   onComplete,
   onFeedback,
   formatTime,
@@ -973,16 +1061,17 @@ function BriefingItem({
     null
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
 
   const isEmail = task.type === "email" || task.source_type === "email";
   const isMeeting = task.type === "meeting";
   const isTask = task.source_type === "task";
 
-  const handleComplete = () => {
-    setIsChecked(true);
-    if (task.source_id && onComplete) {
-      onComplete(task.source_id);
+  // Use task.id as identifier (more reliable than source_id)
+  const taskIdentifier = task.id;
+
+  const handleToggleComplete = () => {
+    if (onComplete && taskIdentifier) {
+      onComplete(taskIdentifier);
     }
   };
 
@@ -1009,14 +1098,14 @@ function BriefingItem({
   return (
     <div
       className={`group flex items-start gap-3 p-3 rounded-xl hover:bg-card/40 transition-all border border-transparent hover:border-border/40 ${
-        isChecked || isOptimisticallyRead ? "opacity-50" : ""
+        isCompleted || isOptimisticallyRead ? "opacity-50" : ""
       }`}
     >
       {/* Checkbox */}
       {isTask && (
         <Checkbox
-          checked={isChecked}
-          onCheckedChange={handleComplete}
+          checked={isCompleted}
+          onCheckedChange={handleToggleComplete}
           className="mt-1 w-4 h-4 rounded border-2 border-muted-foreground/40 accent-primary cursor-pointer"
         />
       )}
@@ -1029,7 +1118,7 @@ function BriefingItem({
         <div className="flex items-center gap-2 flex-wrap">
           <span
             className={`font-medium text-foreground text-sm ${
-              isChecked ? "line-through" : ""
+              isCompleted ? "line-through opacity-60" : ""
             }`}
           >
             {task.title}

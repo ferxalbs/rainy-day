@@ -39,6 +39,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **DailyBriefing Integration**: Stats bar and progress bar now display at top of daily briefing
 - **Enhanced Server AI Prompt**: Requests suggested breaks, batch groupings, and optimal focus windows
+- **Personalized Greeting**: Header now displays user's first name from Google (e.g., "Good night, Fernando")
+- **Dynamic Time-of-Day Greeting**: Fixed greeting logic to correctly show "Good night" between 9 PM - 5 AM
+
+#### Fixes
+
+- **Greeting Consistency**: Header greeting now matches AI-generated greeting time-of-day
+- **Time-of-Day Logic**: Added missing "Good night" case for late hours (was showing "Good evening" at 1 AM)
+- **Dynamic Progress Bar**: Progress percentage and remaining time now update in real-time when tasks are completed (was stuck at 0%)
+- **Task Completion Persistence**: Completed task states now persist in localStorage and survive app reloads (keyed by plan date)
 
 ---
 
