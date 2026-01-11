@@ -63,7 +63,7 @@ const ALL_MODELS = [
     monthlyLimit: 10,
   },
 
-  // Groq Models
+  // Groq Fast Models
   {
     id: "groq-llama-3.3-70b",
     name: "Llama 3.3 70B (Groq)",
@@ -76,6 +76,23 @@ const ALL_MODELS = [
     name: "Llama 3.1 8B (Groq)",
     tier: "plus",
     description: "Lightning-fast",
+  },
+
+  // GPT-OSS Reasoning (via Groq)
+  {
+    id: "groq-gpt-oss-20b",
+    name: "GPT-OSS 20B",
+    tier: "plus",
+    description: "Fast reasoning (1000 T/s)",
+    badge: "⚡",
+  },
+  {
+    id: "groq-gpt-oss-120b",
+    name: "GPT-OSS 120B",
+    tier: "pro",
+    description: "Deep reasoning (500 T/s)",
+    badge: "🧠",
+    monthlyLimit: 15,
   },
 ] as const;
 
@@ -177,12 +194,27 @@ export function ModelSelector({ onUpgradeClick }: ModelSelectorProps) {
           )
         )}
 
-        {/* Groq Section */}
+        {/* Groq Llama Section */}
         <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground flex items-center gap-1 mt-1">
           <Zap className="w-3 h-3" />
           Groq (Ultra-Fast)
         </div>
-        {ALL_MODELS.filter((m) => m.id.startsWith("groq")).map((model) => (
+        {ALL_MODELS.filter((m) => m.id.startsWith("groq-llama")).map(
+          (model) => (
+            <ModelItem
+              key={model.id}
+              model={model}
+              currentTierLevel={currentTierLevel}
+            />
+          )
+        )}
+
+        {/* GPT-OSS Reasoning Section */}
+        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground flex items-center gap-1 mt-1">
+          <Sparkles className="w-3 h-3" />
+          GPT-OSS (Reasoning)
+        </div>
+        {ALL_MODELS.filter((m) => m.id.startsWith("groq-gpt")).map((model) => (
           <ModelItem
             key={model.id}
             model={model}

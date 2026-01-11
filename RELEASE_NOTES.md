@@ -2,6 +2,20 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
+## Rainy Day 0.5.2 ⚡
+
+_January 10, 2026_
+
+**Groq Reasoning Models**
+
+- **GPT-OSS models**: Access OpenAI's reasoning models through Groq's ultra-fast infrastructure
+  - GPT-OSS 20B at 1000 tokens/sec for quick reasoning tasks
+  - GPT-OSS 120B at 500 tokens/sec for deep analysis (Pro only)
+- **Smoother plan regeneration**: Visual feedback with skeleton loading when refreshing your AI daily plan
+- **Fixed refresh button**: The topbar refresh button now properly shows loading state
+
+---
+
 ## Rainy Day 0.5.1 🛡️
 
 _January 10, 2026_

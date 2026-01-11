@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.5.2] - 2026-01-10
+
+#### Added
+
+- **Groq Provider Integration**: Full support for Groq's ultra-fast inference
+  - New `groq.ts` adapter with OpenAI-compatible API
+  - GPT-OSS 20B model (1000 T/SEC, `plus` tier) - fast reasoning
+  - GPT-OSS 120B model (500 T/SEC, `pro` tier) - deep reasoning
+  - `ReasoningEffort` type: `low`, `medium`, `high` for GPT-OSS models
+  - `groq-reasoning` thinkingType for GPT-OSS model handling
+- **Provider Routing in generateJSON**: Automatically routes to Groq adapter based on model provider
+
+#### Improvements
+
+- **DailyBriefing Skeleton Loading**:
+  - Full skeleton UI during plan regeneration
+  - Shared state between Topbar and DailyBriefing for proper refresh button sync
+  - Floating "Regenerating plan..." indicator
+
+---
+
 ### [v0.5.1] - 2026-01-10
 
 #### Added
