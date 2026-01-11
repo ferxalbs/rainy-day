@@ -84,14 +84,14 @@ const ALL_MODELS = [
     name: "GPT-OSS 20B",
     tier: "plus",
     description: "Fast reasoning (1000 T/s)",
-    badge: "⚡",
+    badge: "",
   },
   {
     id: "groq-gpt-oss-120b",
     name: "GPT-OSS 120B",
     tier: "pro",
     description: "Deep reasoning (500 T/s)",
-    badge: "🧠",
+    badge: "",
     monthlyLimit: 15,
   },
 ] as const;

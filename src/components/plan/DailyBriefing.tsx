@@ -21,6 +21,7 @@ import { REGENERATE_PLAN_EVENT } from "../../hooks/useKeyboardShortcuts";
 import { Button } from "../ui/button";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip";
 import type { PlanTask, ItemFeedbackType } from "../../services/backend/plan";
+import { Checkbox } from "../ui/checkbox";
 
 // =============================================================================
 // Icons (Clean SVG, no emojis)
@@ -994,10 +995,9 @@ function BriefingItem({
     >
       {/* Checkbox */}
       {isTask && (
-        <input
-          type="checkbox"
+        <Checkbox
           checked={isChecked}
-          onChange={handleComplete}
+          onCheckedChange={handleComplete}
           className="mt-1 w-4 h-4 rounded border-2 border-muted-foreground/40 accent-primary cursor-pointer"
         />
       )}
