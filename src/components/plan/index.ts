@@ -12,3 +12,8 @@ export { QuickTaskInput } from "./QuickTaskInput";
 export { MeetingJoinButton } from "./MeetingJoinButton";
 export { EmailActionBar } from "./EmailActionBar";
 export type { EmailActionBarProps } from "./EmailActionBar";
+
+// New productivity components
+export { PlanQuickStats } from "./PlanQuickStats";
+export { PlanProgressBar, PlanProgressBarInline } from "./PlanProgressBar";
+export { PlanQuickActions } from "./PlanQuickActions";

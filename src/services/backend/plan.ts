@@ -42,6 +42,24 @@ export interface DailyPlan {
   meetings: PlanTask[];
   defer_suggestions: (string | PlanTask)[];
   generated_at: number;
+  
+  // Productivity insights for smarter planning
+  productivity_insights?: {
+    estimated_focus_hours: number;
+    meeting_load: 'light' | 'moderate' | 'heavy';
+    suggested_breaks: { time: string; duration_minutes: number }[];
+    batch_suggestions?: { category: string; task_ids: string[] }[];
+    optimal_focus_window?: string;
+  };
+  
+  // Quick stats for UI display
+  stats?: {
+    total_tasks: number;
+    high_priority_count: number;
+    estimated_minutes: number;
+    emails_pending: number;
+    completion_percentage: number;
+  };
 }
 
 /**

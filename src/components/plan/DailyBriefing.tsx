@@ -22,6 +22,8 @@ import { Button } from "../ui/button";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip";
 import type { PlanTask, ItemFeedbackType } from "../../services/backend/plan";
 import { Checkbox } from "../ui/checkbox";
+import { PlanQuickStats } from "./PlanQuickStats";
+import { PlanProgressBar } from "./PlanProgressBar";
 
 // =============================================================================
 // Icons (Clean SVG, no emojis)
@@ -757,6 +759,23 @@ export function DailyBriefing({
 
           {/* Main Briefing Card */}
           <div className="daily-briefing-container p-6 rounded-2xl backdrop-blur-xl border-2 border-border/50 bg-card/30 shadow-xl">
+            {/* Quick Stats Bar */}
+            {plan.stats && (
+              <div className="mb-4 pb-4 border-b border-border/30">
+                <PlanQuickStats stats={plan.stats} />
+              </div>
+            )}
+
+            {/* Progress Bar */}
+            {plan.stats && (
+              <div className="mb-5">
+                <PlanProgressBar
+                  percentage={plan.stats.completion_percentage}
+                  estimatedMinutes={plan.stats.estimated_minutes}
+                />
+              </div>
+            )}
+
             {/* AI Summary */}
             {plan.summary && (
               <p className="text-foreground/80 leading-relaxed mb-6 text-[15px]">
