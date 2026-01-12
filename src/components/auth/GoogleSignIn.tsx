@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import { ApiStatusIndicator } from "../ui/ApiStatusIndicator";
 // Legacy styles preserved but unused for this new implementation
 // import "./GoogleSignIn.legacy.css";
 
@@ -24,7 +25,11 @@ export function GoogleSignIn() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <Card className="w-full max-w-md bg-card/40 backdrop-blur-xl border-border/50 shadow-2xl">
+      <Card className="relative w-full max-w-md bg-card/40 backdrop-blur-xl border-border/50 shadow-2xl">
+        {/* API Status Indicator */}
+        <div className="absolute top-4 right-4">
+          <ApiStatusIndicator />
+        </div>
         <CardHeader className="text-center space-y-4 pb-8">
           <div className="mx-auto w-fit">
             <svg

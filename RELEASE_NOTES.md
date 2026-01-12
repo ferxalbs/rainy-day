@@ -2,6 +2,20 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
+## Rainy Day 0.5.4 🔌
+
+_January 12, 2026_
+
+**Production Connection Fix & Status Indicator**
+
+- **Fixed**: The app now correctly connects to the backend in production builds (was only working in development)
+- **New**: API connection indicator on the login screen shows if the backend is reachable
+  - 🟢 Green = Connected
+  - 🟡 Yellow = Checking
+  - 🔴 Red = Unavailable
+
+---
+
 ## Rainy Day 0.5.3 📊
 
 _January 11, 2026_

@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.5.4] - 2026-01-12
+
+#### Fixes
+
+- **Production API Connection**: Fixed CSP blocking backend connections in production builds
+  - Added `https://*.run.app` and `http://localhost:3000` to `connect-src` in `tauri.conf.json`
+  - This resolves the issue where the app worked in dev but not in production builds
+
+#### Added
+
+- **API Status Indicator**: Visual connection status indicator on login screen
+  - New `ApiStatusIndicator.tsx` component with wifi-style icon
+  - Color-coded status: Green (connected), Yellow (checking), Red (disconnected)
+  - Auto-checks connection every 30 seconds
+  - Hover tooltip shows API URL and status
+
+---
+
 ### [v0.5.3] - 2026-01-11
 
 #### Added
