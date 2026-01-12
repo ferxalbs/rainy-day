@@ -1,2 +1,7 @@
+# pnpm workspace configuration
+# Since this is a single package project (not a monorepo),
+# we use an empty packages array
+packages: []
+
 onlyBuiltDependencies:
   - esbuild
