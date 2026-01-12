@@ -3,7 +3,7 @@ import type { ThreadSummary } from "../../types";
 import { Skeleton } from "../ui/skeleton";
 import { EmailActionBar } from "../plan/EmailActionBar";
 import { useEmailActions } from "../../hooks/useEmailActions";
-import { EmailSummaryCard } from "../email/EmailSummaryCard";
+import { EmailSummaryDialog } from "../email/EmailSummaryDialog";
 import { SummaryButton, SummaryQuotaDisplay } from "../email/SummaryButton";
 import { useSummary } from "../../hooks/useSummary";
 import type { EmailSummary } from "../../services/backend/summary";
@@ -45,6 +45,10 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
   const [expandedSummaryId, setExpandedSummaryId] = useState<string | null>(null);
   // Store summaries per email
   const [summaries, setSummaries] = useState<Record<string, EmailSummary>>({});
+  // Dialog open state
+  const [dialogOpen, setDialogOpen] = useState(false);
+  // Currently selected email subject for dialog
+  const [selectedEmailSubject, setSelectedEmailSubject] = useState<string>("");
 
   // Notification state
   const [notifications, setNotifications] = useState<NotificationState[]>([]);
@@ -81,8 +85,10 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
     }, 4000);
   }, []);
 
-  const handleGenerateSummary = useCallback(async (emailId: string) => {
+  const handleGenerateSummary = useCallback(async (emailId: string, subject?: string) => {
     setExpandedSummaryId(emailId);
+    setSelectedEmailSubject(subject || "");
+    setDialogOpen(true);
     const success = await generate(emailId);
     if (success) {
       showNotification("success", "✨ AI Summary generated");
@@ -167,8 +173,8 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
             <div
               key={notification.id}
               className={`px-4 py-3 rounded-lg shadow-lg backdrop-blur-md border transition-all animate-in slide-in-from-right-5 ${notification.type === "success"
-                  ? "bg-green-500/90 text-white border-green-400/50"
-                  : "bg-destructive/90 text-destructive-foreground border-destructive/50"
+                ? "bg-green-500/90 text-white border-green-400/50"
+                : "bg-destructive/90 text-destructive-foreground border-destructive/50"
                 }`}
             >
               <span className="text-sm font-medium">{notification.message}</span>
@@ -206,7 +212,6 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
             const isRead = isOptimisticallyRead || !thread.is_unread;
             const loadingState = loadingStates[thread.id];
             const hasSummary = !!summaries[thread.id];
-            const isExpanded = expandedSummaryId === thread.id && hasSummary;
 
             return (
               <div key={thread.id}>
@@ -237,6 +242,7 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
                     {/* AI Summary Button */}
                     <SummaryButton
                       emailId={thread.id}
+                      emailSubject={thread.subject || thread.snippet.slice(0, 50)}
                       onGenerate={handleGenerateSummary}
                       isLoading={isGenerating && expandedSummaryId === thread.id}
                       remaining={limits?.remaining}
@@ -262,26 +268,24 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
                     </div>
                   </div>
                 </div>
-
-                {/* Expanded Summary Card */}
-                {isExpanded && summaries[thread.id] && (
-                  <div className="px-5 pb-4 bg-muted/10">
-                    <EmailSummaryCard
-                      summary={summaries[thread.id]}
-                      onReplyClick={(reply) => {
-                        // Copy to clipboard for now
-                        navigator.clipboard.writeText(reply);
-                        showNotification("success", "📋 Reply copied to clipboard");
-                      }}
-                    />
-                  </div>
-                )}
               </div>
             );
           })}
         </div>
       )}
+
+      {/* Floating Summary Dialog */}
+      <EmailSummaryDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        summary={expandedSummaryId ? summaries[expandedSummaryId] : null}
+        emailSubject={selectedEmailSubject}
+        isLoading={isGenerating}
+        onReplyClick={(reply) => {
+          navigator.clipboard.writeText(reply);
+          showNotification("success", "📋 Reply copied to clipboard");
+        }}
+      />
     </div>
   );
 }
-

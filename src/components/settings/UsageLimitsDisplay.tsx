@@ -41,8 +41,8 @@ export function UsageLimitsDisplay({
   const percentConsumed = isUnlimited
     ? 0
     : limit === 0
-    ? 100
-    : Math.min(100, Math.max(0, (used / limit) * 100));
+      ? 100
+      : Math.min(100, Math.max(0, (used / limit) * 100));
 
   // Model usage calculation
   const modelHasLimit = modelUsage && modelUsage.limit > 0;
@@ -65,13 +65,12 @@ export function UsageLimitsDisplay({
         {!isUnlimited && (
           <div className="w-full bg-muted/30 rounded-full h-2 overflow-hidden">
             <div
-              className={`h-2 rounded-full transition-all duration-300 ${
-                percentConsumed > 80
+              className={`h-2 rounded-full transition-all duration-300 ${percentConsumed > 80
                   ? "bg-red-500"
                   : percentConsumed > 50
-                  ? "bg-orange-500"
-                  : "bg-primary"
-              }`}
+                    ? "bg-orange-500"
+                    : "bg-primary"
+                }`}
               style={{ width: `${percentConsumed}%` }}
             />
           </div>
@@ -94,13 +93,12 @@ export function UsageLimitsDisplay({
           </div>
           <div className="w-full bg-muted/30 rounded-full h-2 overflow-hidden">
             <div
-              className={`h-2 rounded-full transition-all duration-300 ${
-                modelPercentUsed > 80
+              className={`h-2 rounded-full transition-all duration-300 ${modelPercentUsed > 80
                   ? "bg-red-500"
                   : modelPercentUsed > 50
-                  ? "bg-amber-500"
-                  : "bg-amber-400"
-              }`}
+                    ? "bg-amber-500"
+                    : "bg-amber-400"
+                }`}
               style={{ width: `${modelPercentUsed}%` }}
             />
           </div>
@@ -125,7 +123,7 @@ export function UsageLimitsDisplay({
               size="sm"
               variant="outline"
               onClick={onUpgradeClick}
-              className="text-xs border-orange-500/30 text-orange-600 hover:bg-orange-500/10"
+              className="text-xs border-primary/30 text-primary hover:bg-primary/10"
             >
               Upgrade for unlimited
             </Button>

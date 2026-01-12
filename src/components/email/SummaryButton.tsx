@@ -15,7 +15,8 @@ import {
 
 interface SummaryButtonProps {
     emailId: string;
-    onGenerate: (emailId: string) => Promise<boolean>;
+    emailSubject?: string;
+    onGenerate: (emailId: string, subject?: string) => Promise<boolean>;
     isLoading?: boolean;
     remaining?: number;
     limit?: number;
@@ -25,6 +26,7 @@ interface SummaryButtonProps {
 
 export function SummaryButton({
     emailId,
+    emailSubject,
     onGenerate,
     isLoading = false,
     remaining,
@@ -39,7 +41,7 @@ export function SummaryButton({
 
     const handleClick = async () => {
         if (!canGenerate || isLoading) return;
-        await onGenerate(emailId);
+        await onGenerate(emailId, emailSubject);
     };
 
     return (

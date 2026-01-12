@@ -9,7 +9,6 @@ import {
     cacheSet,
     cacheGet,
     cacheGetStale,
-    CACHE_EXPIRATION,
     isNetworkError,
 } from "./cache";
 
@@ -79,13 +78,13 @@ function getCachedSummary(emailId: string): EmailSummary | null {
 }
 
 /**
- * Cache summary to localStorage
+ * Cache summary to localStorage (1 hour expiry)
  */
 function cacheSummary(emailId: string, summary: EmailSummary): void {
     cacheSet(
         `${SUMMARY_CACHE_PREFIX}${emailId}`,
         summary,
-        CACHE_EXPIRATION.PLAN // Use same expiration as plan (24h)
+        60 * 60 * 1000 // 1 hour cache
     );
 }
 
