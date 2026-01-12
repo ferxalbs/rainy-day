@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.5.5] - 2026-01-12
+
+#### Added
+
+- **AI Email Summaries**: Intelligent email summarization with unique differentiating features
+  - **Smart Priority Score** (1-10): AI analyzes urgency, sender importance, and content criticality
+  - **Action Items Extraction**: Detects actionable tasks with inferred due dates
+  - **Sentiment Analysis**: Email tone detection with emoji indicators (🔥 urgent, 😊 friendly, 📋 formal, 😤 frustrated, 😐 neutral)
+  - **Key Entities Detection**: Extracts people, companies, dates, and monetary amounts
+  - **Suggested Quick Replies**: 3 context-aware response options
+  - **Task/Event Linking**: Cross-references mentions with existing tasks and calendar events
+  - **Thread Intelligence**: Full conversation summarization, not just single emails
+- **Tier-Based Limits**: Daily summary quotas per subscription tier
+  - Free: 3 summaries/day
+  - Plus: 25 summaries/day  
+  - Pro: 80 summaries/day
+- **New Components**:
+  - `EmailSummaryCard.tsx`: Rich summary display with collapsible sections
+  - `SummaryButton.tsx`: Generation trigger with quota display
+  - `useSummary.ts`: React hook for summary state management
+- **New API Endpoints**:
+  - `GET /summary/email/:id`: Get cached summary
+  - `POST /summary/email/:id`: Generate new summary
+  - `DELETE /summary/email/:id`: Delete cached summary
+  - `GET /summary/limits`: Get daily quota remaining
+  - `GET /summary/history`: Get recent summaries
+
+#### Improvements
+
+- **Billing Limits Endpoint**: Now includes `emailSummary` usage in `/billing/limits` response
+- **Pricing Display**: Plan features now list AI summary limits
+
+---
+
 ### [v0.5.4] - 2026-01-12
 
 #### Fixes

@@ -2,6 +2,28 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
+## Rainy Day 0.5.5 ✨
+
+_January 12, 2026_
+
+**AI Email Summaries**
+
+Get instant AI-powered insights for any email with a single click:
+
+- **Priority Score**: Know at a glance how urgent an email is (1-10 scale)
+- **Action Items**: Automatically extracts what you need to do, with suggested deadlines
+- **Sentiment Detection**: See the email's tone instantly (urgent 🔥, friendly 😊, formal 📋, frustrated 😤)
+- **Key Details**: People, companies, dates, and amounts highlighted for quick reference
+- **Smart Replies**: 3 one-click reply suggestions tailored to the context
+- **Thread Summaries**: Summarize entire email conversations, not just individual emails
+
+**Limits by Plan:**
+- Free: 3 summaries/day
+- Plus: 25 summaries/day
+- Pro: 80 summaries/day
+
+---
+
 ## Rainy Day 0.5.4 🔌
 
 _January 12, 2026_
