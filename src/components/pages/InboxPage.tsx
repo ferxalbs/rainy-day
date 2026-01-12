@@ -281,10 +281,6 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
         summary={expandedSummaryId ? summaries[expandedSummaryId] : null}
         emailSubject={selectedEmailSubject}
         isLoading={isGenerating}
-        onReplyClick={(reply) => {
-          navigator.clipboard.writeText(reply);
-          showNotification("success", "📋 Reply copied to clipboard");
-        }}
       />
     </div>
   );
