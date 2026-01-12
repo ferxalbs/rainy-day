@@ -1,8 +1,12 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import type { ThreadSummary } from "../../types";
 import { Skeleton } from "../ui/skeleton";
 import { EmailActionBar } from "../plan/EmailActionBar";
 import { useEmailActions } from "../../hooks/useEmailActions";
+import { EmailSummaryCard } from "../email/EmailSummaryCard";
+import { SummaryButton, SummaryQuotaDisplay } from "../email/SummaryButton";
+import { useSummary } from "../../hooks/useSummary";
+import type { EmailSummary } from "../../services/backend/summary";
 
 interface InboxPageProps {
   threads: ThreadSummary[];
@@ -27,6 +31,21 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
     loadingStates,
   } = useEmailActions();
 
+  // Summary state
+  const {
+    summary,
+    limits,
+    isGenerating,
+    generate,
+    refreshLimits,
+    error: summaryError
+  } = useSummary();
+
+  // Track which email has expanded summary
+  const [expandedSummaryId, setExpandedSummaryId] = useState<string | null>(null);
+  // Store summaries per email
+  const [summaries, setSummaries] = useState<Record<string, EmailSummary>>({});
+
   // Notification state
   const [notifications, setNotifications] = useState<NotificationState[]>([]);
 
@@ -34,6 +53,25 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
   const [archivedEmails, setArchivedEmails] = useState<Set<string>>(new Set());
   // Track read emails for optimistic UI
   const [readEmails, setReadEmails] = useState<Set<string>>(new Set());
+
+  // Load limits on mount
+  useEffect(() => {
+    refreshLimits();
+  }, [refreshLimits]);
+
+  // Update summaries when a new one is generated
+  useEffect(() => {
+    if (summary && expandedSummaryId) {
+      setSummaries(prev => ({ ...prev, [expandedSummaryId]: summary }));
+    }
+  }, [summary, expandedSummaryId]);
+
+  // Show summary error as notification
+  useEffect(() => {
+    if (summaryError) {
+      showNotification("error", summaryError);
+    }
+  }, [summaryError]);
 
   const showNotification = useCallback((type: "success" | "error", message: string) => {
     const id = Date.now();
@@ -43,10 +81,19 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
     }, 4000);
   }, []);
 
+  const handleGenerateSummary = useCallback(async (emailId: string) => {
+    setExpandedSummaryId(emailId);
+    const success = await generate(emailId);
+    if (success) {
+      showNotification("success", "✨ AI Summary generated");
+    }
+    return success;
+  }, [generate, showNotification]);
+
   const handleArchive = useCallback(async (emailId: string) => {
     // Optimistic update
     setArchivedEmails((prev) => new Set(prev).add(emailId));
-    
+
     const result = await archiveEmail(emailId);
     if (result.success) {
       showNotification("success", "📥 Email archived");
@@ -65,7 +112,7 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
   const handleMarkRead = useCallback(async (emailId: string) => {
     // Optimistic update
     setReadEmails((prev) => new Set(prev).add(emailId));
-    
+
     const result = await markAsRead(emailId);
     if (result.success) {
       showNotification("success", "✓ Marked as read");
@@ -119,11 +166,10 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
           {notifications.map((notification) => (
             <div
               key={notification.id}
-              className={`px-4 py-3 rounded-lg shadow-lg backdrop-blur-md border transition-all animate-in slide-in-from-right-5 ${
-                notification.type === "success"
+              className={`px-4 py-3 rounded-lg shadow-lg backdrop-blur-md border transition-all animate-in slide-in-from-right-5 ${notification.type === "success"
                   ? "bg-green-500/90 text-white border-green-400/50"
                   : "bg-destructive/90 text-destructive-foreground border-destructive/50"
-              }`}
+                }`}
             >
               <span className="text-sm font-medium">{notification.message}</span>
             </div>
@@ -132,16 +178,20 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
       )}
 
       {/* Header */}
-      <div className="px-5 py-4 border-b border-border bg-card/30">
+      <div className="px-5 py-4 border-b border-border bg-card/30 flex items-center justify-between">
         <h2 className="text-lg font-semibold text-foreground flex items-center gap-3">
           <span className="text-xl">📬</span>
           Priority Inbox
           {visibleThreads.length > 0 && (
-            <span className="ml-auto text-xs font-semibold text-muted-foreground bg-muted/20 border border-border/30 px-2.5 py-1 rounded-full">
+            <span className="text-xs font-semibold text-muted-foreground bg-muted/20 border border-border/30 px-2.5 py-1 rounded-full">
               {visibleThreads.length}
             </span>
           )}
         </h2>
+        {/* Summary Quota Display */}
+        {limits && (
+          <SummaryQuotaDisplay remaining={limits.remaining} limit={limits.limit} />
+        )}
       </div>
 
       {/* Content */}
@@ -155,48 +205,77 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
             const isOptimisticallyRead = readEmails.has(thread.id);
             const isRead = isOptimisticallyRead || !thread.is_unread;
             const loadingState = loadingStates[thread.id];
-            
+            const hasSummary = !!summaries[thread.id];
+            const isExpanded = expandedSummaryId === thread.id && hasSummary;
+
             return (
-              <div
-                key={thread.id}
-                className={`px-5 py-4 hover:bg-accent transition-colors group flex items-start gap-4 ${
-                  isRead ? "opacity-60" : ""
-                }`}
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <p className={`text-foreground group-hover:text-accent-foreground transition-colors line-clamp-1 ${
-                      isRead ? "font-normal" : "font-medium"
-                    }`}>
-                      {thread.subject || thread.snippet.slice(0, 50)}
+              <div key={thread.id}>
+                <div
+                  className={`px-5 py-4 hover:bg-accent transition-colors group flex items-start gap-4 ${isRead ? "opacity-60" : ""
+                    }`}
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className={`text-foreground group-hover:text-accent-foreground transition-colors line-clamp-1 ${isRead ? "font-normal" : "font-medium"
+                        }`}>
+                        {thread.subject || thread.snippet.slice(0, 50)}
+                      </p>
+                      {!isRead && (
+                        <span className="flex-shrink-0 w-2 h-2 rounded-full bg-primary" title="Unread" />
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground group-hover:text-accent-foreground/80 line-clamp-2 mt-1.5 leading-relaxed">
+                      {thread.snippet}
                     </p>
-                    {!isRead && (
-                      <span className="flex-shrink-0 w-2 h-2 rounded-full bg-primary" title="Unread" />
-                    )}
+                    <p className="text-xs text-muted-foreground/60 mt-1">
+                      {thread.from_name || thread.from_email}
+                    </p>
                   </div>
-                  <p className="text-sm text-muted-foreground group-hover:text-accent-foreground/80 line-clamp-2 mt-1.5 leading-relaxed">
-                    {thread.snippet}
-                  </p>
-                  <p className="text-xs text-muted-foreground/60 mt-1">
-                    {thread.from_name || thread.from_email}
-                  </p>
+
+                  {/* Action Buttons Row */}
+                  <div className="flex-shrink-0 flex items-center gap-2">
+                    {/* AI Summary Button */}
+                    <SummaryButton
+                      emailId={thread.id}
+                      onGenerate={handleGenerateSummary}
+                      isLoading={isGenerating && expandedSummaryId === thread.id}
+                      remaining={limits?.remaining}
+                      limit={limits?.limit}
+                      hasSummary={hasSummary}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity"
+                    />
+
+                    {/* Email Action Buttons */}
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                      <EmailActionBar
+                        email={{
+                          id: thread.id,
+                          subject: thread.subject || thread.snippet.slice(0, 50),
+                          isUnread: !isRead,
+                        }}
+                        onArchive={() => handleArchive(thread.id)}
+                        onMarkRead={!isRead ? () => handleMarkRead(thread.id) : undefined}
+                        onConvertToTask={() => handleConvertToTask(thread.id)}
+                        loadingState={loadingState}
+                        compact
+                      />
+                    </div>
+                  </div>
                 </div>
-                
-                {/* Email Action Buttons */}
-                <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <EmailActionBar
-                    email={{
-                      id: thread.id,
-                      subject: thread.subject || thread.snippet.slice(0, 50),
-                      isUnread: !isRead,
-                    }}
-                    onArchive={() => handleArchive(thread.id)}
-                    onMarkRead={!isRead ? () => handleMarkRead(thread.id) : undefined}
-                    onConvertToTask={() => handleConvertToTask(thread.id)}
-                    loadingState={loadingState}
-                    compact
-                  />
-                </div>
+
+                {/* Expanded Summary Card */}
+                {isExpanded && summaries[thread.id] && (
+                  <div className="px-5 pb-4 bg-muted/10">
+                    <EmailSummaryCard
+                      summary={summaries[thread.id]}
+                      onReplyClick={(reply) => {
+                        // Copy to clipboard for now
+                        navigator.clipboard.writeText(reply);
+                        showNotification("success", "📋 Reply copied to clipboard");
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             );
           })}
@@ -205,3 +284,4 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
     </div>
   );
 }
+
