@@ -1,0 +1,100 @@
+{
+    "common": {
+        "close": "Cerrar",
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "loading": "Cargando...",
+        "error": "Error",
+        "success": "Éxito",
+        "refresh": "Actualizar",
+        "delete": "Eliminar",
+        "edit": "Editar",
+        "create": "Crear",
+        "search": "Buscar",
+        "noResults": "Sin resultados"
+    },
+    "nav": {
+        "inbox": "Bandeja",
+        "agenda": "Agenda",
+        "tasks": "Tareas",
+        "settings": "Ajustes"
+    },
+    "inbox": {
+        "title": "Bandeja Prioritaria",
+        "empty": "¡Bandeja vacía! 🎉",
+        "summaries": "resúmenes",
+        "archived": "Correo archivado",
+        "markedRead": "Marcado como leído",
+        "taskCreated": "Tarea creada"
+    },
+    "agenda": {
+        "title": "Agenda",
+        "noEvents": "Sin eventos programados",
+        "allDay": "Todo el día"
+    },
+    "tasks": {
+        "title": "Tareas",
+        "noTasks": "Sin tareas",
+        "completed": "Completadas",
+        "addTask": "Agregar tarea",
+        "taskPlaceholder": "¿Qué necesitas hacer?"
+    },
+    "plan": {
+        "title": "Tu Plan del Día",
+        "greeting": {
+            "morning": "Buenos días",
+            "afternoon": "Buenas tardes",
+            "evening": "Buenas tardes",
+            "night": "Buenas noches"
+        },
+        "generating": "Generando tu plan...",
+        "regenerate": "Regenerar Plan"
+    },
+    "summary": {
+        "title": "Resumen del Correo",
+        "generating": "Generando resumen...",
+        "analyzing": "Analizando correo...",
+        "extracting": "Extrayendo información clave",
+        "summaryLabel": "Resumen",
+        "actionItems": "Acciones Pendientes",
+        "keyInfo": "Información Clave",
+        "priority": "Prioridad",
+        "people": "Personas",
+        "companies": "Empresas",
+        "dates": "Fechas",
+        "amounts": "Montos",
+        "cached": "En caché",
+        "limitReached": "Límite diario alcanzado. Actualiza para más resúmenes."
+    },
+    "settings": {
+        "title": "Ajustes",
+        "language": {
+            "title": "Idioma",
+            "description": "Selecciona tu idioma preferido"
+        },
+        "theme": {
+            "title": "Tema",
+            "description": "Elige tu tema de color"
+        },
+        "subscription": {
+            "title": "Suscripción",
+            "currentPlan": "Plan Actual",
+            "upgrade": "Mejorar"
+        },
+        "notifications": {
+            "title": "Notificaciones",
+            "enable": "Activar notificaciones"
+        },
+        "about": {
+            "title": "Acerca de",
+            "version": "Versión",
+            "checkUpdates": "Buscar actualizaciones"
+        }
+    },
+    "auth": {
+        "signIn": "Iniciar Sesión",
+        "signOut": "Cerrar Sesión",
+        "signInWith": "Iniciar sesión con Google",
+        "connecting": "Conectando..."
+    }
+}

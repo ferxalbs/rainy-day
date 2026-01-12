@@ -28,6 +28,7 @@ import {
   RefreshCw,
   CreditCard,
   Bot,
+  Globe,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { checkBackendHealth, getBackendInfo } from "../../services/backend/api";
@@ -36,6 +37,7 @@ import { ModelSelector } from "../settings/ModelSelector";
 import { UpgradePlanModal } from "../settings/UpgradePlanModal";
 import { PlanSettings } from "../settings/PlanSettings";
 import { UsageLimitsDisplay } from "../settings/UsageLimitsDisplay";
+import { LanguageSelector } from "../settings/LanguageSelector";
 
 // App name constant
 const APP_NAME = "Rainy Day";
@@ -120,8 +122,8 @@ export function ConfigPage() {
       value: backendVersion
         ? `v${backendVersion}`
         : isBackendAvailable
-        ? "Connected"
-        : "Offline",
+          ? "Connected"
+          : "Offline",
     },
     {
       icon: <Palette className="w-4 h-4" />,
@@ -195,6 +197,20 @@ export function ConfigPage() {
         <CardContent>{renderConfigItems(appSection)}</CardContent>
       </Card>
 
+      {/* Language Settings Card */}
+      <Card className="md:col-span-2 border-2 border-border/50 bg-card/30 backdrop-blur-xl shadow-xl shadow-primary/5">
+        <CardHeader className="pb-4">
+          <CardTitle className="flex items-center gap-2">
+            <Globe className="w-5 h-5 text-primary" />
+            Language
+          </CardTitle>
+          <CardDescription>App language preferences</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <LanguageSelector />
+        </CardContent>
+      </Card>
+
       {/* Capabilities Card */}
       <Card className="md:col-span-2 border-2 border-border/50 bg-card/30 backdrop-blur-xl shadow-xl shadow-primary/5">
         <CardHeader className="pb-4">
@@ -214,11 +230,10 @@ export function ConfigPage() {
                     <span className="text-sm text-foreground">{cap.name}</span>
                   </div>
                   <span
-                    className={`text-xs font-medium px-2 py-1 rounded-full ${
-                      cap.status === "Active" || cap.status === "Enabled"
+                    className={`text-xs font-medium px-2 py-1 rounded-full ${cap.status === "Active" || cap.status === "Enabled"
                         ? "bg-primary/10 text-primary"
                         : "bg-muted text-muted-foreground"
-                    }`}
+                      }`}
                   >
                     {cap.status}
                   </span>
@@ -345,9 +360,8 @@ export function ConfigPage() {
           <div className="p-3 rounded-lg bg-muted/50">
             <div className="flex items-center gap-2">
               <div
-                className={`w-2 h-2 rounded-full ${
-                  notificationsActive ? "bg-green-500" : "bg-muted-foreground"
-                }`}
+                className={`w-2 h-2 rounded-full ${notificationsActive ? "bg-green-500" : "bg-muted-foreground"
+                  }`}
               />
               <span className="text-xs text-muted-foreground">
                 Status:{" "}
@@ -355,8 +369,8 @@ export function ConfigPage() {
                   {notificationsActive
                     ? "Active - notifications enabled"
                     : notifSettings.permissionState === "denied"
-                    ? "Denied - enable in System Settings"
-                    : "Disabled"}
+                      ? "Denied - enable in System Settings"
+                      : "Disabled"}
                 </span>
               </span>
             </div>

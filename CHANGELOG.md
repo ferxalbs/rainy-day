@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.5.6] - 2026-01-12
+
+#### Added
+
+- **Internationalization System** (i18n): Modular, scalable language support
+  - **Language Context**: Auto-detects system language, persists preference to localStorage
+  - **Translation Hook**: `useTranslation()` with nested key support and parameter interpolation
+  - **English (en)**: Default language with complete translations
+  - **Spanish (es)**: Full Spanish translation for all UI elements
+- **Language Selector**: New dropdown in Settings to switch app language
+- **New Files**:
+  - `src/i18n/types.ts`: TypeScript types for translations
+  - `src/i18n/translations/en.json`: English translations
+  - `src/i18n/translations/es.json`: Spanish translations
+  - `src/contexts/LanguageContext.tsx`: Language provider with auto-detection
+  - `src/hooks/useTranslation.ts`: Translation hook
+  - `src/components/settings/LanguageSelector.tsx`: Language selector component
+
+#### Improvements
+
+- **Email Summary Dialog**: Theme-adaptive colors, removed Quick Replies, cleaner badges
+- **Summary Cache**: Reduced to 1 hour local cache (was 24h)
+
+---
+
 ### [v0.5.5] - 2026-01-12
 
 #### Added

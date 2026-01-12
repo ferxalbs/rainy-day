@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { LanguageProvider } from "./contexts/LanguageContext";
 import { GoogleSignIn } from "./components/auth/GoogleSignIn";
 import { MainLayout } from "./components/layout/MainLayout";
 import { CommandPalette } from "./components/CommandPalette";
@@ -128,11 +129,13 @@ function AppContent() {
 
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
-    </ThemeProvider>
+    <LanguageProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </ThemeProvider>
+    </LanguageProvider>
   );
 }
 

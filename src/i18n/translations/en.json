@@ -1,0 +1,100 @@
+{
+    "common": {
+        "close": "Close",
+        "cancel": "Cancel",
+        "save": "Save",
+        "loading": "Loading...",
+        "error": "Error",
+        "success": "Success",
+        "refresh": "Refresh",
+        "delete": "Delete",
+        "edit": "Edit",
+        "create": "Create",
+        "search": "Search",
+        "noResults": "No results found"
+    },
+    "nav": {
+        "inbox": "Inbox",
+        "agenda": "Agenda",
+        "tasks": "Tasks",
+        "settings": "Settings"
+    },
+    "inbox": {
+        "title": "Priority Inbox",
+        "empty": "Inbox zero! 🎉",
+        "summaries": "summaries",
+        "archived": "Email archived",
+        "markedRead": "Marked as read",
+        "taskCreated": "Task created"
+    },
+    "agenda": {
+        "title": "Agenda",
+        "noEvents": "No events scheduled",
+        "allDay": "All day"
+    },
+    "tasks": {
+        "title": "Tasks",
+        "noTasks": "No tasks",
+        "completed": "Completed",
+        "addTask": "Add task",
+        "taskPlaceholder": "What needs to be done?"
+    },
+    "plan": {
+        "title": "Your Daily Plan",
+        "greeting": {
+            "morning": "Good morning",
+            "afternoon": "Good afternoon",
+            "evening": "Good evening",
+            "night": "Good night"
+        },
+        "generating": "Generating your plan...",
+        "regenerate": "Regenerate Plan"
+    },
+    "summary": {
+        "title": "Email Summary",
+        "generating": "Generating summary...",
+        "analyzing": "Analyzing email...",
+        "extracting": "Extracting key information",
+        "summaryLabel": "Summary",
+        "actionItems": "Action Items",
+        "keyInfo": "Key Information",
+        "priority": "Priority",
+        "people": "People",
+        "companies": "Companies",
+        "dates": "Dates",
+        "amounts": "Amounts",
+        "cached": "Cached",
+        "limitReached": "Daily limit reached. Upgrade for more summaries."
+    },
+    "settings": {
+        "title": "Settings",
+        "language": {
+            "title": "Language",
+            "description": "Select your preferred language"
+        },
+        "theme": {
+            "title": "Theme",
+            "description": "Choose your color theme"
+        },
+        "subscription": {
+            "title": "Subscription",
+            "currentPlan": "Current Plan",
+            "upgrade": "Upgrade"
+        },
+        "notifications": {
+            "title": "Notifications",
+            "enable": "Enable notifications"
+        },
+        "about": {
+            "title": "About",
+            "version": "Version",
+            "checkUpdates": "Check for updates"
+        }
+    },
+    "auth": {
+        "signIn": "Sign In",
+        "signOut": "Sign Out",
+        "signInWith": "Sign in with Google",
+        "connecting": "Connecting..."
+    }
+}

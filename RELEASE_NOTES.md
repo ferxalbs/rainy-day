@@ -2,6 +2,25 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
+## Rainy Day 0.5.6 🌍
+
+_January 12, 2026_
+
+**Internationalization Support**
+
+Rainy Day now speaks your language! We've added a modular language system:
+
+- **Spanish Support**: Full Spanish translation now available
+- **Auto-Detection**: App automatically detects your system language on first launch
+- **Easy Switching**: Change language anytime in Settings → Language
+- **Persistent**: Your language preference is saved across sessions
+
+**Also in this update:**
+- Improved Email Summary dialog with cleaner, theme-adaptive design
+- Summary cache reduced to 1 hour for fresher content
+
+---
+
 ## Rainy Day 0.5.5 ✨
 
 _January 12, 2026_
