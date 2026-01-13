@@ -4,7 +4,6 @@
  * Button to trigger email AI summarization with quota display.
  */
 
-import { useState } from "react";
 import { Button } from "../ui/button";
 import {
     Tooltip,
@@ -17,6 +16,7 @@ interface SummaryButtonProps {
     emailId: string;
     emailSubject?: string;
     onGenerate: (emailId: string, subject?: string) => Promise<boolean>;
+    onView?: (emailId: string, subject?: string) => void;
     isLoading?: boolean;
     remaining?: number;
     limit?: number;
@@ -28,18 +28,24 @@ export function SummaryButton({
     emailId,
     emailSubject,
     onGenerate,
+    onView,
     isLoading = false,
     remaining,
     limit,
     hasSummary = false,
     className = "",
 }: SummaryButtonProps) {
-    const [isHovered, setIsHovered] = useState(false);
-
     const canGenerate = remaining === undefined || remaining > 0;
     const showQuota = remaining !== undefined && limit !== undefined;
 
-    const handleClick = async () => {
+    const handleClick = async (e: React.MouseEvent) => {
+        e.stopPropagation(); // Prevent row click
+
+        if (hasSummary && onView) {
+            onView(emailId, emailSubject);
+            return;
+        }
+
         if (!canGenerate || isLoading) return;
         await onGenerate(emailId, emailSubject);
     };
@@ -49,12 +55,10 @@ export function SummaryButton({
             <Tooltip>
                 <TooltipTrigger asChild>
                     <Button
-                        variant={hasSummary ? "ghost" : "outline"}
+                        variant={hasSummary ? "secondary" : "outline"} // Distinct style for View
                         size="sm"
                         onClick={handleClick}
-                        disabled={!canGenerate || isLoading}
-                        onMouseEnter={() => setIsHovered(true)}
-                        onMouseLeave={() => setIsHovered(false)}
+                        disabled={(!hasSummary && !canGenerate) || isLoading}
                         className={`h-7 text-xs border-blue-500/30 hover:border-blue-500/50 ${className}`}
                     >
                         {isLoading ? (
@@ -95,7 +99,7 @@ export function SummaryButton({
                                         d="M13 10V3L4 14h7v7l9-11h-7z"
                                     />
                                 </svg>
-                                {hasSummary ? (isHovered ? "Refresh" : "View Summary") : "AI Summary"}
+                                {hasSummary ? "View Summary" : "AI Summary"}
                             </>
                         )}
                     </Button>

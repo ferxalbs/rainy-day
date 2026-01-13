@@ -110,11 +110,11 @@ export function useDailyData() {
 
     try {
       // Trigger sync in background (don't wait for it)
-      triggerSync("all").catch(() => {});
+      triggerSync("all").catch(() => { });
 
       const [calendarEvents, emails, taskLists] = await Promise.all([
         getTodayEvents().catch(() => []),
-        getEmails(10).catch(() => []),
+        getEmails(20, 0, false, true).catch(() => []),
         getTaskLists().catch(() => []),
       ]);
 

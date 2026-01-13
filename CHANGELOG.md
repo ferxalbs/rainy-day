@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### [v0.5.9] - 2026-01-13
 
+#### Improvements
+
+- **Priority Inbox Refinement**:
+  - **Visual Clarity**: Fixed an issue where unread emails appeared dim/read. They are now properly highlighted with a blue glow.
+  - **AI Summary Button**: Fixed button instability where viewing a summary would accidentally restart generation.
+  - **Promotions Filter**: Automatically excludes emails categorized as promotions/marketing
+  - **Expanded View**: Increased initial load to 20 emails (was 10)
+
 #### Fixes
 
 - **AI Plan Progress Bar**: Fixed progress bar logic to correctly calculate completion percentage

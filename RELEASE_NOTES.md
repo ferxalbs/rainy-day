@@ -2,15 +2,18 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
-## Rainy Day 0.5.9 🎯
+## Rainy Day 0.5.9 🎯📥
 
 _January 13, 2026_
 
-**AI Plan Improvements**
+**AI Plan & Priority Inbox Improvements**
 
-- **Progress Bar Fixed**: The daily progress bar now correctly tracks your completion, reaching 100% when all visible tasks are done
-- **Instant Regeneration**: When you refresh your AI plan, the new plan appears immediately without needing to switch pages
-- **Smarter Progress**: Progress calculation now ignores archived items for a more accurate view of your day
+- **Visual Clarity**: Fixed a bug where unread emails looked like they were read. Your unread messages are now bright and visible with a blue glow.
+- **Stable AI Summaries**: Creating and viewing summaries is now smoother, fixing the button flicker and accidental regeneration.
+- **No More Spam**: Priority Inbox excludes promotions/marketing to keep your view clean.
+- **More Content**: We've doubled the number of emails loaded at startup.
+- **Progress Bar Fixed**: The daily progress bar now correctly tracks your completion, reaching 100% when all visible tasks are done.
+- **Instant Regeneration**: When you refresh your AI plan, the new plan appears immediately without needing to switch pages.
 
 ---
 

@@ -99,6 +99,12 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
     return success;
   }, [generate, showNotification, t]);
 
+  const handleViewSummary = useCallback((emailId: string, subject?: string) => {
+    setExpandedSummaryId(emailId);
+    setSelectedEmailSubject(subject || "");
+    setDialogOpen(true);
+  }, []);
+
   const handleArchive = useCallback(async (emailId: string) => {
     // Optimistic update
     setArchivedEmails((prev) => new Set(prev).add(emailId));
@@ -212,30 +218,35 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
         <div className="divide-y divide-border">
           {visibleThreads.map((thread) => {
             const isOptimisticallyRead = readEmails.has(thread.id);
-            const isRead = isOptimisticallyRead || !thread.is_unread;
+            // Default to Unread if state is undefined to avoid "dull" appearance on bugs
+            const isRead = isOptimisticallyRead || thread.is_unread === false;
             const loadingState = loadingStates[thread.id];
             const hasSummary = !!summaries[thread.id];
 
             return (
               <div key={thread.id}>
                 <div
-                  className={`px-5 py-4 hover:bg-accent transition-colors group flex items-start gap-4 ${isRead ? "opacity-60" : ""
-                    }`}
+                  className={`px-5 py-4 hover:bg-muted/40 transition-colors group flex items-start gap-4`}
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className={`text-foreground group-hover:text-accent-foreground transition-colors line-clamp-1 ${isRead ? "font-normal" : "font-medium"
+                      <p className={`transition-colors line-clamp-1 ${isRead
+                        ? "font-normal text-muted-foreground"
+                        : "font-medium text-foreground"
                         }`}>
                         {thread.subject || thread.snippet.slice(0, 50)}
                       </p>
                       {!isRead && (
-                        <span className="flex-shrink-0 w-2 h-2 rounded-full bg-primary" title={t("inbox.unread")} />
+                        <span className="flex-shrink-0 w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" title={t("inbox.unread")} />
                       )}
                     </div>
-                    <p className="text-sm text-muted-foreground group-hover:text-accent-foreground/80 line-clamp-2 mt-1.5 leading-relaxed">
+                    <p className={`text-sm line-clamp-2 mt-1.5 leading-relaxed ${isRead
+                      ? "text-muted-foreground/60"
+                      : "text-muted-foreground group-hover:text-foreground/80"
+                      }`}>
                       {thread.snippet}
                     </p>
-                    <p className="text-xs text-muted-foreground/60 mt-1">
+                    <p className="text-xs text-muted-foreground/50 mt-1">
                       {thread.from_name || thread.from_email}
                     </p>
                   </div>
@@ -247,6 +258,7 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
                       emailId={thread.id}
                       emailSubject={thread.subject || thread.snippet.slice(0, 50)}
                       onGenerate={handleGenerateSummary}
+                      onView={handleViewSummary}
                       isLoading={isGenerating && expandedSummaryId === thread.id}
                       remaining={limits?.remaining}
                       limit={limits?.limit}

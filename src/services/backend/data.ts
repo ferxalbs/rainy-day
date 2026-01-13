@@ -53,11 +53,15 @@ export interface TaskList {
  */
 export async function getEmails(
   limit = 20,
-  offset = 0
+  offset = 0,
+  priorityMode = false,
+  excludePromotions = false
 ): Promise<Email[]> {
-  const response = await get<{ emails: Email[]; error?: string }>(
-    `/data/emails?limit=${limit}&offset=${offset}`
-  );
+  let url = `/data/emails?limit=${limit}&offset=${offset}`;
+  if (priorityMode) url += `&priority_mode=true`; // Renamed from unread_only
+  if (excludePromotions) url += `&exclude_promotions=true`;
+
+  const response = await get<{ emails: Email[]; error?: string }>(url);
   if (!response.ok) {
     console.error('Failed to fetch emails:', response.error);
     return [];
