@@ -8,6 +8,7 @@
  */
 
 import { useState, useEffect, useCallback } from "react";
+import { useLanguage } from "../contexts/LanguageContext";
 import {
   getTodayPlanWithCache,
   regeneratePlan,
@@ -52,8 +53,10 @@ export interface UseDailyPlanReturn {
  *
  * Automatically fetches the plan on mount and provides functions
  * to regenerate and submit feedback.
+ * Language is automatically detected from LanguageContext.
  */
 export function useDailyPlan(): UseDailyPlanReturn {
+  const { language } = useLanguage();
   const [plan, setPlan] = useState<DailyPlan | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -86,6 +89,7 @@ export function useDailyPlan(): UseDailyPlanReturn {
 
   /**
    * Regenerate the plan with updated context
+   * Uses the current language from LanguageContext
    * Requirements: 1.8
    */
   const regenerate = useCallback(async () => {
@@ -93,10 +97,10 @@ export function useDailyPlan(): UseDailyPlanReturn {
     setError(null);
 
     try {
-      console.log('[useDailyPlan] Starting plan regeneration...');
-      const newPlan = await regeneratePlan();
+      console.log('[useDailyPlan] Starting plan regeneration in language:', language);
+      const newPlan = await regeneratePlan(language);
       console.log('[useDailyPlan] Plan received:', newPlan ? 'success' : 'null');
-      
+
       if (newPlan) {
         // Force state update by creating new object
         setPlan({ ...newPlan });
@@ -114,7 +118,7 @@ export function useDailyPlan(): UseDailyPlanReturn {
     } finally {
       setIsGenerating(false);
     }
-  }, []);
+  }, [language]);
 
   /**
    * Submit feedback for the current plan

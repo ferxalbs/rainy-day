@@ -42,7 +42,7 @@ export interface DailyPlan {
   meetings: PlanTask[];
   defer_suggestions: (string | PlanTask)[];
   generated_at: number;
-  
+
   // Productivity insights for smarter planning
   productivity_insights?: {
     estimated_focus_hours: number;
@@ -51,7 +51,7 @@ export interface DailyPlan {
     batch_suggestions?: { category: string; task_ids: string[] }[];
     optimal_focus_window?: string;
   };
-  
+
   // Quick stats for UI display
   stats?: {
     total_tasks: number;
@@ -77,10 +77,11 @@ export interface PlanHistoryItem {
  * Get today's AI-generated plan
  * Returns null if no plan exists for today
  * Falls back to cached data on network errors
+ * @param language - Language for AI to respond in ('en' or 'es')
  */
-export async function getTodayPlan(): Promise<DailyPlan | null> {
+export async function getTodayPlan(language: 'en' | 'es' = 'en'): Promise<DailyPlan | null> {
   try {
-    const response = await get<{ plan: DailyPlan | null }>("/plan/today");
+    const response = await get<{ plan: DailyPlan | null }>(`/plan/today?lang=${language}`);
     if (response.ok && response.data?.plan) {
       // Cache successful response
       cacheSet(CACHE_KEYS.PLAN, response.data.plan, CACHE_EXPIRATION.PLAN);
@@ -143,21 +144,22 @@ export function getCachedPlan(): CacheResult<DailyPlan> | null {
  * Force regenerate the daily plan with updated context
  * This will create a new plan even if one already exists
  * Caches the new plan on success
+ * @param language - Language for AI to respond in ('en' or 'es')
  */
-export async function regeneratePlan(): Promise<DailyPlan | null> {
+export async function regeneratePlan(language: 'en' | 'es' = 'en'): Promise<DailyPlan | null> {
   console.log('[PlanService] Calling /plan/generate...');
-  
-  const response = await post<{ plan: DailyPlan; plan_id?: string; message?: string }>("/plan/generate");
-  
+
+  const response = await post<{ plan: DailyPlan; plan_id?: string; message?: string }>("/plan/generate", { lang: language });
+
   console.log('[PlanService] Response:', { ok: response.ok, hasPlan: !!response.data?.plan });
-  
+
   if (response.ok && response.data?.plan) {
     const plan = response.data.plan;
     console.log('[PlanService] Plan received, caching...', { date: plan.date, summary: plan.summary?.substring(0, 50) });
     cacheSet(CACHE_KEYS.PLAN, plan, CACHE_EXPIRATION.PLAN);
     return plan;
   }
-  
+
   console.error('[PlanService] Failed to get plan:', response.error);
   return null;
 }
@@ -178,9 +180,9 @@ export async function submitPlanFeedback(
   score: number,
   notes?: string
 ): Promise<boolean> {
-  const response = await post(`/plan/${planId}/feedback`, { 
-    rating: score, 
-    comment: notes 
+  const response = await post(`/plan/${planId}/feedback`, {
+    rating: score,
+    comment: notes
   });
   return response.ok;
 }
@@ -206,7 +208,7 @@ export async function submitItemFeedback(
 ): Promise<boolean> {
   // Calculate expiration: 30 days from now
   const expiresAt = Date.now() + 30 * 24 * 60 * 60 * 1000;
-  
+
   const response = await post("/memory", {
     text: `User gave ${feedbackType} feedback on ${itemType}: "${itemTitle}"`,
     scope: "episodic",
