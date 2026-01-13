@@ -22,8 +22,8 @@ export const CACHE_KEYS = {
 // Cache expiration times in milliseconds
 export const CACHE_EXPIRATION = {
   PLAN: 60 * 60 * 1000, // 1 hour
-  NOTIFICATIONS: 5 * 60 * 1000, // 5 minutes
-  NOTIFICATION_COUNT: 5 * 60 * 1000, // 5 minutes
+  NOTIFICATIONS: 2 * 60 * 1000, // 2 minutes (matches polling interval)
+  NOTIFICATION_COUNT: 2 * 60 * 1000, // 2 minutes (matches polling interval)
   EMAILS: 15 * 60 * 1000, // 15 minutes
   EVENTS: 15 * 60 * 1000, // 15 minutes
   TASKS: 15 * 60 * 1000, // 15 minutes

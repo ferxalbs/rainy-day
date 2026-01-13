@@ -16,8 +16,8 @@ import {
   type Notification,
 } from "../services/backend/notifications";
 
-/** Default refresh interval in milliseconds (30 seconds) */
-const DEFAULT_REFRESH_INTERVAL = 30000;
+/** Default refresh interval in milliseconds (2 minutes) */
+const DEFAULT_REFRESH_INTERVAL = 120000;
 
 export interface UseNotificationsReturn {
   /** List of notifications */
