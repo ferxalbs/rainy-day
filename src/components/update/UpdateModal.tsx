@@ -186,8 +186,9 @@ export function UpdateModal({ isOpen, onClose }: UpdateModalProps) {
           // Escape ALL regex special characters to prevent injection
           const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
           const escapedVersion = escapeRegex(version);
+          // Match "## Rainy Day X.Y.Z" followed by anything (emoji, etc) until next section or end
           const versionPattern = new RegExp(
-            `## Rainy Day ${escapedVersion}[\\s\\S]*?(?=## Rainy Day|$)`,
+            `## Rainy Day ${escapedVersion}[^\\n]*[\\s\\S]*?(?=## Rainy Day|$)`,
             "i"
           );
           const match = content.match(versionPattern);
