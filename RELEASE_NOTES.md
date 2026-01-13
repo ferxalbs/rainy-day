@@ -2,6 +2,18 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
+## Rainy Day 0.5.8 🔑
+
+_January 13, 2026_
+
+**Stay Logged In**
+
+- **No more constant re-logins**: Your session now stays active for up to 30 days, even after closing the app or restarting your computer
+- **Automatic token refresh**: The app now silently refreshes your session when needed
+- **Better update notes**: The update dialog now shows actual release notes instead of generic text
+
+---
+
 ## Rainy Day 0.5.7 🔧
 
 _January 13, 2026_

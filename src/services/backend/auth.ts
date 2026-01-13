@@ -9,10 +9,13 @@
 
 import { invoke } from "@tauri-apps/api/core";
 import { openUrl } from "@tauri-apps/plugin-opener";
-import { storeTokens, clearTokens, hasTokens } from "./api";
+import { storeTokens, clearTokens, hasTokens, get } from "./api";
 
 // API URL from environment or default to localhost
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
+// Storage key for localStorage fallback
+const STORAGE_REFRESH_KEY = "rainy_day_backend_refresh_token";
 
 // Types
 export interface BackendUser {
@@ -185,22 +188,62 @@ export async function connectToBackend(): Promise<BackendUser> {
 }
 
 /**
+ * Try to refresh tokens using the stored refresh token
+ * This is called when the access token is expired but we have a valid refresh token
+ * @returns true if refresh succeeded, false if failed (user must re-login)
+ */
+async function tryRefreshTokens(): Promise<boolean> {
+  try {
+    // Get refresh token from keychain first, then localStorage fallback
+    let refreshToken: string | null = null;
+    try {
+      refreshToken = await invoke<string | null>("get_backend_refresh_token");
+    } catch {
+      console.warn("[Auth] Keychain access failed, trying localStorage");
+    }
+
+    // Fallback to localStorage
+    if (!refreshToken) {
+      refreshToken = localStorage.getItem(STORAGE_REFRESH_KEY);
+    }
+
+    if (!refreshToken) {
+      console.log("[Auth] No refresh token available");
+      return false;
+    }
+
+    console.log("[Auth] Attempting token refresh...");
+    const response = await fetch(`${API_URL}/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh_token: refreshToken }),
+    });
+
+    if (!response.ok) {
+      console.warn("[Auth] Refresh token rejected, clearing tokens");
+      await clearTokens();
+      return false;
+    }
+
+    const data = (await response.json()) as { access_token: string; refresh_token: string };
+    await storeTokens(data.access_token, data.refresh_token);
+    console.log("[Auth] Tokens refreshed successfully");
+    return true;
+  } catch (error) {
+    console.error("[Auth] Token refresh failed:", error);
+    return false;
+  }
+}
+
+/**
  * Get current user from backend
+ * Uses backendFetch which has automatic token refresh on 401
  */
 export async function getBackendUser(): Promise<BackendUser | null> {
   try {
-    const accessToken = await invoke<string | null>(
-      "get_backend_access_token"
-    );
-    if (!accessToken) return null;
-
-    const response = await fetch(`${API_URL}/auth/me`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-
-    if (!response.ok) return null;
-
-    return (await response.json()) as BackendUser;
+    // Use the get() function from api.ts which has automatic token refresh
+    const response = await get<BackendUser>("/auth/me");
+    return response.ok ? response.data ?? null : null;
   } catch {
     return null;
   }
@@ -208,9 +251,31 @@ export async function getBackendUser(): Promise<BackendUser | null> {
 
 /**
  * Check if connected to backend
+ * Attempts to validate existing tokens and refresh if needed
  */
 export async function isBackendConnected(): Promise<boolean> {
-  return hasTokens();
+  const hasStoredTokens = await hasTokens();
+  if (!hasStoredTokens) {
+    return false;
+  }
+
+  // Try to get user info (this will auto-refresh if token expired)
+  const user = await getBackendUser();
+  if (user) {
+    return true;
+  }
+
+  // getBackendUser already tried refresh via backendFetch,
+  // but let's try one more explicit refresh in case it was a different error
+  console.log("[Auth] User fetch failed, attempting explicit token refresh...");
+  const refreshed = await tryRefreshTokens();
+  if (refreshed) {
+    // Try again after refresh
+    const userAfterRefresh = await getBackendUser();
+    return userAfterRefresh !== null;
+  }
+
+  return false;
 }
 
 /**

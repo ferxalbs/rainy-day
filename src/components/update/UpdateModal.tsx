@@ -113,50 +113,6 @@ function PackageIcon() {
 }
 
 // =============================================================================
-// Release Notes Parser
-// =============================================================================
-
-function escapeRegExpLiteral(input: string): string {
-  return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-/**
- * Parse release notes for a specific version from the RELEASE_NOTES.md format.
- * Returns bullet points as an array of strings.
- */
-function parseReleaseNotesForVersion(
-  version: string,
-  releaseNotesContent: string
-): string[] {
-  // Look for the version header pattern: "## Rainy Day X.X.X"
-  const versionPattern = new RegExp(
-    `## Rainy Day ${escapeRegExpLiteral(version)}[\\s\\S]*?(?=## Rainy Day|$)`,
-    "i"
-  );
-
-  const match = releaseNotesContent.match(versionPattern);
-  if (!match) return [];
-
-  // Extract bullet points
-  const lines = match[0].split("\n");
-  const notes: string[] = [];
-
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (trimmed.startsWith("- ")) {
-      // Clean the markdown: remove ** for bold, keep the text
-      const cleanNote = trimmed
-        .substring(2)
-        .replace(/\*\*/g, "")
-        .replace(/`/g, "");
-      notes.push(cleanNote);
-    }
-  }
-
-  return notes;
-}
-
-// =============================================================================
 // Main Component
 // =============================================================================
 
@@ -190,33 +146,75 @@ export function UpdateModal({ isOpen, onClose }: UpdateModalProps) {
   // Fetch and parse release notes when update is available
   useEffect(() => {
     if (status === "available" && updateInfo?.version) {
-      // In production, we'd fetch from the bundled file or GitHub
-      // For now, parse from updateInfo.body or use predefined notes
-      if (updateInfo.body) {
-        // If body contains markdown, parse it
-        const notes = parseReleaseNotesForVersion(
-          updateInfo.version,
-          updateInfo.body
-        );
+      /**
+       * Parse bullet points from markdown content
+       * Handles formats: "- **text**", "- text", "* text"
+       */
+      const parseNotesFromMarkdown = (content: string): string[] => {
+        const notes: string[] = [];
+        const lines = content.split("\n");
+        for (const line of lines) {
+          const trimmed = line.trim();
+          // Match lines starting with - or *
+          if (/^[-*]\s+/.test(trimmed)) {
+            // Clean markdown formatting: remove **, `, and leading bullet
+            const clean = trimmed
+              .replace(/^[-*]\s+/, "")
+              .replace(/\*\*/g, "")
+              .replace(/`/g, "")
+              .trim();
+            if (clean.length > 0) {
+              notes.push(clean);
+            }
+          }
+        }
+        return notes;
+      };
+
+      /**
+       * Fetch release notes for a specific version from GitHub
+       */
+      const fetchNotesFromGitHub = async (version: string): Promise<string[]> => {
+        try {
+          const response = await fetch(
+            `https://raw.githubusercontent.com/ferxalbs/rainy-day/main/RELEASE_NOTES.md`
+          );
+          if (!response.ok) return [];
+          const content = await response.text();
+
+          // Find the section for this version
+          const versionPattern = new RegExp(
+            `## Rainy Day ${version.replace(/\./g, "\\.")}[\\s\\S]*?(?=## Rainy Day|$)`,
+            "i"
+          );
+          const match = content.match(versionPattern);
+          if (match) {
+            return parseNotesFromMarkdown(match[0]);
+          }
+          return [];
+        } catch {
+          return [];
+        }
+      };
+
+      // Try to parse from body first
+      if (updateInfo.body && updateInfo.body.trim().length > 0) {
+        const notes = parseNotesFromMarkdown(updateInfo.body);
+        if (notes.length > 0) {
+          setReleaseNotes(notes);
+          return;
+        }
+      }
+
+      // Fallback: Try to fetch from GitHub RELEASE_NOTES.md
+      fetchNotesFromGitHub(updateInfo.version).then((notes) => {
         if (notes.length > 0) {
           setReleaseNotes(notes);
         } else {
-          // Fallback: split body by newlines and filter
-          const fallbackNotes = updateInfo.body
-            .split("\n")
-            .filter((line) => line.trim().startsWith("-"))
-            .map((line) =>
-              line.trim().substring(2).replace(/\*\*/g, "").replace(/`/g, "")
-            );
-          setReleaseNotes(
-            fallbackNotes.length > 0
-              ? fallbackNotes
-              : ["Performance improvements and bug fixes."]
-          );
+          // Final fallback
+          setReleaseNotes(["Performance improvements and bug fixes."]);
         }
-      } else {
-        setReleaseNotes(["Performance improvements and bug fixes."]);
-      }
+      });
     }
   }, [status, updateInfo]);
 
@@ -433,46 +431,46 @@ export function UpdateModal({ isOpen, onClose }: UpdateModalProps) {
         {(status === "available" ||
           status === "ready" ||
           status === "error") && (
-          <div className="flex justify-end gap-3 p-5 border-t border-border/30 bg-muted/10">
-            {status === "available" && (
-              <button
-                onClick={download}
-                className="px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
-              >
-                Install Update
-              </button>
-            )}
-
-            {status === "ready" && (
-              <button
-                onClick={install}
-                className="px-6 py-2.5 rounded-xl bg-green-600 text-white font-medium hover:bg-green-700 transition-colors shadow-lg shadow-green-600/20"
-              >
-                Restart & Install
-              </button>
-            )}
-
-            {status === "error" && (
-              <>
+            <div className="flex justify-end gap-3 p-5 border-t border-border/30 bg-muted/10">
+              {status === "available" && (
                 <button
-                  onClick={handleClose}
-                  className="px-4 py-2.5 rounded-xl border border-border/50 text-foreground font-medium hover:bg-muted/50 transition-colors"
+                  onClick={download}
+                  className="px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
                 >
-                  Close
+                  Install Update
                 </button>
+              )}
+
+              {status === "ready" && (
                 <button
-                  onClick={() => {
-                    clearError();
-                    check();
-                  }}
-                  className="px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+                  onClick={install}
+                  className="px-6 py-2.5 rounded-xl bg-green-600 text-white font-medium hover:bg-green-700 transition-colors shadow-lg shadow-green-600/20"
                 >
-                  Retry
+                  Restart & Install
                 </button>
-              </>
-            )}
-          </div>
-        )}
+              )}
+
+              {status === "error" && (
+                <>
+                  <button
+                    onClick={handleClose}
+                    className="px-4 py-2.5 rounded-xl border border-border/50 text-foreground font-medium hover:bg-muted/50 transition-colors"
+                  >
+                    Close
+                  </button>
+                  <button
+                    onClick={() => {
+                      clearError();
+                      check();
+                    }}
+                    className="px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+                  >
+                    Retry
+                  </button>
+                </>
+              )}
+            </div>
+          )}
       </div>
     </div>
   );

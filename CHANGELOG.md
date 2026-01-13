@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.5.8] - 2026-01-13
+
+#### Fixes
+
+- **Session Persistence**: Fixed critical issue where users had to re-login after closing the app
+  - Added `tryRefreshTokens()` function to refresh expired access tokens using the refresh token
+  - Modified `isBackendConnected()` to attempt token refresh when access token is expired
+  - Modified `getBackendUser()` to use `backendFetch` with automatic token refresh on 401
+  - Sessions now persist for up to 30 days (refresh token lifetime) instead of 30 minutes (access token)
+
+- **Release Notes Display**: Fixed update modal showing generic "Performance improvements" instead of actual release notes
+  - Improved markdown parsing to handle multiple bullet point formats (`-`, `*`)
+  - Added fallback to fetch release notes from GitHub `RELEASE_NOTES.md` when body is empty
+
+---
+
 ### [v0.5.7] - 2026-01-13
 
 #### Fixes
