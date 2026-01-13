@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.5.7] - 2026-01-13
+
+#### Fixes
+
+- **AI Plan Cache Date Validation**: Fixed critical bug where stale plans from previous days were returned as "today's" plan
+  - Added `getTodayDateString()` helper to validate plan dates
+  - Added `invalidatePlanCache()` function for cache clearing
+  - `getTodayPlan()`, `getTodayPlanWithCache()`, and `regeneratePlan()` now validate `plan.date === today`
+  - Stale cache from wrong dates is automatically cleared
+  - Fixes issue where navigating between dock pages caused plans to "appear from nowhere"
+
+---
+
 ### [v0.5.6] - 2026-01-12
 
 #### Added

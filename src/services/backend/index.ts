@@ -51,6 +51,7 @@ export {
   getCachedPlan,
   generatePlan,
   regeneratePlan,
+  invalidatePlanCache,
   submitPlanFeedback,
   submitItemFeedback,
   getPlanHistory,

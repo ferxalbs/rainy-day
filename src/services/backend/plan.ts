@@ -9,11 +9,29 @@ import { get, post } from "./api";
 import {
   cacheSet,
   cacheGetStale,
+  cacheRemove,
   CACHE_KEYS,
   CACHE_EXPIRATION,
   isNetworkError,
   type CacheResult,
 } from "./cache";
+
+/**
+ * Get today's date string in YYYY-MM-DD format
+ * Used for validating cached plans are for today
+ */
+function getTodayDateString(): string {
+  return new Date().toISOString().split('T')[0]!;
+}
+
+/**
+ * Invalidate (clear) the plan cache
+ * Call this when you need to ensure fresh data is fetched
+ */
+export function invalidatePlanCache(): void {
+  console.log('[PlanService] Invalidating plan cache');
+  cacheRemove(CACHE_KEYS.PLAN);
+}
 
 /**
  * A task item within the daily plan
@@ -80,20 +98,33 @@ export interface PlanHistoryItem {
  * @param language - Language for AI to respond in ('en' or 'es')
  */
 export async function getTodayPlan(language: 'en' | 'es' = 'en'): Promise<DailyPlan | null> {
+  const today = getTodayDateString();
+
   try {
     const response = await get<{ plan: DailyPlan | null }>(`/plan/today?lang=${language}`);
     if (response.ok && response.data?.plan) {
-      // Cache successful response
-      cacheSet(CACHE_KEYS.PLAN, response.data.plan, CACHE_EXPIRATION.PLAN);
-      return response.data.plan;
+      const plan = response.data.plan;
+      // Only cache if plan is for today (avoid caching stale plans)
+      if (plan.date === today) {
+        cacheSet(CACHE_KEYS.PLAN, plan, CACHE_EXPIRATION.PLAN);
+      } else {
+        console.warn('[PlanService] Received plan with mismatched date:', plan.date, 'expected:', today);
+        // Clear stale cache if exists
+        cacheRemove(CACHE_KEYS.PLAN);
+      }
+      return plan;
     }
     return response.ok ? response.data?.plan ?? null : null;
   } catch (error) {
-    // On network error, try to return cached data
+    // On network error, try to return cached data only if it's for today
     if (isNetworkError(error)) {
       const cached = cacheGetStale<DailyPlan>(CACHE_KEYS.PLAN);
-      if (cached) {
+      if (cached && cached.data.date === today) {
+        console.log('[PlanService] Using cached plan for today (offline fallback)');
         return cached.data;
+      } else if (cached) {
+        console.log('[PlanService] Cached plan is stale (wrong date), clearing');
+        cacheRemove(CACHE_KEYS.PLAN);
       }
     }
     throw error;
@@ -110,23 +141,35 @@ export async function getTodayPlanWithCache(): Promise<{
   isStale: boolean;
   cachedAt?: number;
 }> {
+  const today = getTodayDateString();
+
   try {
     const response = await get<{ plan: DailyPlan | null }>("/plan/today");
     if (response.ok && response.data?.plan) {
-      cacheSet(CACHE_KEYS.PLAN, response.data.plan, CACHE_EXPIRATION.PLAN);
-      return { plan: response.data.plan, fromCache: false, isStale: false };
+      const plan = response.data.plan;
+      // Only cache if plan is for today
+      if (plan.date === today) {
+        cacheSet(CACHE_KEYS.PLAN, plan, CACHE_EXPIRATION.PLAN);
+      } else {
+        cacheRemove(CACHE_KEYS.PLAN);
+      }
+      return { plan, fromCache: false, isStale: false };
     }
     return { plan: response.ok ? response.data?.plan ?? null : null, fromCache: false, isStale: false };
   } catch (error) {
     if (isNetworkError(error)) {
       const cached = cacheGetStale<DailyPlan>(CACHE_KEYS.PLAN);
-      if (cached) {
+      // Only return cached data if it's for today
+      if (cached && cached.data.date === today) {
         return {
           plan: cached.data,
           fromCache: true,
           isStale: cached.isStale,
           cachedAt: cached.cachedAt,
         };
+      } else if (cached) {
+        // Clear stale cache
+        cacheRemove(CACHE_KEYS.PLAN);
       }
     }
     throw error;
@@ -147,7 +190,11 @@ export function getCachedPlan(): CacheResult<DailyPlan> | null {
  * @param language - Language for AI to respond in ('en' or 'es')
  */
 export async function regeneratePlan(language: 'en' | 'es' = 'en'): Promise<DailyPlan | null> {
+  const today = getTodayDateString();
   console.log('[PlanService] Calling /plan/generate...');
+
+  // Clear old cache before regenerating to avoid stale data issues
+  cacheRemove(CACHE_KEYS.PLAN);
 
   const response = await post<{ plan: DailyPlan; plan_id?: string; message?: string }>("/plan/generate", { lang: language });
 
@@ -156,7 +203,10 @@ export async function regeneratePlan(language: 'en' | 'es' = 'en'): Promise<Dail
   if (response.ok && response.data?.plan) {
     const plan = response.data.plan;
     console.log('[PlanService] Plan received, caching...', { date: plan.date, summary: plan.summary?.substring(0, 50) });
-    cacheSet(CACHE_KEYS.PLAN, plan, CACHE_EXPIRATION.PLAN);
+    // Only cache if plan is for today
+    if (plan.date === today) {
+      cacheSet(CACHE_KEYS.PLAN, plan, CACHE_EXPIRATION.PLAN);
+    }
     return plan;
   }
 

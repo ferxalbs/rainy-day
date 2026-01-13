@@ -2,6 +2,18 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
+## Rainy Day 0.5.7 🔧
+
+_January 13, 2026_
+
+**AI Plan Cache Fix**
+
+- **Stale plan issue fixed**: Your daily AI plan now correctly shows today's plan, not plans from previous days
+- **Smoother navigation**: Fixed issue where plans would mysteriously appear or disappear when switching between pages
+- **Automatic cleanup**: Old cached plans are now automatically cleared when they're out of date
+
+---
+
 ## Rainy Day 0.5.6 🌍
 
 _January 12, 2026_
