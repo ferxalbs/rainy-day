@@ -29,7 +29,7 @@ export function MainLayout() {
   const [activePage, setActivePage] = useState<DockPage>("plan");
   const { events, threads, tasks, isLoading, refresh } = useDailyData();
   const { triggerSync } = useSyncStatus();
-  const { isGenerating, regenerate } = useDailyPlan();
+  const { isGenerating, regenerate, plan, error, isLoading: isPlanLoading } = useDailyPlan();
   const { user } = useAuth();
 
   // Dynamic greeting based on time of day
@@ -134,6 +134,9 @@ export function MainLayout() {
             <DailyBriefing
               isRegenerating={isGenerating}
               onRegenerate={regenerate}
+              plan={plan}
+              isLoading={isPlanLoading}
+              error={error}
             />
           )}
           {activePage === "inbox" && (

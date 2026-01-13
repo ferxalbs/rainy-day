@@ -2,6 +2,18 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
+## Rainy Day 0.5.9 🎯
+
+_January 13, 2026_
+
+**AI Plan Improvements**
+
+- **Progress Bar Fixed**: The daily progress bar now correctly tracks your completion, reaching 100% when all visible tasks are done
+- **Instant Regeneration**: When you refresh your AI plan, the new plan appears immediately without needing to switch pages
+- **Smarter Progress**: Progress calculation now ignores archived items for a more accurate view of your day
+
+---
+
 ## Rainy Day 0.5.8 🔑
 
 _January 13, 2026_

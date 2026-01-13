@@ -320,12 +320,20 @@ interface OptimisticEmailState {
   markedRead: boolean;
 }
 
+import type { DailyPlan } from "../../services/backend/plan";
+
 interface DailyBriefingProps {
   onTaskComplete?: (taskId: string) => void;
   /** Externally controlled regenerating state (from Topbar) */
   isRegenerating?: boolean;
   /** Externally provided regenerate function (from Topbar) */
   onRegenerate?: () => void;
+  /** Externally provided plan (from MainLayout) */
+  plan?: DailyPlan | null;
+  /** Externally provided loading state */
+  isLoading?: boolean;
+  /** Externally provided error state */
+  error?: string | null;
 }
 
 // =============================================================================
@@ -336,19 +344,26 @@ export function DailyBriefing({
   onTaskComplete,
   isRegenerating,
   onRegenerate,
+  plan: externalPlan,
+  isLoading: externalIsLoading,
+  error: externalError,
 }: DailyBriefingProps) {
   const {
-    plan,
-    isLoading,
+    plan: internalPlan,
+    isLoading: internalIsLoading,
     isGenerating: internalIsGenerating,
-    error,
+    error: internalError,
     regenerate: internalRegenerate,
     submitItemFeedback,
   } = useDailyPlan();
 
   // Use external state if provided, otherwise use internal
+  // Note: We check if props are specifically provided (not undefined)
   const isGenerating = isRegenerating ?? internalIsGenerating;
   const regenerate = onRegenerate ?? internalRegenerate;
+  const plan = externalPlan !== undefined ? externalPlan : internalPlan;
+  const isLoading = externalIsLoading !== undefined ? externalIsLoading : internalIsLoading;
+  const error = externalError !== undefined ? externalError : internalError;
 
   const {
     archiveEmail,
@@ -409,24 +424,76 @@ export function DailyBriefing({
     }
   }, [plan?.date, completedTaskIds]);
 
-  // Calculate dynamic completion percentage
-  const { completionPercentage, remainingMinutes } = useMemo(() => {
-    if (!plan?.stats) return { completionPercentage: 0, remainingMinutes: 0 };
+  // Filter tasks that have been optimistically archived
+  const filterArchivedTasks = useCallback(
+    (tasks: PlanTask[]) => {
+      return tasks.filter((task) => {
+        if (task.type !== "email" && task.source_type !== "email") return true;
+        const emailId = task.source_id;
+        if (!emailId) return true;
+        return !optimisticStates[emailId]?.archived;
+      });
+    },
+    [optimisticStates]
+  );
 
-    const totalTasks = plan.stats.total_tasks;
+  // Memoize all active action items to ensure consistency between list and progress
+  const activeActionItems = useMemo(() => {
+    if (!plan) return [];
+    const allItems: PlanTask[] = [];
+
+    // Add focus blocks (with null check)
+    if (plan.focus_blocks) {
+      filterArchivedTasks(plan.focus_blocks).forEach((item) =>
+        allItems.push(item)
+      );
+    }
+    // Add quick wins (with null check)
+    if (plan.quick_wins) {
+      filterArchivedTasks(plan.quick_wins).forEach((item) =>
+        allItems.push(item)
+      );
+    }
+    // Add meetings (with null check)
+    if (plan.meetings) {
+      plan.meetings.forEach((item) => allItems.push(item));
+    }
+
+    // Sort by suggested_time if available
+    return allItems.sort((a, b) => {
+      if (!a.suggested_time && !b.suggested_time) return 0;
+      if (!a.suggested_time) return 1;
+      if (!b.suggested_time) return -1;
+      return a.suggested_time.localeCompare(b.suggested_time);
+    });
+  }, [plan, filterArchivedTasks]);
+
+  // Calculate dynamic completion percentage based on ACTUAL visible items
+  const { completionPercentage, remainingMinutes } = useMemo(() => {
+    if (!plan) return { completionPercentage: 0, remainingMinutes: 0 };
+
+    const totalTasks = activeActionItems.length;
+
     if (totalTasks === 0)
       return { completionPercentage: 100, remainingMinutes: 0 };
 
-    const completedCount = completedTaskIds.size;
-    const percentage = Math.round((completedCount / totalTasks) * 100);
+    // Only count completed tasks that are actually in the visible list
+    const completedCount = activeActionItems.filter(task => completedTaskIds.has(task.id)).length;
+
+    // Ensure we don't exceed 100% and handle empty lists gracefully
+    const percentage = Math.min(100, Math.round((completedCount / totalTasks) * 100));
 
     // Calculate remaining minutes (estimate based on uncompleted tasks)
-    const totalMinutes = plan.stats.estimated_minutes;
+    const totalMinutes = plan.stats?.estimated_minutes || 0;
+
+    // If we have 0 total tasks but somehow totalMinutes > 0, just return 0 remaining
+    if (totalTasks === 0) return { completionPercentage: 100, remainingMinutes: 0 };
+
     const completedRatio = completedCount / totalTasks;
     const remaining = Math.round(totalMinutes * (1 - completedRatio));
 
     return { completionPercentage: percentage, remainingMinutes: remaining };
-  }, [plan?.stats, completedTaskIds]);
+  }, [plan, completedTaskIds, activeActionItems]);
 
   // Handle task completion - track locally for progress bar
   const handleTaskComplete = useCallback(
@@ -611,17 +678,7 @@ export function DailyBriefing({
     return time;
   };
 
-  const filterArchivedTasks = useCallback(
-    (tasks: PlanTask[]) => {
-      return tasks.filter((task) => {
-        if (task.type !== "email" && task.source_type !== "email") return true;
-        const emailId = task.source_id;
-        if (!emailId) return true;
-        return !optimisticStates[emailId]?.archived;
-      });
-    },
-    [optimisticStates]
-  );
+
 
   const getTypeIcon = (task: PlanTask) => {
     switch (task.type) {
@@ -653,39 +710,7 @@ export function DailyBriefing({
     }
   };
 
-  // =============================================================================
-  // Combine All Tasks into Single List
-  // =============================================================================
 
-  const getAllActionItems = (): PlanTask[] => {
-    if (!plan) return [];
-    const allItems: PlanTask[] = [];
-
-    // Add focus blocks (with null check)
-    if (plan.focus_blocks) {
-      filterArchivedTasks(plan.focus_blocks).forEach((item) =>
-        allItems.push(item)
-      );
-    }
-    // Add quick wins (with null check)
-    if (plan.quick_wins) {
-      filterArchivedTasks(plan.quick_wins).forEach((item) =>
-        allItems.push(item)
-      );
-    }
-    // Add meetings (with null check)
-    if (plan.meetings) {
-      plan.meetings.forEach((item) => allItems.push(item));
-    }
-
-    // Sort by suggested_time if available
-    return allItems.sort((a, b) => {
-      if (!a.suggested_time && !b.suggested_time) return 0;
-      if (!a.suggested_time) return 1;
-      if (!b.suggested_time) return -1;
-      return a.suggested_time.localeCompare(b.suggested_time);
-    });
-  };
 
   // =============================================================================
   // Loading State (initial load only)
@@ -733,7 +758,7 @@ export function DailyBriefing({
   // Main Render
   // =============================================================================
 
-  const actionItems = getAllActionItems();
+  const actionItems = activeActionItems;
 
   return (
     <div className="space-y-4 relative">

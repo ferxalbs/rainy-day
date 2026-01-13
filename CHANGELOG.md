@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.5.9] - 2026-01-13
+
+#### Fixes
+
+- **AI Plan Progress Bar**: Fixed progress bar logic to correctly calculate completion percentage
+  - Now tracks *currently visible* items instead of total backend counts
+  - Ensures progress bar consistently reaches 100% when all visible tasks are completed
+  - Fixed discrepancy between optimistic UI state and progress calculation when archiving items
+
+- **Plan State Synchronization**: Fixed issue where plan content became stale after regeneration
+  - Lifted plan state management to `MainLayout`
+  - Ensures `DailyBriefing` always receives the freshest plan data immediately after regeneration
+  - Eliminated need for page navigation to see updated plans
+
+---
+
 ### [v0.5.8] - 2026-01-13
 
 #### Fixes
