@@ -74,7 +74,7 @@ export function PlanSettings() {
   return (
     <div className="space-y-6">
       {/* Current Plan Card */}
-      <div className="p-6 rounded-2xl bg-card/30 border-2 border-border/30 backdrop-blur-xl">
+      <div className="p-6 rounded-2xl bg-card/30 border-2 border-border/30">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-lg font-semibold text-foreground">
