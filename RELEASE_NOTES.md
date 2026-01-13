@@ -2,6 +2,19 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
+## Rainy Day 0.5.10 🔒
+
+_January 13, 2026_
+
+**Fixed: Stay Logged In Forever**
+
+A bug was causing users to be logged out after 30 days from their first login, even if they used the app every day. This is now fixed:
+
+- **Sessions now extend automatically**: Every time you use the app, your session is extended by 30 days
+- **No more surprise logouts**: As long as you use Rainy Day at least once every 30 days, you'll never have to log in again
+
+---
+
 ## Rainy Day 0.5.9 🎯📥
 
 _January 13, 2026_

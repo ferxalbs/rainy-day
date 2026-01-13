@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.5.10] - 2026-01-13
+
+#### Fixes
+
+- **Session Persistence**: Fixed critical bug where sessions expired 30 days from initial login regardless of user activity
+  - `rotateRefreshToken()` now extends the session's `expires_at` by 30 days on each successful token refresh
+  - Active users will no longer see the login screen unexpectedly
+  - Added token source tracking in auth logs for easier debugging (`keychain` vs `localStorage`)
+
+---
+
 ### [v0.5.9] - 2026-01-13
 
 #### Improvements

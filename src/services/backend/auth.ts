@@ -196,15 +196,19 @@ async function tryRefreshTokens(): Promise<boolean> {
   try {
     // Get refresh token from keychain first, then localStorage fallback
     let refreshToken: string | null = null;
+    let tokenSource = 'none';
+
     try {
       refreshToken = await invoke<string | null>("get_backend_refresh_token");
+      if (refreshToken) tokenSource = 'keychain';
     } catch {
-      console.warn("[Auth] Keychain access failed, trying localStorage");
+      console.warn("[Auth] Keychain access failed, trying localStorage fallback");
     }
 
     // Fallback to localStorage
     if (!refreshToken) {
       refreshToken = localStorage.getItem(STORAGE_REFRESH_KEY);
+      if (refreshToken) tokenSource = 'localStorage';
     }
 
     if (!refreshToken) {
@@ -212,7 +216,8 @@ async function tryRefreshTokens(): Promise<boolean> {
       return false;
     }
 
-    console.log("[Auth] Attempting token refresh...");
+    console.log(`[Auth] Attempting token refresh (source: ${tokenSource})...`);
+
     const response = await fetch(`${API_URL}/auth/refresh`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
