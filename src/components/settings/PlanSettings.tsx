@@ -5,6 +5,8 @@
  */
 
 import { useSubscription } from "../../hooks/useSubscription";
+import { useTranslation } from "../../hooks/useTranslation";
+import { useLanguage } from "../../contexts/LanguageContext";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 
@@ -24,6 +26,9 @@ export function PlanSettings() {
     cancelSubscription,
     reactivateSubscription,
   } = useSubscription();
+
+  const { t } = useTranslation();
+  const { language } = useLanguage();
 
   if (isLoading) {
     return (
@@ -45,7 +50,8 @@ export function PlanSettings() {
   }
 
   const formatDate = (timestamp: number) => {
-    return new Date(timestamp).toLocaleDateString("en-US", {
+    const locale = language === "es" ? "es-ES" : "en-US";
+    return new Date(timestamp).toLocaleDateString(locale, {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -72,10 +78,10 @@ export function PlanSettings() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-lg font-semibold text-foreground">
-              Current Plan
+              {t("billing.currentPlan")}
             </h3>
             <p className="text-sm text-muted-foreground">
-              Your subscription details
+              {t("billing.subscriptionDetails")}
             </p>
           </div>
           <Badge className={getPlanBadgeColor(plan)}>{planName}</Badge>
@@ -83,13 +89,13 @@ export function PlanSettings() {
 
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
-            <p className="text-sm text-muted-foreground">Price</p>
+            <p className="text-sm text-muted-foreground">{t("billing.price")}</p>
             <p className="text-lg font-semibold text-foreground">
-              {price === 0 ? "Free" : `$${price}/month`}
+              {price === 0 ? t("common.free") : `$${price}/month`}
             </p>
           </div>
           <div>
-            <p className="text-sm text-muted-foreground">AI Model</p>
+            <p className="text-sm text-muted-foreground">{t("billing.aiModel")}</p>
             <p className="text-lg font-semibold text-foreground">
               {availableModels.find((m) => m.id === selectedModel)?.name ||
                 selectedModel}
@@ -100,7 +106,7 @@ export function PlanSettings() {
         {currentPeriodEnd && (
           <div className="mb-4">
             <p className="text-sm text-muted-foreground">
-              {cancelAtPeriodEnd ? "Cancels on" : "Renews on"}
+              {cancelAtPeriodEnd ? t("billing.cancelsOn") : t("billing.renewsOn")}
             </p>
             <p className="text-sm font-medium text-foreground">
               {formatDate(currentPeriodEnd)}
@@ -115,30 +121,30 @@ export function PlanSettings() {
                 onClick={() => startCheckout("plus")}
                 className="bg-blue-600 hover:bg-blue-700 text-white"
               >
-                Upgrade to Plus
+                {t("billing.upgradeToPlus")}
               </Button>
               <Button
                 onClick={() => startCheckout("pro")}
                 className="bg-purple-600 hover:bg-purple-700 text-white"
               >
-                Upgrade to Pro
+                {t("billing.upgradeToPro")}
               </Button>
             </>
           ) : (
             <>
               <Button onClick={openBillingPortal} variant="outline">
-                Manage Billing
+                {t("billing.manageBilling")}
               </Button>
               {cancelAtPeriodEnd ? (
                 <Button
                   onClick={reactivateSubscription}
                   className="bg-green-600 hover:bg-green-700 text-white"
                 >
-                  Reactivate
+                  {t("billing.reactivate")}
                 </Button>
               ) : (
                 <Button onClick={cancelSubscription} variant="destructive">
-                  Cancel Plan
+                  {t("billing.cancelPlan")}
                 </Button>
               )}
             </>

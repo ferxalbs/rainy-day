@@ -23,6 +23,7 @@ import {
   Zap,
 } from "lucide-react";
 import { useSubscription, PlanTier } from "@/hooks/useSubscription";
+import { useTranslation } from "@/hooks/useTranslation";
 import { Badge } from "@/components/ui/badge";
 
 interface UpgradePlanModalProps {
@@ -41,6 +42,7 @@ interface PlanCardProps {
   isPopular?: boolean;
   onSelect: () => void;
   isLoading: boolean;
+  t: (key: string) => string;
 }
 
 function PlanCard({
@@ -53,23 +55,22 @@ function PlanCard({
   isPopular,
   onSelect,
   isLoading,
+  t,
 }: PlanCardProps) {
   return (
     <div
-      className={`relative flex flex-col h-full rounded-3xl border transition-all duration-300 ${
-        isPopular
+      className={`relative flex flex-col h-full rounded-3xl border transition-all duration-300 ${isPopular
           ? "border-primary/50 bg-primary/5 shadow-2xl shadow-primary/10 z-10 scale-[1.02]"
           : "border-border/40 bg-card/20 hover:bg-card/40 hover:border-primary/20"
-      } ${
-        isCurrent
+        } ${isCurrent
           ? "border-green-500/50 bg-green-500/5 hover:bg-green-500/10"
           : ""
-      }`}
+        }`}
     >
       {isPopular && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
           <Badge className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider bg-primary hover:bg-primary text-primary-foreground border-none rounded-full shadow-lg shadow-primary/20 whitespace-nowrap">
-            Most Popular
+            {t("billing.mostPopular")}
           </Badge>
         </div>
       )}
@@ -80,20 +81,19 @@ function PlanCard({
             variant="secondary"
             className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider bg-green-500 hover:bg-green-600 text-white border-none rounded-full shadow-lg shadow-green-500/20 whitespace-nowrap"
           >
-            Active Plan
+            {t("billing.activePlan")}
           </Badge>
         </div>
       )}
 
       <div className="flex-1 p-5 flex flex-col items-center text-center">
         <div
-          className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 transition-colors duration-300 ${
-            isPopular
+          className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 transition-colors duration-300 ${isPopular
               ? "bg-primary/20 text-primary"
               : isCurrent
-              ? "bg-green-500/20 text-green-500"
-              : "bg-muted text-muted-foreground"
-          }`}
+                ? "bg-green-500/20 text-green-500"
+                : "bg-muted text-muted-foreground"
+            }`}
         >
           {icon}
         </div>
@@ -107,20 +107,19 @@ function PlanCard({
           <span className="text-4xl font-extrabold tracking-tight">
             ${price}
           </span>
-          <span className="text-muted-foreground text-sm font-medium">/mo</span>
+          <span className="text-muted-foreground text-sm font-medium">{t("billing.perMonth")}</span>
         </div>
 
         <ul className="space-y-2.5 w-full text-left mb-6 flex-1 px-1">
           {features.map((feature, index) => (
             <li key={index} className="flex items-start gap-3">
               <Check
-                className={`w-4 h-4 mt-0.5 shrink-0 ${
-                  isCurrent
+                className={`w-4 h-4 mt-0.5 shrink-0 ${isCurrent
                     ? "text-green-500"
                     : isPopular
-                    ? "text-primary"
-                    : "text-primary/60"
-                }`}
+                      ? "text-primary"
+                      : "text-primary/60"
+                  }`}
               />
               <span className="text-sm text-muted-foreground leading-tight font-medium">
                 {feature}
@@ -135,31 +134,30 @@ function PlanCard({
             disabled={isCurrent || isLoading}
             variant={isPopular ? "default" : "outline"}
             size="lg"
-            className={`w-full font-bold h-10 text-sm rounded-xl transition-all duration-300 ${
-              isPopular
+            className={`w-full font-bold h-10 text-sm rounded-xl transition-all duration-300 ${isPopular
                 ? "shadow-md shadow-primary/20 hover:shadow-primary/30 text-white hover:scale-[1.02]"
                 : "hover:bg-primary/5 hover:text-primary hover:border-primary/20"
-            }`}
+              }`}
           >
             {isLoading ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Processing...
+                {t("common.processing")}
               </>
             ) : isCurrent ? (
-              "Current Plan"
+              t("billing.currentPlan")
             ) : price === 0 ? (
-              "Downgrade"
+              t("billing.downgrade")
             ) : (
               <>
-                Get Started
+                {t("billing.getStarted")}
                 <ExternalLink className="w-4 h-4 ml-2 opacity-50" />
               </>
             )}
           </Button>
           {!isCurrent && price !== 0 && (
             <p className="text-[10px] text-center text-muted-foreground mt-2 font-medium">
-              14-day money-back guarantee
+              {t("billing.moneyBackGuarantee")}
             </p>
           )}
         </div>
@@ -175,6 +173,7 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
     openBillingPortal,
     cancelAtPeriodEnd,
   } = useSubscription();
+  const { t } = useTranslation();
   const [loadingPlan, setLoadingPlan] = useState<PlanTier | null>(null);
 
   const plans: Array<{
@@ -186,49 +185,49 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
     icon: React.ReactNode;
     isPopular?: boolean;
   }> = [
-    {
-      id: "free",
-      name: "Free",
-      price: 0,
-      description: "Essentials for getting started with AI.",
-      icon: <Sparkles className="w-6 h-6" />,
-      features: [
-        "5 AI plan generations / day",
-        "Gemini 2.5 Flash Lite access",
-        "Basic Calendar & Tasks Sync",
-        "Community Support",
-      ],
-    },
-    {
-      id: "plus",
-      name: "Plus",
-      price: 4,
-      description: "Supercharged AI for daily productivity.",
-      icon: <Zap className="w-6 h-6" />,
-      isPopular: true,
-      features: [
-        "Everything in Free",
-        "Unlimited AI generations",
-        "Priority Gemini 3 Flash",
-        "Advanced Task Prioritization",
-        "Priority Support",
-      ],
-    },
-    {
-      id: "pro",
-      name: "Pro",
-      price: 8,
-      description: "Maximum power for power power users.",
-      icon: <Crown className="w-6 h-6" />,
-      features: [
-        "Everything in Plus",
-        "Gemini 3 Flash (Thinking)",
-        "Groq GPT OSS Powerhouse",
-        "Custom Agent Personality",
-        "Early Feature Access",
-      ],
-    },
-  ];
+      {
+        id: "free",
+        name: t("billing.plans.free.name"),
+        price: 0,
+        description: t("billing.plans.free.description"),
+        icon: <Sparkles className="w-6 h-6" />,
+        features: [
+          "5 AI plan generations / day",
+          "Gemini 2.5 Flash Lite access",
+          "Basic Calendar & Tasks Sync",
+          "Community Support",
+        ],
+      },
+      {
+        id: "plus",
+        name: t("billing.plans.plus.name"),
+        price: 4,
+        description: t("billing.plans.plus.description"),
+        icon: <Zap className="w-6 h-6" />,
+        isPopular: true,
+        features: [
+          "Everything in Free",
+          "Unlimited AI generations",
+          "Priority Gemini 3 Flash",
+          "Advanced Task Prioritization",
+          "Priority Support",
+        ],
+      },
+      {
+        id: "pro",
+        name: t("billing.plans.pro.name"),
+        price: 8,
+        description: t("billing.plans.pro.description"),
+        icon: <Crown className="w-6 h-6" />,
+        features: [
+          "Everything in Plus",
+          "Gemini 3 Flash (Thinking)",
+          "Groq GPT OSS Powerhouse",
+          "Custom Agent Personality",
+          "Early Feature Access",
+        ],
+      },
+    ];
 
   const handleSelectPlan = async (planId: PlanTier) => {
     if (planId === currentPlan) return;
@@ -254,9 +253,9 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
       <DialogContent className="max-w-[calc(100vw-2rem)] w-full sm:max-w-[90vw] md:max-w-5xl lg:max-w-6xl p-0 gap-0 border-none bg-transparent shadow-none [&>button]:hidden h-auto max-h-[85vh] flex flex-col">
         {/* Main Content Container with Glass Effect */}
         <div className="bg-background/80 backdrop-blur-3xl border border-white/10 sm:rounded-[2.5rem] overflow-hidden shadow-2xl relative flex flex-col max-h-full">
-          {/* Background Gradients */}
+          {/* Background Gradients - Static, no animation */}
           <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
-            <div className="absolute top-[-20%] left-[20%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] mix-blend-screen opacity-30 animate-pulse" />
+            <div className="absolute top-[-20%] left-[20%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] mix-blend-screen opacity-30" />
             <div className="absolute bottom-[-10%] right-[10%] w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[80px] mix-blend-screen opacity-20" />
           </div>
 
@@ -289,10 +288,10 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
           <div className="p-6 md:p-1 mt-3 relative flex-1 flex flex-col overflow-y-auto custom-scrollbar">
             <DialogHeader className="mb-6 text-center max-w-2xl mx-auto shrink-0">
               <DialogTitle className="text-2xl md:text-3xl font-bold tracking-tight mb-2 bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70">
-                Upgrade Your Workspace
+                {t("billing.upgradeTitle")}
               </DialogTitle>
               <DialogDescription className="text-sm text-muted-foreground/80 leading-relaxed max-w-lg mx-auto">
-                Unlock the full potential of your AI assistant. Cancel anytime.
+                {t("billing.upgradeDescription")}
               </DialogDescription>
             </DialogHeader>
 
@@ -302,10 +301,10 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
                   <Zap className="w-4 h-4 text-yellow-500" />
                   <div className="text-left">
                     <p className="text-sm font-semibold text-yellow-500">
-                      Cancellation Pending
+                      {t("billing.cancellationPending")}
                     </p>
                     <p className="text-[10px] text-muted-foreground">
-                      Ends next billing cycle
+                      {t("billing.endsNextCycle")}
                     </p>
                   </div>
                 </div>
@@ -315,7 +314,7 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
                   className="text-yellow-500 hover:text-yellow-400 hover:bg-yellow-500/10 font-bold h-7 text-xs"
                   onClick={openBillingPortal}
                 >
-                  Manage
+                  {t("common.manage")}
                 </Button>
               </div>
             )}
@@ -329,6 +328,7 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
                   isCurrent={currentPlan === planConfig.id}
                   onSelect={() => handleSelectPlan(planConfig.id)}
                   isLoading={loadingPlan === planConfig.id}
+                  t={t}
                 />
               ))}
             </div>
@@ -347,7 +347,7 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
                   </div>
                 ))}
               </div>
-              <span className="ml-2 font-medium">Join 10,000+ happy users</span>
+              <span className="ml-2 font-medium">{t("billing.joinUsers")}</span>
             </div>
 
             {currentPlan !== "free" && (
@@ -357,7 +357,7 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
                 onClick={openBillingPortal}
                 className="text-muted-foreground hover:text-primary font-medium gap-2 text-xs"
               >
-                Billing & Invoices
+                {t("billing.billingInvoices")}
                 <ExternalLink className="w-3 h-3" />
               </Button>
             )}

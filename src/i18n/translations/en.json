@@ -11,7 +11,19 @@
         "edit": "Edit",
         "create": "Create",
         "search": "Search",
-        "noResults": "No results found"
+        "noResults": "No results found",
+        "on": "On",
+        "off": "Off",
+        "active": "Active",
+        "disconnected": "Disconnected",
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "connected": "Connected",
+        "offline": "Offline",
+        "current": "Current",
+        "processing": "Processing...",
+        "free": "Free",
+        "manage": "Manage"
     },
     "nav": {
         "inbox": "Inbox",
@@ -66,29 +78,126 @@
         "cached": "Cached",
         "limitReached": "Daily limit reached. Upgrade for more summaries."
     },
+    "billing": {
+        "upgradeTitle": "Upgrade Your Workspace",
+        "upgradeDescription": "Unlock the full potential of your AI assistant. Cancel anytime.",
+        "currentPlan": "Current Plan",
+        "subscriptionDetails": "Your subscription details",
+        "price": "Price",
+        "aiModel": "AI Model",
+        "renewsOn": "Renews on",
+        "cancelsOn": "Cancels on",
+        "manageBilling": "Manage Billing",
+        "cancelPlan": "Cancel Plan",
+        "reactivate": "Reactivate",
+        "upgradeToPlus": "Upgrade to Plus",
+        "upgradeToPro": "Upgrade to Pro",
+        "perMonth": "/mo",
+        "mostPopular": "Most Popular",
+        "activePlan": "Active Plan",
+        "getStarted": "Get Started",
+        "downgrade": "Downgrade",
+        "moneyBackGuarantee": "14-day money-back guarantee",
+        "joinUsers": "Join 10,000+ happy users",
+        "billingInvoices": "Billing & Invoices",
+        "cancellationPending": "Cancellation Pending",
+        "endsNextCycle": "Ends next billing cycle",
+        "plans": {
+            "free": {
+                "name": "Free",
+                "description": "Essentials for getting started with AI.",
+                "features": [
+                    "5 AI plan generations / day",
+                    "Gemini 2.5 Flash Lite access",
+                    "Basic Calendar & Tasks Sync",
+                    "Community Support"
+                ]
+            },
+            "plus": {
+                "name": "Plus",
+                "description": "Supercharged AI for daily productivity.",
+                "features": [
+                    "Everything in Free",
+                    "Unlimited AI generations",
+                    "Priority Gemini 3 Flash",
+                    "Advanced Task Prioritization",
+                    "Priority Support"
+                ]
+            },
+            "pro": {
+                "name": "Pro",
+                "description": "Maximum power for power users.",
+                "features": [
+                    "Everything in Plus",
+                    "Gemini 3 Flash (Thinking)",
+                    "Groq GPT OSS Powerhouse",
+                    "Custom Agent Personality",
+                    "Early Feature Access"
+                ]
+            }
+        }
+    },
     "settings": {
         "title": "Settings",
+        "account": {
+            "title": "Account",
+            "description": "Your signed-in account details",
+            "name": "Name",
+            "email": "Email",
+            "notSignedIn": "Not signed in"
+        },
+        "application": {
+            "title": "Application",
+            "description": "App version and configuration",
+            "appName": "App Name",
+            "version": "Version",
+            "backend": "Backend",
+            "activeTheme": "Active Theme"
+        },
         "language": {
             "title": "Language",
-            "description": "Select your preferred language"
+            "description": "Select your preferred language",
+            "cardDescription": "App language preferences"
         },
-        "theme": {
-            "title": "Theme",
-            "description": "Choose your color theme"
+        "capabilities": {
+            "title": "Capabilities",
+            "description": "Connected services and features",
+            "gmail": "Gmail Integration",
+            "calendar": "Google Calendar",
+            "googleTasks": "Google Tasks",
+            "aiPlans": "AI Daily Plans"
+        },
+        "ai": {
+            "title": "AI Configuration",
+            "description": "Model selection and usage limits",
+            "model": "AI Model",
+            "modelDescription": "Choose which AI model to use for generating your daily plans",
+            "dailyLimits": "Daily Limits"
         },
         "subscription": {
-            "title": "Subscription",
+            "title": "Subscription & Billing",
+            "description": "Manage your plan, usage, and billing",
             "currentPlan": "Current Plan",
             "upgrade": "Upgrade"
         },
         "notifications": {
             "title": "Notifications",
-            "enable": "Enable notifications"
+            "description": "Manage native OS notifications",
+            "enable": "Enable Notifications",
+            "enableDescription": "Receive native OS alerts for tasks and reminders",
+            "autoRequest": "Auto-Request Permission",
+            "autoRequestDescription": "Automatically request permission on app start",
+            "status": "Status",
+            "statusActive": "Active - notifications enabled",
+            "statusDenied": "Denied - enable in System Settings",
+            "statusDisabled": "Disabled"
         },
-        "about": {
-            "title": "About",
-            "version": "Version",
-            "checkUpdates": "Check for updates"
+        "actions": {
+            "title": "Actions",
+            "description": "Manage your session and preferences",
+            "upgradePlan": "Upgrade Plan",
+            "checkUpdates": "Check for Updates",
+            "signOut": "Sign Out"
         }
     },
     "auth": {

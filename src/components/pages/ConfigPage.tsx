@@ -2,6 +2,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useNotificationSettings } from "../../hooks/useNotificationSettings";
 import { useSubscription } from "../../hooks/useSubscription";
+import { useTranslation } from "../../hooks/useTranslation";
 import { useState, useEffect } from "react";
 import {
   Card,
@@ -52,6 +53,7 @@ interface ConfigItem {
 export function ConfigPage() {
   const { user, logout, isAuthenticated } = useAuth();
   const { themeName, currentTheme } = useTheme();
+  const { t } = useTranslation();
   const {
     settings: notifSettings,
     isActive: notificationsActive,
@@ -86,7 +88,6 @@ export function ConfigPage() {
   const handleLogout = async () => {
     try {
       await logout();
-      // Auth wrapper will handle redirection
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -95,12 +96,12 @@ export function ConfigPage() {
   const userSection: ConfigItem[] = [
     {
       icon: <User className="w-4 h-4" />,
-      label: "Name",
-      value: user?.name || "Not signed in",
+      label: t("settings.account.name"),
+      value: user?.name || t("settings.account.notSignedIn"),
     },
     {
       icon: <Mail className="w-4 h-4" />,
-      label: "Email",
+      label: t("settings.account.email"),
       value: user?.email || "—",
     },
   ];
@@ -108,26 +109,26 @@ export function ConfigPage() {
   const appSection: ConfigItem[] = [
     {
       icon: <Info className="w-4 h-4" />,
-      label: "App Name",
+      label: t("settings.application.appName"),
       value: APP_NAME,
     },
     {
       icon: <Shield className="w-4 h-4" />,
-      label: "Version",
+      label: t("settings.application.version"),
       value: `v${appVersion}`,
     },
     {
       icon: <Cloud className="w-4 h-4" />,
-      label: "Backend",
+      label: t("settings.application.backend"),
       value: backendVersion
         ? `v${backendVersion}`
         : isBackendAvailable
-          ? "Connected"
-          : "Offline",
+          ? t("common.connected")
+          : t("common.offline"),
     },
     {
       icon: <Palette className="w-4 h-4" />,
-      label: "Active Theme",
+      label: t("settings.application.activeTheme"),
       value: `${themeName} (${currentTheme.mode})`,
     },
   ];
@@ -135,23 +136,27 @@ export function ConfigPage() {
   const capabilities = [
     {
       icon: <Mail className="w-4 h-4" />,
-      name: "Gmail Integration",
-      status: isAuthenticated ? "Active" : "Disconnected",
+      name: t("settings.capabilities.gmail"),
+      status: isAuthenticated ? t("common.active") : t("common.disconnected"),
+      isActive: isAuthenticated,
     },
     {
       icon: <Calendar className="w-4 h-4" />,
-      name: "Google Calendar",
-      status: isAuthenticated ? "Active" : "Disconnected",
+      name: t("settings.capabilities.calendar"),
+      status: isAuthenticated ? t("common.active") : t("common.disconnected"),
+      isActive: isAuthenticated,
     },
     {
       icon: <CheckSquare className="w-4 h-4" />,
-      name: "Google Tasks",
-      status: isAuthenticated ? "Active" : "Disconnected",
+      name: t("settings.capabilities.googleTasks"),
+      status: isAuthenticated ? t("common.active") : t("common.disconnected"),
+      isActive: isAuthenticated,
     },
     {
       icon: <Zap className="w-4 h-4" />,
-      name: "AI Daily Plans",
-      status: isAuthenticated ? "Enabled" : "Disconnected",
+      name: t("settings.capabilities.aiPlans"),
+      status: isAuthenticated ? t("common.enabled") : t("common.disconnected"),
+      isActive: isAuthenticated,
     },
   ];
 
@@ -178,9 +183,9 @@ export function ConfigPage() {
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2">
             <User className="w-5 h-5 text-primary" />
-            Account
+            {t("settings.account.title")}
           </CardTitle>
-          <CardDescription>Your signed-in account details</CardDescription>
+          <CardDescription>{t("settings.account.description")}</CardDescription>
         </CardHeader>
         <CardContent>{renderConfigItems(userSection)}</CardContent>
       </Card>
@@ -190,9 +195,9 @@ export function ConfigPage() {
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2">
             <Info className="w-5 h-5 text-primary" />
-            Application
+            {t("settings.application.title")}
           </CardTitle>
-          <CardDescription>App version and configuration</CardDescription>
+          <CardDescription>{t("settings.application.description")}</CardDescription>
         </CardHeader>
         <CardContent>{renderConfigItems(appSection)}</CardContent>
       </Card>
@@ -202,9 +207,9 @@ export function ConfigPage() {
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2">
             <Globe className="w-5 h-5 text-primary" />
-            Language
+            {t("settings.language.title")}
           </CardTitle>
-          <CardDescription>App language preferences</CardDescription>
+          <CardDescription>{t("settings.language.cardDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <LanguageSelector />
@@ -216,9 +221,9 @@ export function ConfigPage() {
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2">
             <Zap className="w-5 h-5 text-primary" />
-            Capabilities
+            {t("settings.capabilities.title")}
           </CardTitle>
-          <CardDescription>Connected services and features</CardDescription>
+          <CardDescription>{t("settings.capabilities.description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -230,7 +235,7 @@ export function ConfigPage() {
                     <span className="text-sm text-foreground">{cap.name}</span>
                   </div>
                   <span
-                    className={`text-xs font-medium px-2 py-1 rounded-full ${cap.status === "Active" || cap.status === "Enabled"
+                    className={`text-xs font-medium px-2 py-1 rounded-full ${cap.isActive
                         ? "bg-primary/10 text-primary"
                         : "bg-muted text-muted-foreground"
                       }`}
@@ -250,16 +255,16 @@ export function ConfigPage() {
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2">
             <Bot className="w-5 h-5 text-primary" />
-            AI Configuration
+            {t("settings.ai.title")}
           </CardTitle>
-          <CardDescription>Model selection and usage limits</CardDescription>
+          <CardDescription>{t("settings.ai.description")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Model Selector */}
           <div className="space-y-2">
-            <h4 className="text-sm font-medium text-foreground">AI Model</h4>
+            <h4 className="text-sm font-medium text-foreground">{t("settings.ai.model")}</h4>
             <p className="text-xs text-muted-foreground mb-3">
-              Choose which AI model to use for generating your daily plans
+              {t("settings.ai.modelDescription")}
             </p>
             <ModelSelector onUpgradeClick={() => setShowUpgradeModal(true)} />
           </div>
@@ -269,7 +274,7 @@ export function ConfigPage() {
           {/* Usage Limits */}
           <div className="space-y-3">
             <h4 className="text-sm font-medium text-foreground">
-              Daily Limits
+              {t("settings.ai.dailyLimits")}
             </h4>
             <UsageLimitsDisplay
               onUpgradeClick={() => setShowUpgradeModal(true)}
@@ -283,10 +288,10 @@ export function ConfigPage() {
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2">
             <CreditCard className="w-5 h-5 text-primary" />
-            Subscription & Billing
+            {t("settings.subscription.title")}
           </CardTitle>
           <CardDescription>
-            Manage your plan, usage, and billing
+            {t("settings.subscription.description")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -299,9 +304,9 @@ export function ConfigPage() {
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2">
             <Bell className="w-5 h-5 text-primary" />
-            Notifications
+            {t("settings.notifications.title")}
           </CardTitle>
-          <CardDescription>Manage native OS notifications</CardDescription>
+          <CardDescription>{t("settings.notifications.description")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Enable/Disable Toggle */}
@@ -314,10 +319,10 @@ export function ConfigPage() {
               )}
               <div className="flex flex-col">
                 <span className="text-sm font-medium">
-                  Enable Notifications
+                  {t("settings.notifications.enable")}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  Receive native OS alerts for tasks and reminders
+                  {t("settings.notifications.enableDescription")}
                 </span>
               </div>
             </div>
@@ -327,7 +332,7 @@ export function ConfigPage() {
               onClick={toggleNotifications}
               className="min-w-[80px]"
             >
-              {notificationsActive ? "On" : "Off"}
+              {notificationsActive ? t("common.on") : t("common.off")}
             </Button>
           </div>
 
@@ -339,10 +344,10 @@ export function ConfigPage() {
               <Zap className="w-4 h-4 text-muted-foreground" />
               <div className="flex flex-col">
                 <span className="text-sm font-medium">
-                  Auto-Request Permission
+                  {t("settings.notifications.autoRequest")}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  Automatically request permission on app start
+                  {t("settings.notifications.autoRequestDescription")}
                 </span>
               </div>
             </div>
@@ -352,7 +357,7 @@ export function ConfigPage() {
               onClick={() => setAutoInitialize(!notifSettings.autoInitialize)}
               className="min-w-[80px]"
             >
-              {notifSettings.autoInitialize ? "On" : "Off"}
+              {notifSettings.autoInitialize ? t("common.on") : t("common.off")}
             </Button>
           </div>
 
@@ -364,13 +369,13 @@ export function ConfigPage() {
                   }`}
               />
               <span className="text-xs text-muted-foreground">
-                Status:{" "}
+                {t("settings.notifications.status")}:{" "}
                 <span className="font-medium text-foreground">
                   {notificationsActive
-                    ? "Active - notifications enabled"
+                    ? t("settings.notifications.statusActive")
                     : notifSettings.permissionState === "denied"
-                      ? "Denied - enable in System Settings"
-                      : "Disabled"}
+                      ? t("settings.notifications.statusDenied")
+                      : t("settings.notifications.statusDisabled")}
                 </span>
               </span>
             </div>
@@ -383,9 +388,9 @@ export function ConfigPage() {
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2">
             <Zap className="w-5 h-5 text-primary" />
-            Actions
+            {t("settings.actions.title")}
           </CardTitle>
-          <CardDescription>Manage your session and preferences</CardDescription>
+          <CardDescription>{t("settings.actions.description")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -398,10 +403,10 @@ export function ConfigPage() {
               </div>
               <div className="flex flex-col items-start gap-0.5">
                 <span className="font-semibold text-sm text-foreground leading-none">
-                  Upgrade Plan
+                  {t("settings.actions.upgradePlan")}
                 </span>
                 <span className="text-xs text-muted-foreground leading-none">
-                  Current: {planName} {plan !== "free" && "✓"}
+                  {t("common.current")}: {planName} {plan !== "free" && "✓"}
                 </span>
               </div>
             </button>
@@ -417,10 +422,10 @@ export function ConfigPage() {
               </div>
               <div className="flex flex-col items-start gap-0.5">
                 <span className="font-semibold text-sm text-foreground leading-none">
-                  Check for Updates
+                  {t("settings.actions.checkUpdates")}
                 </span>
                 <span className="text-xs text-muted-foreground leading-none">
-                  Current: v{appVersion}
+                  {t("common.current")}: v{appVersion}
                 </span>
               </div>
             </button>
@@ -433,7 +438,7 @@ export function ConfigPage() {
               onClick={handleLogout}
             >
               <LogOut className="w-4 h-4" />
-              <span className="font-semibold">Sign Out</span>
+              <span className="font-semibold">{t("settings.actions.signOut")}</span>
             </Button>
           </div>
         </CardContent>

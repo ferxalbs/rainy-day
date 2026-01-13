@@ -11,7 +11,19 @@
         "edit": "Editar",
         "create": "Crear",
         "search": "Buscar",
-        "noResults": "Sin resultados"
+        "noResults": "Sin resultados",
+        "on": "Sí",
+        "off": "No",
+        "active": "Activo",
+        "disconnected": "Desconectado",
+        "enabled": "Activado",
+        "disabled": "Desactivado",
+        "connected": "Conectado",
+        "offline": "Sin conexión",
+        "current": "Actual",
+        "processing": "Procesando...",
+        "free": "Gratis",
+        "manage": "Gestionar"
     },
     "nav": {
         "inbox": "Bandeja",
@@ -66,29 +78,126 @@
         "cached": "En caché",
         "limitReached": "Límite diario alcanzado. Actualiza para más resúmenes."
     },
+    "billing": {
+        "upgradeTitle": "Mejora tu Espacio de Trabajo",
+        "upgradeDescription": "Desbloquea todo el potencial de tu asistente IA. Cancela cuando quieras.",
+        "currentPlan": "Plan Actual",
+        "subscriptionDetails": "Detalles de tu suscripción",
+        "price": "Precio",
+        "aiModel": "Modelo IA",
+        "renewsOn": "Se renueva el",
+        "cancelsOn": "Se cancela el",
+        "manageBilling": "Gestionar Facturación",
+        "cancelPlan": "Cancelar Plan",
+        "reactivate": "Reactivar",
+        "upgradeToPlus": "Mejorar a Plus",
+        "upgradeToPro": "Mejorar a Pro",
+        "perMonth": "/mes",
+        "mostPopular": "Más Popular",
+        "activePlan": "Plan Activo",
+        "getStarted": "Comenzar",
+        "downgrade": "Bajar Plan",
+        "moneyBackGuarantee": "Garantía de 14 días",
+        "joinUsers": "Únete a más de 10,000 usuarios",
+        "billingInvoices": "Facturación",
+        "cancellationPending": "Cancelación Pendiente",
+        "endsNextCycle": "Termina en el próximo ciclo",
+        "plans": {
+            "free": {
+                "name": "Gratis",
+                "description": "Lo esencial para comenzar con IA.",
+                "features": [
+                    "5 planes IA / día",
+                    "Acceso a Gemini 2.5 Flash Lite",
+                    "Sincronización básica de Calendario y Tareas",
+                    "Soporte de la comunidad"
+                ]
+            },
+            "plus": {
+                "name": "Plus",
+                "description": "IA potenciada para productividad diaria.",
+                "features": [
+                    "Todo lo de Gratis",
+                    "Generaciones IA ilimitadas",
+                    "Gemini 3 Flash prioritario",
+                    "Priorización avanzada de tareas",
+                    "Soporte prioritario"
+                ]
+            },
+            "pro": {
+                "name": "Pro",
+                "description": "Máximo poder para usuarios exigentes.",
+                "features": [
+                    "Todo lo de Plus",
+                    "Gemini 3 Flash (Thinking)",
+                    "Groq GPT OSS Powerhouse",
+                    "Personalidad de agente personalizada",
+                    "Acceso anticipado a funciones"
+                ]
+            }
+        }
+    },
     "settings": {
         "title": "Ajustes",
+        "account": {
+            "title": "Cuenta",
+            "description": "Detalles de tu cuenta",
+            "name": "Nombre",
+            "email": "Correo",
+            "notSignedIn": "No has iniciado sesión"
+        },
+        "application": {
+            "title": "Aplicación",
+            "description": "Versión y configuración de la app",
+            "appName": "Nombre de la App",
+            "version": "Versión",
+            "backend": "Servidor",
+            "activeTheme": "Tema Activo"
+        },
         "language": {
             "title": "Idioma",
-            "description": "Selecciona tu idioma preferido"
+            "description": "Selecciona tu idioma preferido",
+            "cardDescription": "Preferencias de idioma"
         },
-        "theme": {
-            "title": "Tema",
-            "description": "Elige tu tema de color"
+        "capabilities": {
+            "title": "Capacidades",
+            "description": "Servicios y funciones conectadas",
+            "gmail": "Integración Gmail",
+            "calendar": "Google Calendar",
+            "googleTasks": "Google Tasks",
+            "aiPlans": "Planes IA Diarios"
+        },
+        "ai": {
+            "title": "Configuración IA",
+            "description": "Selección de modelo y límites de uso",
+            "model": "Modelo IA",
+            "modelDescription": "Elige qué modelo de IA usar para generar tus planes diarios",
+            "dailyLimits": "Límites Diarios"
         },
         "subscription": {
-            "title": "Suscripción",
+            "title": "Suscripción y Facturación",
+            "description": "Gestiona tu plan, uso y facturación",
             "currentPlan": "Plan Actual",
             "upgrade": "Mejorar"
         },
         "notifications": {
             "title": "Notificaciones",
-            "enable": "Activar notificaciones"
+            "description": "Gestiona las notificaciones del sistema",
+            "enable": "Activar Notificaciones",
+            "enableDescription": "Recibe alertas nativas para tareas y recordatorios",
+            "autoRequest": "Solicitar Permiso Automáticamente",
+            "autoRequestDescription": "Solicitar permiso al iniciar la app",
+            "status": "Estado",
+            "statusActive": "Activo - notificaciones activadas",
+            "statusDenied": "Denegado - activa en Ajustes del Sistema",
+            "statusDisabled": "Desactivado"
         },
-        "about": {
-            "title": "Acerca de",
-            "version": "Versión",
-            "checkUpdates": "Buscar actualizaciones"
+        "actions": {
+            "title": "Acciones",
+            "description": "Gestiona tu sesión y preferencias",
+            "upgradePlan": "Mejorar Plan",
+            "checkUpdates": "Buscar Actualizaciones",
+            "signOut": "Cerrar Sesión"
         }
     },
     "auth": {
