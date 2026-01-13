@@ -17,6 +17,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useDailyPlan } from "../../hooks/useDailyPlan";
 import { useEmailActions } from "../../hooks/useEmailActions";
+import { useTranslation } from "../../hooks/useTranslation";
 import { REGENERATE_PLAN_EVENT } from "../../hooks/useKeyboardShortcuts";
 import { Button } from "../ui/button";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip";
@@ -356,6 +357,8 @@ export function DailyBriefing({
     loadingStates: emailLoadingStates,
   } = useEmailActions();
 
+  const { t } = useTranslation();
+
   const [notifications, setNotifications] = useState<NotificationState[]>([]);
   const [optimisticStates, setOptimisticStates] = useState<
     Record<string, OptimisticEmailState>
@@ -692,7 +695,7 @@ export function DailyBriefing({
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4 text-muted-foreground">
         <div className="w-8 h-8 border-4 border-muted/30 border-t-primary rounded-full animate-spin" />
-        <p className="text-sm">Loading your daily briefing...</p>
+        <p className="text-sm">{t("plan.loading")}</p>
       </div>
     );
   }
@@ -706,7 +709,7 @@ export function DailyBriefing({
       <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4 text-muted-foreground">
         <p className="text-destructive text-sm">{error}</p>
         <Button onClick={regenerate} variant="default">
-          Generate Plan
+          {t("plan.generatePlan")}
         </Button>
       </div>
     );
@@ -720,8 +723,7 @@ export function DailyBriefing({
     return (
       <div className="daily-briefing-container p-6 rounded-2xl backdrop-blur-xl border-2 border-border/50 bg-card/30 text-center">
         <p className="text-muted-foreground">
-          No plan generated yet. Use the refresh button in the top bar to
-          generate your AI daily briefing.
+          {t("plan.noPlanYet")}
         </p>
       </div>
     );
@@ -785,7 +787,7 @@ export function DailyBriefing({
           {/* Generating indicator */}
           <div className="fixed bottom-24 left-1/2 -translate-x-1/2 px-4 py-2 bg-primary/90 text-primary-foreground rounded-full shadow-lg flex items-center gap-3 z-20">
             <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-            <span className="text-sm font-medium">Regenerating plan...</span>
+            <span className="text-sm font-medium">{t("plan.regenerating")}</span>
           </div>
         </div>
       )}
@@ -799,11 +801,10 @@ export function DailyBriefing({
               {notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`px-4 py-3 rounded-lg shadow-lg backdrop-blur-md border transition-all animate-in slide-in-from-right-5 ${
-                    notification.type === "success"
-                      ? "bg-green-500/90 text-white border-green-400/50"
-                      : "bg-destructive/90 text-destructive-foreground border-destructive/50"
-                  }`}
+                  className={`px-4 py-3 rounded-lg shadow-lg backdrop-blur-md border transition-all animate-in slide-in-from-right-5 ${notification.type === "success"
+                    ? "bg-green-500/90 text-white border-green-400/50"
+                    : "bg-destructive/90 text-destructive-foreground border-destructive/50"
+                    }`}
                 >
                   <div className="flex items-start gap-2">
                     <span className="text-sm font-medium flex-1">
@@ -917,11 +918,10 @@ export function DailyBriefing({
                   </svg>
                 </div>
                 <h3 className="text-lg font-medium text-foreground mb-2">
-                  Your day is clear!
+                  {t("plan.dayClear")}
                 </h3>
                 <p className="text-sm text-muted-foreground max-w-sm mb-4">
-                  No pending tasks, meetings, or important emails for today.
-                  Enjoy your free time or generate a new plan.
+                  {t("plan.dayClearDescription")}
                 </p>
                 <button
                   onClick={regenerate}
@@ -966,7 +966,7 @@ export function DailyBriefing({
                           d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                         />
                       </svg>
-                      Generate Plan
+                      {t("plan.generatePlan")}
                     </>
                   )}
                 </button>
@@ -988,7 +988,7 @@ export function DailyBriefing({
           {plan.defer_suggestions && plan.defer_suggestions.length > 0 && (
             <div className="p-4 rounded-xl backdrop-blur-xl border-2 border-border/30 bg-card/20">
               <h3 className="text-sm font-medium text-muted-foreground mb-3">
-                Consider Deferring
+                {t("plan.considerDeferring")}
               </h3>
               <div className="space-y-2">
                 {plan.defer_suggestions.map((suggestion, index) => {
@@ -1083,8 +1083,8 @@ function BriefingItem({
       task.type === "focus"
         ? "focus_block"
         : task.type === "meeting"
-        ? "meeting"
-        : "quick_win";
+          ? "meeting"
+          : "quick_win";
 
     const success = await onFeedback(task.id, task.title, type, itemType);
     if (success) {
@@ -1097,9 +1097,8 @@ function BriefingItem({
 
   return (
     <div
-      className={`group flex items-start gap-3 p-3 rounded-xl hover:bg-card/40 transition-all border border-transparent hover:border-border/40 ${
-        isCompleted || isOptimisticallyRead ? "opacity-50" : ""
-      }`}
+      className={`group flex items-start gap-3 p-3 rounded-xl hover:bg-card/40 transition-all border border-transparent hover:border-border/40 ${isCompleted || isOptimisticallyRead ? "opacity-50" : ""
+        }`}
     >
       {/* Checkbox */}
       {isTask && (
@@ -1117,9 +1116,8 @@ function BriefingItem({
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
           <span
-            className={`font-medium text-foreground text-sm ${
-              isCompleted ? "line-through opacity-60" : ""
-            }`}
+            className={`font-medium text-foreground text-sm ${isCompleted ? "line-through opacity-60" : ""
+              }`}
           >
             {task.title}
           </span>

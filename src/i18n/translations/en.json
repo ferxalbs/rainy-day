@@ -60,7 +60,39 @@
             "night": "Good night"
         },
         "generating": "Generating your plan...",
-        "regenerate": "Regenerate Plan"
+        "regenerate": "Regenerate Plan",
+        "loading": "Loading your daily briefing...",
+        "generatePlan": "Generate Plan",
+        "regenerating": "Regenerating plan...",
+        "dayClear": "Your day is clear!",
+        "dayClearDescription": "No pending tasks, meetings, or important emails for today. Enjoy your free time or generate a new plan.",
+        "noPlanYet": "No plan generated yet. Use the refresh button to generate your AI daily briefing.",
+        "todaysProgress": "Today's Progress",
+        "remaining": "remaining",
+        "completed": "completed",
+        "left": "left",
+        "considerDeferring": "Consider Deferring",
+        "emailArchived": "Email archived",
+        "markedAsRead": "Marked as read",
+        "taskCreated": "Task created",
+        "retry": "Retry",
+        "priority": {
+            "high": "HIGH",
+            "medium": "MEDIUM",
+            "low": "LOW"
+        },
+        "actions": {
+            "archive": "Archive",
+            "markRead": "Mark as read",
+            "createTask": "Create task",
+            "join": "Join",
+            "complete": "Mark complete"
+        },
+        "quickStats": {
+            "tasks": "tasks",
+            "urgent": "urgent",
+            "time": "time"
+        }
     },
     "summary": {
         "title": "Email Summary",

@@ -60,7 +60,39 @@
             "night": "Buenas noches"
         },
         "generating": "Generando tu plan...",
-        "regenerate": "Regenerar Plan"
+        "regenerate": "Regenerar Plan",
+        "loading": "Cargando tu plan diario...",
+        "generatePlan": "Generar Plan",
+        "regenerating": "Regenerando plan...",
+        "dayClear": "¡Tu día está libre!",
+        "dayClearDescription": "No hay tareas, reuniones ni correos importantes pendientes para hoy. Disfruta tu tiempo libre o genera un nuevo plan.",
+        "noPlanYet": "No hay plan generado aún. Usa el botón de refrescar para generar tu plan diario con IA.",
+        "todaysProgress": "Progreso de Hoy",
+        "remaining": "restante",
+        "completed": "completado",
+        "left": "pendiente",
+        "considerDeferring": "Considera Posponer",
+        "emailArchived": "Correo archivado",
+        "markedAsRead": "Marcado como leído",
+        "taskCreated": "Tarea creada",
+        "retry": "Reintentar",
+        "priority": {
+            "high": "ALTA",
+            "medium": "MEDIA",
+            "low": "BAJA"
+        },
+        "actions": {
+            "archive": "Archivar",
+            "markRead": "Marcar como leído",
+            "createTask": "Crear tarea",
+            "join": "Unirse",
+            "complete": "Completar"
+        },
+        "quickStats": {
+            "tasks": "tareas",
+            "urgent": "urgentes",
+            "time": "tiempo"
+        }
     },
     "summary": {
         "title": "Resumen del Correo",

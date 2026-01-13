@@ -8,6 +8,7 @@
  */
 
 import { Progress } from "../ui/progress";
+import { useTranslation } from "../../hooks/useTranslation";
 
 interface PlanProgressBarProps {
   /** Completion percentage (0-100) */
@@ -37,6 +38,7 @@ export function PlanProgressBar({
   showLabel = true,
   className = "",
 }: PlanProgressBarProps) {
+  const { t } = useTranslation();
   // Clamp percentage between 0 and 100
   const clampedPercentage = Math.max(0, Math.min(100, percentage));
 
@@ -45,7 +47,7 @@ export function PlanProgressBar({
       {/* Header with label and time remaining */}
       <div className="flex items-center justify-between text-xs">
         <span className="text-muted-foreground font-medium">
-          Today's Progress
+          {t("plan.todaysProgress")}
         </span>
         <div className="flex items-center gap-2">
           {estimatedMinutes !== undefined && estimatedMinutes > 0 && (
