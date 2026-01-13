@@ -183,8 +183,11 @@ export function UpdateModal({ isOpen, onClose }: UpdateModalProps) {
           const content = await response.text();
 
           // Find the section for this version
+          // Escape ALL regex special characters to prevent injection
+          const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          const escapedVersion = escapeRegex(version);
           const versionPattern = new RegExp(
-            `## Rainy Day ${version.replace(/\./g, "\\.")}[\\s\\S]*?(?=## Rainy Day|$)`,
+            `## Rainy Day ${escapedVersion}[\\s\\S]*?(?=## Rainy Day|$)`,
             "i"
           );
           const match = content.match(versionPattern);
