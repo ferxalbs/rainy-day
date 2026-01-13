@@ -22,6 +22,7 @@ import { REGENERATE_PLAN_EVENT } from "../../hooks/useKeyboardShortcuts";
 import { Button } from "../ui/button";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip";
 import type { PlanTask, ItemFeedbackType } from "../../services/backend/plan";
+import { deleteTodayPlan } from "../../services/backend/plan";
 import { Checkbox } from "../ui/checkbox";
 import { PlanQuickStats } from "./PlanQuickStats";
 import { PlanProgressBar } from "./PlanProgressBar";
@@ -379,6 +380,9 @@ export function DailyBriefing({
     Record<string, OptimisticEmailState>
   >({});
 
+  // State for clear plan action
+  const [isClearing, setIsClearing] = useState(false);
+
   const [completedTaskIds, setCompletedTaskIds] = useState<Set<string>>(() => {
     // Initialize from localStorage
     if (typeof window !== "undefined" && plan?.date) {
@@ -552,6 +556,36 @@ export function DailyBriefing({
     },
     []
   );
+
+  // Clear plan handler
+  const handleClearPlan = useCallback(async () => {
+    if (isClearing) return;
+
+    // Confirm with user
+    const confirmed = window.confirm(
+      'This will delete your current plan and clear all progress. You can generate a new plan afterwards. Continue?'
+    );
+    if (!confirmed) return;
+
+    setIsClearing(true);
+    try {
+      const success = await deleteTodayPlan();
+      if (success) {
+        showNotification('success', 'Plan cleared. Generate a new one!');
+        // Clear local completed tasks state
+        setCompletedTaskIds(new Set());
+        // Trigger a regenerate to show empty state
+        window.location.reload();
+      } else {
+        showNotification('error', 'Failed to clear plan');
+      }
+    } catch (err) {
+      console.error('Failed to clear plan:', err);
+      showNotification('error', 'Failed to clear plan');
+    } finally {
+      setIsClearing(false);
+    }
+  }, [isClearing, showNotification]);
 
   // =============================================================================
   // Optimistic State Handlers
@@ -1034,6 +1068,17 @@ export function DailyBriefing({
               </div>
             </div>
           )}
+
+          {/* Clear Plan Button */}
+          <div className="pt-4 border-t border-border/30">
+            <button
+              onClick={handleClearPlan}
+              disabled={isClearing}
+              className="w-full py-2 text-sm text-muted-foreground hover:text-destructive transition-colors disabled:opacity-50"
+            >
+              {isClearing ? "Clearing..." : "Clear Plan & Start Fresh"}
+            </button>
+          </div>
         </>
       )}
     </div>

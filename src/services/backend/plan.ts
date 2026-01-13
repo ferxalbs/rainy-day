@@ -5,7 +5,7 @@
  * Matches the backend DailyPlan interface from server/src/services/ai/plan.ts
  */
 
-import { get, post } from "./api";
+import { get, post, del } from "./api";
 import {
   cacheSet,
   cacheGetStale,
@@ -280,4 +280,34 @@ export async function getPlanHistory(
     `/plan/history?limit=${limit}`
   );
   return response.ok ? response.data?.plans ?? [] : null;
+}
+
+/**
+ * Delete today's plan and clear cache
+ * Allows user to generate a completely fresh plan
+ */
+export async function deleteTodayPlan(): Promise<boolean> {
+  console.log('[PlanService] Deleting today\'s plan...');
+
+  // Clear local cache first
+  cacheRemove(CACHE_KEYS.PLAN);
+
+  // Clear completed tasks storage for today
+  const today = getTodayDateString();
+  try {
+    localStorage.removeItem(`plan_completed_${today}`);
+  } catch (e) {
+    console.warn('Failed to clear completed tasks:', e);
+  }
+
+  // Delete from backend
+  const response = await del<{ deleted: boolean }>('/plan/today');
+
+  if (response.ok) {
+    console.log('[PlanService] Plan deleted successfully');
+    return true;
+  }
+
+  console.error('[PlanService] Failed to delete plan:', response.error);
+  return false;
 }
