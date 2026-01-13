@@ -3,6 +3,7 @@ import type { Task } from "../../services/backend/data";
 import { Skeleton } from "../ui/skeleton";
 import { Circle, CheckCircle2, Trash2, Plus } from "lucide-react";
 import { completeTask, deleteTask, createTask } from "../../services/backend";
+import { useTranslation } from "../../hooks/useTranslation";
 
 interface TaskPageProps {
   tasks: Task[];
@@ -17,6 +18,7 @@ interface NotificationState {
 }
 
 export function TaskPage({ tasks, isLoading, onRefresh }: TaskPageProps) {
+  const { t } = useTranslation();
   const [notifications, setNotifications] = useState<NotificationState[]>([]);
   const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set());
   const [deletedTasks, setDeletedTasks] = useState<Set<string>>(new Set());
@@ -37,15 +39,15 @@ export function TaskPage({ tasks, isLoading, onRefresh }: TaskPageProps) {
     // Use google_task_id for Google Tasks API
     const taskId = task.google_task_id;
     if (!taskId) {
-      showNotification("error", "Task ID not found");
+      showNotification("error", t("tasks.taskIdNotFound"));
       return;
     }
-    
+
     // Optimistic update
     setLoadingTasks((prev) => new Set(prev).add(task.id));
-    
+
     if (task.status === "completed") {
-      showNotification("error", "Uncomplete not supported yet");
+      showNotification("error", t("tasks.uncompleteNotSupported"));
       setLoadingTasks((prev) => {
         const next = new Set(prev);
         next.delete(task.id);
@@ -57,7 +59,7 @@ export function TaskPage({ tasks, isLoading, onRefresh }: TaskPageProps) {
     setCompletedTasks((prev) => new Set(prev).add(task.id));
 
     const result = await completeTask(taskId);
-    
+
     setLoadingTasks((prev) => {
       const next = new Set(prev);
       next.delete(task.id);
@@ -65,7 +67,7 @@ export function TaskPage({ tasks, isLoading, onRefresh }: TaskPageProps) {
     });
 
     if (result.success) {
-      showNotification("success", `✓ "${task.title}" completed`);
+      showNotification("success", `✓ "${task.title}" ${t("tasks.taskCompleted")}`);
       onRefresh?.();
     } else {
       // Rollback
@@ -74,24 +76,24 @@ export function TaskPage({ tasks, isLoading, onRefresh }: TaskPageProps) {
         next.delete(task.id);
         return next;
       });
-      showNotification("error", result.message || "Failed to complete task");
+      showNotification("error", result.message || t("tasks.failedComplete"));
     }
-  }, [showNotification, onRefresh]);
+  }, [showNotification, onRefresh, t]);
 
   const handleDelete = useCallback(async (task: Task) => {
     // Use google_task_id for Google Tasks API
     const taskId = task.google_task_id;
     if (!taskId) {
-      showNotification("error", "Task ID not found");
+      showNotification("error", t("tasks.taskIdNotFound"));
       return;
     }
-    
+
     // Optimistic update
     setLoadingTasks((prev) => new Set(prev).add(task.id));
     setDeletedTasks((prev) => new Set(prev).add(task.id));
 
     const result = await deleteTask(taskId);
-    
+
     setLoadingTasks((prev) => {
       const next = new Set(prev);
       next.delete(task.id);
@@ -99,7 +101,7 @@ export function TaskPage({ tasks, isLoading, onRefresh }: TaskPageProps) {
     });
 
     if (result.success) {
-      showNotification("success", `🗑️ Task deleted`);
+      showNotification("success", `🗑️ ${t("tasks.taskDeleted")}`);
       onRefresh?.();
     } else {
       // Rollback
@@ -108,28 +110,28 @@ export function TaskPage({ tasks, isLoading, onRefresh }: TaskPageProps) {
         next.delete(task.id);
         return next;
       });
-      showNotification("error", result.message || "Failed to delete task");
+      showNotification("error", result.message || t("tasks.failedDelete"));
     }
-  }, [showNotification, onRefresh]);
+  }, [showNotification, onRefresh, t]);
 
   const handleCreateTask = useCallback(async () => {
     if (!newTaskTitle.trim()) return;
-    
+
     setIsCreating(true);
-    
+
     const result = await createTask({ title: newTaskTitle.trim() });
-    
+
     setIsCreating(false);
 
     if (result.success) {
-      showNotification("success", `✅ Task created`);
+      showNotification("success", `✅ ${t("tasks.taskCreated")}`);
       setNewTaskTitle("");
       setShowInput(false);
       onRefresh?.();
     } else {
-      showNotification("error", result.message || "Failed to create task");
+      showNotification("error", result.message || t("tasks.failedCreate"));
     }
-  }, [newTaskTitle, showNotification, onRefresh]);
+  }, [newTaskTitle, showNotification, onRefresh, t]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -173,11 +175,10 @@ export function TaskPage({ tasks, isLoading, onRefresh }: TaskPageProps) {
           {notifications.map((notification) => (
             <div
               key={notification.id}
-              className={`px-4 py-3 rounded-lg shadow-lg backdrop-blur-md border transition-all animate-in slide-in-from-right-5 ${
-                notification.type === "success"
+              className={`px-4 py-3 rounded-lg shadow-lg backdrop-blur-md border transition-all animate-in slide-in-from-right-5 ${notification.type === "success"
                   ? "bg-green-500/90 text-white border-green-400/50"
                   : "bg-destructive/90 text-destructive-foreground border-destructive/50"
-              }`}
+                }`}
             >
               <span className="text-sm font-medium">{notification.message}</span>
             </div>
@@ -189,7 +190,7 @@ export function TaskPage({ tasks, isLoading, onRefresh }: TaskPageProps) {
       <div className="px-5 py-4 border-b border-border bg-card/50 flex items-center justify-between">
         <h2 className="text-lg font-semibold text-foreground flex items-center gap-3">
           <span className="text-xl">✅</span>
-          Tasks
+          {t("tasks.title")}
           {visibleTasks.length > 0 && (
             <span className="text-xs font-semibold text-muted-foreground bg-muted/20 border border-border/30 px-2.5 py-1 rounded-full">
               {visibleTasks.filter(t => t.status !== "completed" && !completedTasks.has(t.id)).length}
@@ -199,7 +200,7 @@ export function TaskPage({ tasks, isLoading, onRefresh }: TaskPageProps) {
         <button
           onClick={() => setShowInput(true)}
           className="p-2 rounded-lg hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
-          title="Add task"
+          title={t("tasks.addTask")}
         >
           <Plus className="w-5 h-5" />
         </button>
@@ -215,7 +216,7 @@ export function TaskPage({ tasks, isLoading, onRefresh }: TaskPageProps) {
               value={newTaskTitle}
               onChange={(e) => setNewTaskTitle(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="What needs to be done?"
+              placeholder={t("tasks.taskPlaceholder")}
               className="flex-1 bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground"
               autoFocus
               disabled={isCreating}
@@ -225,7 +226,7 @@ export function TaskPage({ tasks, isLoading, onRefresh }: TaskPageProps) {
               disabled={!newTaskTitle.trim() || isCreating}
               className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90 transition-colors"
             >
-              {isCreating ? "Adding..." : "Add"}
+              {isCreating ? t("tasks.adding") : t("tasks.add")}
             </button>
             <button
               onClick={() => {
@@ -234,7 +235,7 @@ export function TaskPage({ tasks, isLoading, onRefresh }: TaskPageProps) {
               }}
               className="px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground text-sm transition-colors"
             >
-              Cancel
+              {t("tasks.cancel")}
             </button>
           </div>
         </div>
@@ -243,12 +244,12 @@ export function TaskPage({ tasks, isLoading, onRefresh }: TaskPageProps) {
       {/* Content */}
       {visibleTasks.length === 0 ? (
         <div className="py-20 text-center">
-          <p className="text-muted-foreground text-base mb-4">No pending tasks</p>
+          <p className="text-muted-foreground text-base mb-4">{t("tasks.noTasks")}</p>
           <button
             onClick={() => setShowInput(true)}
             className="text-primary hover:text-primary/80 text-sm font-medium transition-colors"
           >
-            + Add your first task
+            + {t("tasks.addFirstTask")}
           </button>
         </div>
       ) : (
@@ -256,13 +257,12 @@ export function TaskPage({ tasks, isLoading, onRefresh }: TaskPageProps) {
           {visibleTasks.map((task) => {
             const isCompleted = task.status === "completed" || completedTasks.has(task.id);
             const isTaskLoading = loadingTasks.has(task.id);
-            
+
             return (
               <div
                 key={task.id}
-                className={`px-5 py-4 hover:bg-accent transition-colors group ${
-                  isTaskLoading ? "opacity-50" : ""
-                }`}
+                className={`px-5 py-4 hover:bg-accent transition-colors group ${isTaskLoading ? "opacity-50" : ""
+                  }`}
               >
                 <div className="flex items-start gap-4">
                   <button
@@ -278,21 +278,19 @@ export function TaskPage({ tasks, isLoading, onRefresh }: TaskPageProps) {
                   </button>
                   <div className="flex-1 min-w-0">
                     <p
-                      className={`font-medium transition-colors ${
-                        isCompleted
+                      className={`font-medium transition-colors ${isCompleted
                           ? "line-through text-muted-foreground"
                           : "text-foreground group-hover:text-accent-foreground"
-                      }`}
+                        }`}
                     >
                       {task.title}
                     </p>
                     {task.due && (
-                      <p className={`text-sm mt-1 font-medium transition-colors ${
-                        isCompleted 
-                          ? "text-muted-foreground/60" 
+                      <p className={`text-sm mt-1 font-medium transition-colors ${isCompleted
+                          ? "text-muted-foreground/60"
                           : "text-muted-foreground group-hover:text-accent-foreground/80"
-                      }`}>
-                        Due: {new Date(task.due).toLocaleDateString()}
+                        }`}>
+                        {t("tasks.due")}: {new Date(task.due).toLocaleDateString()}
                       </p>
                     )}
                     {task.notes && (
@@ -305,7 +303,7 @@ export function TaskPage({ tasks, isLoading, onRefresh }: TaskPageProps) {
                     onClick={() => handleDelete(task)}
                     disabled={isTaskLoading}
                     className="opacity-0 group-hover:opacity-100 p-2 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all disabled:cursor-not-allowed"
-                    title="Delete task"
+                    title={t("tasks.deleteTask")}
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>

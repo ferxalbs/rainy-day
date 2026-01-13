@@ -37,19 +37,54 @@
         "summaries": "resúmenes",
         "archived": "Correo archivado",
         "markedRead": "Marcado como leído",
-        "taskCreated": "Tarea creada"
+        "taskCreated": "Tarea creada",
+        "summaryGenerated": "Resumen IA generado",
+        "failedArchive": "Error al archivar",
+        "failedMarkRead": "Error al marcar como leído",
+        "failedCreateTask": "Error al crear tarea",
+        "unread": "No leído"
     },
     "agenda": {
-        "title": "Agenda",
-        "noEvents": "Sin eventos programados",
-        "allDay": "Todo el día"
+        "title": "Agenda de Hoy",
+        "noEvents": "Sin eventos programados para hoy",
+        "allDay": "Todo el día",
+        "events": "eventos",
+        "happeningNow": "En curso",
+        "upNext": "Próximo",
+        "joinNow": "Unirse ahora",
+        "joinMeeting": "Unirse a reunión",
+        "joining": "Uniéndose a",
+        "scheduleEvent": "Programar un evento",
+        "createEvent": "Crear evento",
+        "videoCall": "Videollamada",
+        "now": "Ahora",
+        "soon": "Pronto",
+        "delete": "Eliminar",
+        "eventCreated": "Evento creado",
+        "eventDeleted": "Evento eliminado",
+        "failedCreate": "Error al crear evento",
+        "failedDelete": "Error al eliminar evento"
     },
     "tasks": {
         "title": "Tareas",
-        "noTasks": "Sin tareas",
-        "completed": "Completadas",
+        "noTasks": "Sin tareas pendientes",
+        "completed": "completada",
         "addTask": "Agregar tarea",
-        "taskPlaceholder": "¿Qué necesitas hacer?"
+        "taskPlaceholder": "¿Qué necesitas hacer?",
+        "add": "Agregar",
+        "adding": "Agregando...",
+        "cancel": "Cancelar",
+        "addFirstTask": "Agrega tu primera tarea",
+        "due": "Vence",
+        "taskCreated": "Tarea creada",
+        "taskDeleted": "Tarea eliminada",
+        "taskCompleted": "completada",
+        "failedComplete": "Error al completar tarea",
+        "failedDelete": "Error al eliminar tarea",
+        "failedCreate": "Error al crear tarea",
+        "deleteTask": "Eliminar tarea",
+        "uncompleteNotSupported": "Desmarcar no soportado aún",
+        "taskIdNotFound": "ID de tarea no encontrado"
     },
     "plan": {
         "title": "Tu Plan del Día",
@@ -108,7 +143,19 @@
         "dates": "Fechas",
         "amounts": "Montos",
         "cached": "En caché",
-        "limitReached": "Límite diario alcanzado. Actualiza para más resúmenes."
+        "limitReached": "Límite diario alcanzado. Actualiza para más resúmenes.",
+        "thread": "Hilo",
+        "close": "Cerrar",
+        "due": "Vence",
+        "item": "elemento",
+        "items": "elementos",
+        "priorityLabels": {
+            "critical": "Crítica",
+            "high": "Alta",
+            "medium": "Media",
+            "low": "Baja",
+            "veryLow": "Muy Baja"
+        }
     },
     "billing": {
         "upgradeTitle": "Mejora tu Espacio de Trabajo",

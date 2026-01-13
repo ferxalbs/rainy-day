@@ -3,6 +3,7 @@ import type { ThreadSummary } from "../../types";
 import { Skeleton } from "../ui/skeleton";
 import { EmailActionBar } from "../plan/EmailActionBar";
 import { useEmailActions } from "../../hooks/useEmailActions";
+import { useTranslation } from "../../hooks/useTranslation";
 import { EmailSummaryDialog } from "../email/EmailSummaryDialog";
 import { SummaryButton, SummaryQuotaDisplay } from "../email/SummaryButton";
 import { useSummary } from "../../hooks/useSummary";
@@ -40,6 +41,8 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
     refreshLimits,
     error: summaryError
   } = useSummary();
+
+  const { t } = useTranslation();
 
   // Track which email has expanded summary
   const [expandedSummaryId, setExpandedSummaryId] = useState<string | null>(null);
@@ -91,10 +94,10 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
     setDialogOpen(true);
     const success = await generate(emailId);
     if (success) {
-      showNotification("success", "✨ AI Summary generated");
+      showNotification("success", `✨ ${t("inbox.summaryGenerated")}`);
     }
     return success;
-  }, [generate, showNotification]);
+  }, [generate, showNotification, t]);
 
   const handleArchive = useCallback(async (emailId: string) => {
     // Optimistic update
@@ -102,7 +105,7 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
 
     const result = await archiveEmail(emailId);
     if (result.success) {
-      showNotification("success", "📥 Email archived");
+      showNotification("success", `📥 ${t("inbox.archived")}`);
       onRefresh?.();
     } else {
       // Rollback
@@ -111,9 +114,9 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
         next.delete(emailId);
         return next;
       });
-      showNotification("error", result.message || "Failed to archive");
+      showNotification("error", result.message || t("inbox.failedArchive"));
     }
-  }, [archiveEmail, showNotification, onRefresh]);
+  }, [archiveEmail, showNotification, onRefresh, t]);
 
   const handleMarkRead = useCallback(async (emailId: string) => {
     // Optimistic update
@@ -121,7 +124,7 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
 
     const result = await markAsRead(emailId);
     if (result.success) {
-      showNotification("success", "✓ Marked as read");
+      showNotification("success", `✓ ${t("inbox.markedRead")}`);
     } else {
       // Rollback
       setReadEmails((prev) => {
@@ -129,20 +132,20 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
         next.delete(emailId);
         return next;
       });
-      showNotification("error", result.message || "Failed to mark as read");
+      showNotification("error", result.message || t("inbox.failedMarkRead"));
     }
-  }, [markAsRead, showNotification]);
+  }, [markAsRead, showNotification, t]);
 
   const handleConvertToTask = useCallback(async (emailId: string) => {
     const result = await convertToTask(emailId);
     if (result.success && result.data) {
-      showNotification("success", `✅ Task created: "${result.data.task_title}"`);
+      showNotification("success", `✅ ${t("inbox.taskCreated")}: "${result.data.task_title}"`);
       // Refresh to show the new task in the task list
       onRefresh?.();
     } else {
-      showNotification("error", result.message || "Failed to create task");
+      showNotification("error", result.message || t("inbox.failedCreateTask"));
     }
-  }, [convertToTask, showNotification, onRefresh]);
+  }, [convertToTask, showNotification, onRefresh, t]);
 
   // Filter out archived emails
   const visibleThreads = threads.filter((t) => !archivedEmails.has(t.id));
@@ -187,7 +190,7 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
       <div className="px-5 py-4 border-b border-border bg-card/30 flex items-center justify-between">
         <h2 className="text-lg font-semibold text-foreground flex items-center gap-3">
           <span className="text-xl">📬</span>
-          Priority Inbox
+          {t("inbox.title")}
           {visibleThreads.length > 0 && (
             <span className="text-xs font-semibold text-muted-foreground bg-muted/20 border border-border/30 px-2.5 py-1 rounded-full">
               {visibleThreads.length}
@@ -203,7 +206,7 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
       {/* Content */}
       {visibleThreads.length === 0 ? (
         <div className="py-20 text-center">
-          <p className="text-muted-foreground text-base">Inbox zero! 🎉</p>
+          <p className="text-muted-foreground text-base">{t("inbox.empty")}</p>
         </div>
       ) : (
         <div className="divide-y divide-border">
@@ -226,7 +229,7 @@ export function InboxPage({ threads, isLoading, onRefresh }: InboxPageProps) {
                         {thread.subject || thread.snippet.slice(0, 50)}
                       </p>
                       {!isRead && (
-                        <span className="flex-shrink-0 w-2 h-2 rounded-full bg-primary" title="Unread" />
+                        <span className="flex-shrink-0 w-2 h-2 rounded-full bg-primary" title={t("inbox.unread")} />
                       )}
                     </div>
                     <p className="text-sm text-muted-foreground group-hover:text-accent-foreground/80 line-clamp-2 mt-1.5 leading-relaxed">

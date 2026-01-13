@@ -15,6 +15,7 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
+import { useTranslation } from "../../hooks/useTranslation";
 import type { EmailSummary } from "../../services/backend/summary";
 
 interface EmailSummaryDialogProps {
@@ -26,12 +27,12 @@ interface EmailSummaryDialogProps {
 }
 
 // Priority label based on score
-function getPriorityLabel(score: number): string {
-    if (score >= 9) return "Critical";
-    if (score >= 7) return "High";
-    if (score >= 5) return "Medium";
-    if (score >= 3) return "Low";
-    return "Very Low";
+function getPriorityLabelKey(score: number): string {
+    if (score >= 9) return "critical";
+    if (score >= 7) return "high";
+    if (score >= 5) return "medium";
+    if (score >= 3) return "low";
+    return "veryLow";
 }
 
 export function EmailSummaryDialog({
@@ -41,6 +42,8 @@ export function EmailSummaryDialog({
     emailSubject,
     isLoading = false,
 }: EmailSummaryDialogProps) {
+    const { t } = useTranslation();
+
     if (isLoading) {
         return (
             <Dialog open={open} onOpenChange={onOpenChange}>
@@ -51,8 +54,8 @@ export function EmailSummaryDialog({
                             <div className="absolute inset-2 rounded-full border-2 border-muted border-b-primary/50 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '0.8s' }} />
                         </div>
                         <div className="text-center space-y-1">
-                            <p className="text-sm font-medium text-foreground">Analyzing email...</p>
-                            <p className="text-xs text-muted-foreground">Extracting key information</p>
+                            <p className="text-sm font-medium text-foreground">{t("summary.analyzing")}</p>
+                            <p className="text-xs text-muted-foreground">{t("summary.extracting")}</p>
                         </div>
                     </div>
                 </DialogContent>
@@ -62,7 +65,8 @@ export function EmailSummaryDialog({
 
     if (!summary) return null;
 
-    const priorityLabel = getPriorityLabel(summary.priorityScore);
+    const priorityLabelKey = getPriorityLabelKey(summary.priorityScore);
+    const priorityLabel = t(`summary.priorityLabels.${priorityLabelKey}`);
 
     // Check if we have any key information
     const hasKeyInfo =
@@ -77,7 +81,7 @@ export function EmailSummaryDialog({
                 {/* Header */}
                 <DialogHeader className="px-6 pt-6 pb-4 border-b border-border/50">
                     <DialogTitle className="text-base font-semibold text-foreground line-clamp-2 pr-8">
-                        {emailSubject || "Email Summary"}
+                        {emailSubject || t("summary.title")}
                     </DialogTitle>
 
                     {/* Status Badges - Theme Colors Only */}
@@ -86,7 +90,7 @@ export function EmailSummaryDialog({
                             variant="outline"
                             className="border-primary/50 text-primary text-xs font-semibold px-2.5 py-0.5"
                         >
-                            Priority {summary.priorityScore}/10 • {priorityLabel}
+                            {t("summary.priority")} {summary.priorityScore}/10 • {priorityLabel}
                         </Badge>
                         <Badge
                             variant="secondary"
@@ -96,7 +100,7 @@ export function EmailSummaryDialog({
                         </Badge>
                         {summary.isThreadSummary && (
                             <Badge variant="outline" className="text-xs border-muted-foreground/30">
-                                Thread
+                                {t("summary.thread")}
                             </Badge>
                         )}
                     </div>
@@ -108,7 +112,7 @@ export function EmailSummaryDialog({
                         {/* Summary Section */}
                         <section>
                             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
-                                Summary
+                                {t("summary.summaryLabel")}
                             </h3>
                             <div className="bg-muted/30 rounded-xl p-4 border border-border/50">
                                 <p className="text-sm text-foreground leading-relaxed">
@@ -124,10 +128,10 @@ export function EmailSummaryDialog({
                                 <section>
                                     <div className="flex items-center justify-between mb-3">
                                         <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                                            Action Items
+                                            {t("summary.actionItems")}
                                         </h3>
                                         <span className="text-xs text-muted-foreground">
-                                            {summary.actionItems.length} item{summary.actionItems.length > 1 ? 's' : ''}
+                                            {summary.actionItems.length} {summary.actionItems.length > 1 ? t("summary.items") : t("summary.item")}
                                         </span>
                                     </div>
                                     <ul className="space-y-2">
@@ -141,7 +145,7 @@ export function EmailSummaryDialog({
                                                     <p className="text-sm text-foreground">{item.action}</p>
                                                     {item.dueDate && (
                                                         <p className="text-xs text-muted-foreground mt-1">
-                                                            Due: {item.dueDate}
+                                                            {t("summary.due")}: {item.dueDate}
                                                         </p>
                                                     )}
                                                 </div>
@@ -161,12 +165,12 @@ export function EmailSummaryDialog({
                                 <Separator className="opacity-30" />
                                 <section>
                                     <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
-                                        Key Information
+                                        {t("summary.keyInfo")}
                                     </h3>
                                     <div className="space-y-3">
                                         {summary.keyEntities.people.length > 0 && (
                                             <div className="flex items-start gap-3">
-                                                <span className="text-xs text-muted-foreground w-20 flex-shrink-0 pt-1">People</span>
+                                                <span className="text-xs text-muted-foreground w-20 flex-shrink-0 pt-1">{t("summary.people")}</span>
                                                 <div className="flex flex-wrap gap-1.5">
                                                     {summary.keyEntities.people.map((p, i) => (
                                                         <Badge key={i} variant="secondary" className="text-xs font-normal">
@@ -178,7 +182,7 @@ export function EmailSummaryDialog({
                                         )}
                                         {summary.keyEntities.companies.length > 0 && (
                                             <div className="flex items-start gap-3">
-                                                <span className="text-xs text-muted-foreground w-20 flex-shrink-0 pt-1">Companies</span>
+                                                <span className="text-xs text-muted-foreground w-20 flex-shrink-0 pt-1">{t("summary.companies")}</span>
                                                 <div className="flex flex-wrap gap-1.5">
                                                     {summary.keyEntities.companies.map((c, i) => (
                                                         <Badge key={i} variant="secondary" className="text-xs font-normal">
@@ -190,7 +194,7 @@ export function EmailSummaryDialog({
                                         )}
                                         {summary.keyEntities.dates.length > 0 && (
                                             <div className="flex items-start gap-3">
-                                                <span className="text-xs text-muted-foreground w-20 flex-shrink-0 pt-1">Dates</span>
+                                                <span className="text-xs text-muted-foreground w-20 flex-shrink-0 pt-1">{t("summary.dates")}</span>
                                                 <div className="flex flex-wrap gap-1.5">
                                                     {summary.keyEntities.dates.map((d, i) => (
                                                         <Badge key={i} variant="secondary" className="text-xs font-normal">
@@ -202,7 +206,7 @@ export function EmailSummaryDialog({
                                         )}
                                         {summary.keyEntities.amounts.length > 0 && (
                                             <div className="flex items-start gap-3">
-                                                <span className="text-xs text-muted-foreground w-20 flex-shrink-0 pt-1">Amounts</span>
+                                                <span className="text-xs text-muted-foreground w-20 flex-shrink-0 pt-1">{t("summary.amounts")}</span>
                                                 <div className="flex flex-wrap gap-1.5">
                                                     {summary.keyEntities.amounts.map((a, i) => (
                                                         <Badge key={i} variant="secondary" className="text-xs font-normal">
@@ -223,7 +227,7 @@ export function EmailSummaryDialog({
                 <div className="px-6 py-3 border-t border-border/50 flex items-center justify-between bg-muted/10">
                     <span className="text-[10px] text-muted-foreground/60">
                         {summary.modelUsed}
-                        {summary.cached && " • Cached"}
+                        {summary.cached && ` • ${t("summary.cached")}`}
                     </span>
                     <Button
                         variant="ghost"
@@ -231,7 +235,7 @@ export function EmailSummaryDialog({
                         className="text-xs h-7"
                         onClick={() => onOpenChange(false)}
                     >
-                        Close
+                        {t("summary.close")}
                     </Button>
                 </div>
             </DialogContent>

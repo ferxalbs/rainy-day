@@ -37,19 +37,54 @@
         "summaries": "summaries",
         "archived": "Email archived",
         "markedRead": "Marked as read",
-        "taskCreated": "Task created"
+        "taskCreated": "Task created",
+        "summaryGenerated": "AI Summary generated",
+        "failedArchive": "Failed to archive",
+        "failedMarkRead": "Failed to mark as read",
+        "failedCreateTask": "Failed to create task",
+        "unread": "Unread"
     },
     "agenda": {
-        "title": "Agenda",
-        "noEvents": "No events scheduled",
-        "allDay": "All day"
+        "title": "Today's Agenda",
+        "noEvents": "No events scheduled for today",
+        "allDay": "All day",
+        "events": "events",
+        "happeningNow": "Happening now",
+        "upNext": "Up next",
+        "joinNow": "Join now",
+        "joinMeeting": "Join meeting",
+        "joining": "Joining",
+        "scheduleEvent": "Schedule an event",
+        "createEvent": "Create event",
+        "videoCall": "Video call",
+        "now": "Now",
+        "soon": "Soon",
+        "delete": "Delete",
+        "eventCreated": "Event created",
+        "eventDeleted": "Event deleted",
+        "failedCreate": "Failed to create event",
+        "failedDelete": "Failed to delete event"
     },
     "tasks": {
         "title": "Tasks",
-        "noTasks": "No tasks",
-        "completed": "Completed",
+        "noTasks": "No pending tasks",
+        "completed": "completed",
         "addTask": "Add task",
-        "taskPlaceholder": "What needs to be done?"
+        "taskPlaceholder": "What needs to be done?",
+        "add": "Add",
+        "adding": "Adding...",
+        "cancel": "Cancel",
+        "addFirstTask": "Add your first task",
+        "due": "Due",
+        "taskCreated": "Task created",
+        "taskDeleted": "Task deleted",
+        "taskCompleted": "completed",
+        "failedComplete": "Failed to complete task",
+        "failedDelete": "Failed to delete task",
+        "failedCreate": "Failed to create task",
+        "deleteTask": "Delete task",
+        "uncompleteNotSupported": "Uncomplete not supported yet",
+        "taskIdNotFound": "Task ID not found"
     },
     "plan": {
         "title": "Your Daily Plan",
@@ -108,7 +143,19 @@
         "dates": "Dates",
         "amounts": "Amounts",
         "cached": "Cached",
-        "limitReached": "Daily limit reached. Upgrade for more summaries."
+        "limitReached": "Daily limit reached. Upgrade for more summaries.",
+        "thread": "Thread",
+        "close": "Close",
+        "due": "Due",
+        "item": "item",
+        "items": "items",
+        "priorityLabels": {
+            "critical": "Critical",
+            "high": "High",
+            "medium": "Medium",
+            "low": "Low",
+            "veryLow": "Very Low"
+        }
     },
     "billing": {
         "upgradeTitle": "Upgrade Your Workspace",
