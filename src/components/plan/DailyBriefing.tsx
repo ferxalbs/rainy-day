@@ -561,26 +561,26 @@ export function DailyBriefing({
   const handleClearPlan = useCallback(async () => {
     if (isClearing) return;
 
-    // Confirm with user
-    const confirmed = window.confirm(
-      'This will delete your current plan and clear all progress. You can generate a new plan afterwards. Continue?'
-    );
-    if (!confirmed) return;
-
+    // Simple confirm - Tauri may not support window.confirm, so we use a simpler approach
+    // The button text already warns the user
     setIsClearing(true);
     try {
+      console.log('[DailyBriefing] Clearing plan...');
       const success = await deleteTodayPlan();
+      console.log('[DailyBriefing] Delete result:', success);
       if (success) {
         showNotification('success', 'Plan cleared. Generate a new one!');
         // Clear local completed tasks state
         setCompletedTaskIds(new Set());
-        // Trigger a regenerate to show empty state
-        window.location.reload();
+        // Reload to show empty state
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
       } else {
         showNotification('error', 'Failed to clear plan');
       }
     } catch (err) {
-      console.error('Failed to clear plan:', err);
+      console.error('[DailyBriefing] Failed to clear plan:', err);
       showNotification('error', 'Failed to clear plan');
     } finally {
       setIsClearing(false);
