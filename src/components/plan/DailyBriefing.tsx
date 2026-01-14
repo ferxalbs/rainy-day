@@ -1194,7 +1194,6 @@ function BriefingItem({
 
   const isEmail = task.type === "email" || task.source_type === "email";
   const isMeeting = task.type === "meeting";
-  const isTask = task.source_type === "task";
 
   // Use task.id as identifier (more reliable than source_id)
   const taskIdentifier = task.id;
@@ -1230,14 +1229,12 @@ function BriefingItem({
       className={`group flex items-start gap-3 p-3 rounded-xl hover:bg-card/40 transition-all border border-transparent hover:border-border/40 ${isCompleted || isOptimisticallyRead ? "opacity-50" : ""
         }`}
     >
-      {/* Checkbox */}
-      {isTask && (
-        <Checkbox
-          checked={isCompleted}
-          onCheckedChange={handleToggleComplete}
-          className="mt-1 w-4 h-4 rounded border-2 border-muted-foreground/40 accent-primary cursor-pointer"
-        />
-      )}
+      {/* Checkbox - Show for all items so users can track completion */}
+      <Checkbox
+        checked={isCompleted}
+        onCheckedChange={handleToggleComplete}
+        className="mt-1 w-4 h-4 rounded border-2 border-muted-foreground/40 accent-primary cursor-pointer"
+      />
 
       {/* Type Icon */}
       <div className="mt-0.5">{getTypeIcon(task)}</div>

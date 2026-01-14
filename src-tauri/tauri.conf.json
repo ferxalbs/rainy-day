@@ -1,6 +1,6 @@
 {
   "productName": "Rainy Day",
-  "version": "0.5.14",
+  "version": "0.5.15",
   "identifier": "com.enosislabs.rainyday",
   "build": {
     "beforeDevCommand": "pnpm dev",

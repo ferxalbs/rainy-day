@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.5.15] - 2026-01-14
+
+#### Fixes
+
+- **Progress Bar Task Completion**: Fixed issue where checkboxes only appeared for tasks with `source_type === "task"`
+  - All task types (focus blocks, quick wins, meetings, emails) now show checkboxes
+  - Progress bar now correctly reaches 100% when all visible items are completed
+  - Resolves discrepancy between local and production builds
+
+---
+
 ### [v0.5.14] - 2026-01-14
 
 #### Improvements
