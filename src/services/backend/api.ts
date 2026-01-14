@@ -152,54 +152,99 @@ export interface ApiResponse<T> {
   error?: string;
 }
 
+// ============================================================================
+// Request Deduplication (v0.6.0 Performance Layer)
+// ============================================================================
+
 /**
- * Fetch wrapper with automatic token handling
+ * Map of pending requests to prevent duplicate API calls
+ * Key: "METHOD:path"
+ * Value: Promise of the pending request
+ */
+const pendingRequests = new Map<string, Promise<ApiResponse<unknown>>>();
+
+/**
+ * Generate a unique key for a request
+ */
+function getRequestKey(method: string, path: string): string {
+  return `${method}:${path}`;
+}
+
+/**
+ * Fetch wrapper with automatic token handling and request deduplication
+ *
+ * Features:
+ * - Automatic JWT token injection
+ * - Token refresh on 401
+ * - Request deduplication for GET requests
  */
 export async function backendFetch<T = unknown>(
   path: string,
   options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
-  let accessToken = await getAccessToken();
+  const method = options.method || "GET";
+  const requestKey = getRequestKey(method, path);
 
-  // If no token, return unauthorized
-  if (!accessToken) {
-    return { ok: false, status: 401, error: "Not authenticated" };
+  // For GET requests, deduplicate pending requests
+  if (method === "GET" && pendingRequests.has(requestKey)) {
+    console.debug("[API] Deduplicating request:", requestKey);
+    return pendingRequests.get(requestKey) as Promise<ApiResponse<T>>;
   }
 
-  const makeRequest = async (token: string): Promise<Response> => {
-    return fetch(`${API_URL}${path}`, {
-      ...options,
-      headers: {
-        ...options.headers,
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-  };
+  // Create the actual request promise
+  const requestPromise = (async (): Promise<ApiResponse<T>> => {
+    let accessToken = await getAccessToken();
 
-  let response = await makeRequest(accessToken);
-
-  // If unauthorized, try to refresh token
-  if (response.status === 401) {
-    const newToken = await refreshAccessToken();
-    if (newToken) {
-      response = await makeRequest(newToken);
-    } else {
-      return { ok: false, status: 401, error: "Token refresh failed" };
+    // If no token, return unauthorized
+    if (!accessToken) {
+      return { ok: false, status: 401, error: "Not authenticated" };
     }
-  }
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    return {
-      ok: false,
-      status: response.status,
-      error: (errorData as { error?: string }).error || response.statusText,
+    const makeRequest = async (token: string): Promise<Response> => {
+      return fetch(`${API_URL}${path}`, {
+        ...options,
+        headers: {
+          ...options.headers,
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
     };
+
+    let response = await makeRequest(accessToken);
+
+    // If unauthorized, try to refresh token
+    if (response.status === 401) {
+      const newToken = await refreshAccessToken();
+      if (newToken) {
+        response = await makeRequest(newToken);
+      } else {
+        return { ok: false, status: 401, error: "Token refresh failed" };
+      }
+    }
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      return {
+        ok: false,
+        status: response.status,
+        error: (errorData as { error?: string }).error || response.statusText,
+      };
+    }
+
+    const data = (await response.json()) as T;
+    return { ok: true, status: response.status, data };
+  })();
+
+  // Track pending GET requests for deduplication
+  if (method === "GET") {
+    pendingRequests.set(requestKey, requestPromise);
+    requestPromise.finally(() => {
+      pendingRequests.delete(requestKey);
+    });
   }
 
-  const data = (await response.json()) as T;
-  return { ok: true, status: response.status, data };
+  return requestPromise;
 }
 
 /**

@@ -2,6 +2,27 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
+## Rainy Day 0.5.12
+
+_January 14, 2026_
+
+**Performance Revolution**
+
+This update introduces our new **Rust Performance Layer** - a major upgrade that makes Rainy Day faster and more responsive than ever:
+
+- **Lightning-Fast Caching**: Data you've seen before now loads instantly (sub-millisecond) from our new Rust-powered cache
+- **Smarter API Calls**: When multiple parts of the app need the same data, we only fetch it once - saving your bandwidth and battery
+- **Native Speed Processing**: Date formatting, priority calculations, and task processing now run at native Rust speeds instead of JavaScript
+- **Future-Ready**: This foundation enables exciting AI and performance features in upcoming versions
+
+**What you'll notice:**
+- Smoother navigation between pages
+- Faster daily plan loading
+- More responsive email actions
+- Reduced data usage overall
+
+---
+
 ## Rainy Day 0.5.11 🧹⚡
 
 _January 13, 2026_

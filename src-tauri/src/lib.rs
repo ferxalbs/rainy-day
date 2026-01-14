@@ -4,11 +4,14 @@
 //! to help you focus on what matters most.
 
 mod auth;
+mod cache;
 mod google;
 mod notifications;
+mod processing;
 mod theme;
 
 use auth::{AuthState, TokenStore};
+use cache::CacheState;
 use google::GoogleClient;
 use tauri::Manager;
 
@@ -73,6 +76,7 @@ pub fn run() {
         .manage(AuthState::new(client_id, client_secret))
         .manage(TokenStore::new())
         .manage(GoogleClient::new())
+        .manage(CacheState::default())
         .setup(move |app| {
             // Initialize TokenStore with app data directory
             let token_store = app.state::<TokenStore>();
@@ -129,6 +133,25 @@ pub fn run() {
             notifications::request_notification_permission,
             notifications::send_native_notification,
             notifications::send_typed_notification,
+            // Cache commands (v0.6.0 performance layer)
+            cache::cache_get,
+            cache::cache_set,
+            cache::cache_remove,
+            cache::cache_invalidate,
+            cache::cache_clear,
+            cache::cache_stats,
+            cache::cache_cleanup,
+            // Processing commands (v0.6.0 performance layer)
+            processing::format_relative_time,
+            processing::format_time,
+            processing::format_date,
+            processing::get_time_greeting,
+            processing::is_today,
+            processing::get_today_date_string,
+            processing::calculate_priority_score,
+            processing::clean_snippet,
+            processing::has_urgent_keywords,
+            processing::batch_process_tasks,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

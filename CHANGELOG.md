@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.5.12] - 2026-01-14
+
+#### Added
+
+- **Rust Performance Layer**: High-performance client-side processing for improved UI responsiveness
+  - `cache.rs`: In-memory caching with TTL, pattern invalidation, and sub-millisecond access
+  - `processing.rs`: Fast date formatting, priority scoring, and batch task processing
+  - `rust.ts`: TypeScript bindings for all new Rust commands
+  - 7 new cache commands: `cache_get`, `cache_set`, `cache_remove`, `cache_invalidate`, `cache_clear`, `cache_stats`, `cache_cleanup`
+  - 10 new processing commands: `format_relative_time`, `format_time`, `format_date`, `get_time_greeting`, `is_today`, `get_today_date_string`, `calculate_priority_score`, `clean_snippet`, `has_urgent_keywords`, `batch_process_tasks`
+
+#### Improvements
+
+- **API Request Deduplication**: Prevents duplicate GET requests to the same endpoint
+  - Reduces network load when multiple components request the same data
+  - Pending requests are shared and resolved once
+- **Updated Roadmap**: Aligned roadmap with SaaS architecture (cloud sync is source of truth)
+
+---
+
 ### [v0.5.11] - 2026-01-13
 
 #### Added
