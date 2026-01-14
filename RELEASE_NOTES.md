@@ -2,6 +2,21 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
+## Rainy Day 0.5.14 🎨✨
+
+_January 14, 2026_
+
+**The "Premium macOS" Update**
+
+We've completely redesigned the core experience to feel even more native and high-end:
+
+- **Stunning New Daily Plan**: The focus of your day now looks more professional than ever with refined typography and a beautiful glassmorphism aesthetic.
+- **Perfect Blue Borders**: Clean, stable, and vibrant accents that guide your eyes and make the app feel alive.
+- **Redesigned Reset Experience**: The "Reset System" dialog is now a beautiful, centered modal with deep blurs and a true macOS feel.
+- **Micro-Aesthetics**: Smoother transitions, better shadows, and 100% responsive layouts tailored for your Mac.
+
+---
+
 ## Rainy Day 0.5.13 🧹✨
 
 _January 14, 2026_
@@ -13,6 +28,8 @@ We've fixed the "Clear Plan" issue and made it much more powerful:
 - **Works everywhere**: The "Reset Plan" button now uses a reliable native-style dialog that works perfectly on macOS
 - **System-wide cleanup**: Resetting now clears all cached emails and events, ensuring the AI gets the absolute latest data for your new plan
 - **Fresh generation**: All task checkmarks are reset when you clear the plan, giving you a truly fresh start
+- **Extreme Speed**: Parallel processing makes large inboxes and task lists load up to 4x faster on modern multi-core processors
+- **Powerful Search**: Find exactly what you need with our new regex-powered search engine—perfect for advanced users and large datasets
 
 ---
 

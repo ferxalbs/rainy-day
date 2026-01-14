@@ -4,6 +4,7 @@
 //! These are performance optimizations - the cloud backend remains the source of truth.
 
 use chrono::{DateTime, Local, TimeZone, Utc};
+use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 
 // ============================================================================
@@ -266,7 +267,7 @@ pub struct ProcessedTask {
     pub relative_due: Option<String>,
 }
 
-/// Batch process tasks for display
+/// Batch process tasks for display (Parallelized with Rayon)
 #[tauri::command]
 pub fn batch_process_tasks(tasks: Vec<TaskInput>) -> Vec<ProcessedTask> {
     let now = Utc::now().timestamp_millis();
@@ -280,7 +281,7 @@ pub fn batch_process_tasks(tasks: Vec<TaskInput>) -> Vec<ProcessedTask> {
     let soon_threshold = now + 86_400_000; // +24 hours from now
 
     tasks
-        .into_iter()
+        .into_par_iter() // Parallel iterator
         .map(|task| {
             let (is_overdue, is_due_today, is_due_soon, relative_due) =
                 if let Some(due) = task.due_ms {
@@ -310,6 +311,72 @@ pub fn batch_process_tasks(tasks: Vec<TaskInput>) -> Vec<ProcessedTask> {
                 is_due_today,
                 is_due_soon,
                 relative_due,
+            }
+        })
+        .collect()
+}
+
+// ============================================================================
+// Email Processing
+// ============================================================================
+
+/// Input for batch email processing
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EmailInput {
+    pub id: String,
+    pub subject: String,
+    pub snippet: String,
+    pub sender: String,
+    pub timestamp_ms: i64,
+    pub is_unread: bool,
+    pub thread_size: usize,
+    pub is_direct: bool,
+}
+
+/// Processed email output
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProcessedEmail {
+    pub id: String,
+    pub subject: String,
+    pub snippet: String,
+    pub sender: String,
+    pub timestamp_ms: i64,
+    pub is_unread: bool,
+    pub thread_size: usize,
+    pub priority_score: f64,
+    pub relative_time: String,
+    pub has_urgent_keywords: bool,
+}
+
+/// Batch process emails for display (Parallelized with Rayon)
+#[tauri::command]
+pub fn batch_process_emails(emails: Vec<EmailInput>) -> Vec<ProcessedEmail> {
+    emails
+        .into_par_iter() // Parallel iterator
+        .map(|email| {
+            let urgent = has_urgent_keywords(format!("{} {}", email.subject, email.snippet));
+            let score = calculate_priority_score(PriorityInput {
+                is_unread: email.is_unread,
+                age_hours: (Utc::now().timestamp_millis() - email.timestamp_ms) as f64
+                    / 3_600_000.0,
+                from_known_contact: true, // Simplified
+                has_urgent_keywords: urgent,
+                recipient_count: 1, // Simplified
+                is_direct: email.is_direct,
+                thread_size: email.thread_size,
+            });
+
+            ProcessedEmail {
+                id: email.id,
+                subject: email.subject,
+                snippet: clean_snippet(email.snippet, Some(100)),
+                sender: email.sender,
+                timestamp_ms: email.timestamp_ms,
+                is_unread: email.is_unread,
+                thread_size: email.thread_size,
+                priority_score: score,
+                relative_time: format_relative_time(email.timestamp_ms),
+                has_urgent_keywords: urgent,
             }
         })
         .collect()

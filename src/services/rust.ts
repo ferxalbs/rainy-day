@@ -290,6 +290,91 @@ export async function batchProcessTasks(
 }
 
 // ============================================================================
+// Email Processing (Parallelized with Rayon)
+// ============================================================================
+
+export interface EmailInput {
+    id: string;
+    subject: string;
+    snippet: string;
+    sender: string;
+    timestamp_ms: number;
+    is_unread: boolean;
+    thread_size: number;
+    is_direct: boolean;
+}
+
+export interface ProcessedEmail {
+    id: string;
+    subject: string;
+    snippet: string;
+    sender: string;
+    timestamp_ms: number;
+    is_unread: boolean;
+    thread_size: number;
+    priority_score: number;
+    relative_time: string;
+    has_urgent_keywords: boolean;
+}
+
+/**
+ * Batch process emails for optimized display (Parallelized with Rayon)
+ */
+export async function batch_process_emails(
+    emails: EmailInput[]
+): Promise<ProcessedEmail[]> {
+    try {
+        return await invoke<ProcessedEmail[]>("batch_process_emails", { emails });
+    } catch {
+        // Fallback: return unprocessed
+        return emails.map((e) => ({
+            ...e,
+            priority_score: 0.5,
+            relative_time: new Date(e.timestamp_ms).toLocaleDateString(),
+            has_urgent_keywords: false,
+        }));
+    }
+}
+
+// ============================================================================
+// Search Operations (Regex Engine)
+// ============================================================================
+
+export interface SearchResult {
+    matches: string[]; // List of IDs
+    total_found: number;
+}
+
+/**
+ * Search for tasks using Rust's regex engine
+ */
+export async function searchTasks(
+    query: string,
+    tasks: TaskInput[]
+): Promise<SearchResult> {
+    try {
+        return await invoke<SearchResult>("search_tasks", { query, tasks });
+    } catch {
+        return { matches: [], total_found: 0 };
+    }
+}
+
+/**
+ * Search for emails using Rust's regex engine
+ */
+export async function searchEmails(
+    query: string,
+    emails: EmailInput[]
+): Promise<SearchResult> {
+    try {
+        return await invoke<SearchResult>("search_emails", { query, emails });
+    } catch {
+        return { matches: [], total_found: 0 };
+    }
+}
+
+
+// ============================================================================
 // Utility: Cache-through pattern
 // ============================================================================
 

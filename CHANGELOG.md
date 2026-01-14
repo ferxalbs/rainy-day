@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.5.14] - 2026-01-14
+
+#### Improvements
+
+- **Premium macOS UI Redesign**: Completely overhauled the "Daily Briefing" layout with a focus on modern macOS aesthetics.
+- **Glassmorphism & Vibrancy**: Enhanced the glassmorphism effects using high-saturate blur filters and "perfect blue borders".
+- **Redesigned System Reset Dialog**: Replaced the previous basic reset dialog with a beautiful, centered, and blurred macOS-style modal.
+- **Typography & Spacing**: Refined weight usage and layout spacing for a more premium productivity experience.
+
 ### [v0.5.13] - 2026-01-14
 
 #### Fixes
@@ -15,6 +24,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Deep Cache Purge**: Enhanced the reset logic to clear ALL local caches (Emails, Events, Tasks)
 - **State Reset**: Now wipes all task completion records from LocalStorage during reset
 - **UX Improvement**: Added a "Resetting System..." loading state for better user feedback
+- **Parallel Data Transformation (Rayon)**: Multi-core parallel processing for tasks and emails, significantly reducing UI blocking during large data loads
+- **Regex Search Engine**: High-performance regex-based search for local data (`search_tasks`, `search_emails`)
+- **Batch Inbox Processing**: Fast normalization and priority scoring for emails in the inbox (`batch_process_emails`)
 
 ---
 

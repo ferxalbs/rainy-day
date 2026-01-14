@@ -1,6 +1,6 @@
 [package]
 name = "rainy-day"
-version = "0.5.13"
+version = "0.5.14"
 description = "A Tauri App"
 authors = ["you"]
 edition = "2021"
@@ -35,6 +35,9 @@ dotenvy = "0.15"
 keyring = { version = "3", features = ["apple-native", "windows-native", "linux-native"] }
 tauri-plugin-updater = "2"
 tauri-plugin-process = "2"
+rayon = "1.10"
+regex = "1"
+lru = "0.12"
 
 # Linux-specific dependencies
 [target.'cfg(target_os = "linux")'.dependencies]

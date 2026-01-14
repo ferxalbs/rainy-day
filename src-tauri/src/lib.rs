@@ -8,6 +8,7 @@ mod cache;
 mod google;
 mod notifications;
 mod processing;
+mod search;
 mod theme;
 
 use auth::{AuthState, TokenStore};
@@ -152,6 +153,10 @@ pub fn run() {
             processing::clean_snippet,
             processing::has_urgent_keywords,
             processing::batch_process_tasks,
+            processing::batch_process_emails,
+            // Search commands (v0.5.13 performance layer)
+            search::search_tasks,
+            search::search_emails,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

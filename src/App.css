@@ -7,6 +7,7 @@
     transform: translateY(-10vh) translateX(0);
     opacity: 1;
   }
+
   100% {
     transform: translateY(110vh) translateX(20px);
     opacity: 0;
@@ -14,11 +15,13 @@
 }
 
 @keyframes twinkle {
+
   0%,
   100% {
     opacity: 1;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.5;
     transform: scale(0.8);
@@ -58,6 +61,12 @@
   /* App-specific tokens */
   --color-bg-primary: #020617;
   --color-accent-primary: #3b82f6;
+
+  /* Premium macOS Tokens */
+  --macos-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --macos-border: 1px solid rgba(0, 112, 243, 0.3);
+  --perfect-blue: #3b82f6;
+  --perfect-blue-border: 1px solid rgba(59, 130, 246, 0.5);
 }
 
 .dark {
@@ -102,17 +111,14 @@
 html.theme-night:not([class*="theme-"]) body,
 html.theme-default.theme-night body {
   /* Exact copy of GoogleSignIn.css */
-  background: radial-gradient(
-      ellipse at top,
+  background: radial-gradient(ellipse at top,
       rgba(59, 130, 246, 0.15),
-      transparent 50%
-    ),
-    radial-gradient(
-      ellipse at bottom right,
+      transparent 50%),
+    radial-gradient(ellipse at bottom right,
       rgba(139, 92, 246, 0.1),
-      transparent 50%
-    ),
-    #020617; /* var(--color-bg-primary) value */
+      transparent 50%),
+    #020617;
+  /* var(--color-bg-primary) value */
   background-attachment: fixed;
   background-repeat: no-repeat;
 }
@@ -120,16 +126,12 @@ html.theme-default.theme-night body {
 /* Default Day Theme Background (Login Style Adapted) */
 html.theme-day:not([class*="theme-"]) body,
 html.theme-default.theme-day body {
-  background: radial-gradient(
-      ellipse at top,
+  background: radial-gradient(ellipse at top,
       rgba(59, 130, 246, 0.15),
-      transparent 50%
-    ),
-    radial-gradient(
-      ellipse at bottom right,
+      transparent 50%),
+    radial-gradient(ellipse at bottom right,
       rgba(139, 92, 246, 0.15),
-      transparent 50%
-    ),
+      transparent 50%),
     #ffffff;
   background-attachment: fixed;
   background-repeat: no-repeat;
@@ -208,14 +210,13 @@ html.theme-default.theme-day body {
 /* Midnight Void Specific Backgrounds */
 html.theme-midnight-void.theme-night body {
   background-color: #000000;
-  background-image: 
-    /* Electric blue subtle glow from center */ radial-gradient(
-      circle at 50% 50%,
+  background-image:
+    /* Electric blue subtle glow from center */
+    radial-gradient(circle at 50% 50%,
       rgba(59, 130, 246, 0.05),
-      transparent 70%
-    ),
+      transparent 70%),
     /* Deep graphite atmosphere */
-      linear-gradient(to bottom, #000000 0%, #050505 100%);
+    linear-gradient(to bottom, #000000 0%, #050505 100%);
   background-attachment: fixed;
 }
 
@@ -271,48 +272,40 @@ html.theme-midnight-void.theme-day body {
 /* Cosmic Night Specific Backgrounds */
 html.theme-cosmic-night.theme-night body {
   background-color: #0c0a1f;
-  background-image: 
-    /* Bright Cyan Core */ radial-gradient(
-      circle at 20% 30%,
+  background-image:
+    /* Bright Cyan Core */
+    radial-gradient(circle at 20% 30%,
       rgba(6, 182, 212, 0.25) 0%,
-      transparent 40%
-    ),
+      transparent 40%),
     /* Deep Pink Nebula */
-      radial-gradient(
-        circle at 80% 70%,
-        rgba(236, 72, 153, 0.2) 0%,
-        transparent 50%
-      ),
+    radial-gradient(circle at 80% 70%,
+      rgba(236, 72, 153, 0.2) 0%,
+      transparent 50%),
     /* Violet Atmosphere */
-      radial-gradient(
-        circle at 50% 50%,
-        rgba(139, 92, 246, 0.15) 0%,
-        transparent 60%
-      ),
+    radial-gradient(circle at 50% 50%,
+      rgba(139, 92, 246, 0.15) 0%,
+      transparent 60%),
     /* Deep Space Gradient */
-      linear-gradient(to bottom right, #05030a 0%, #1e1b4b 50%, #0f0729 100%);
+    linear-gradient(to bottom right, #05030a 0%, #1e1b4b 50%, #0f0729 100%);
   background-attachment: fixed;
 }
 
 html.theme-cosmic-night.theme-day body {
   background-color: #f5f3ff;
-  background-image: radial-gradient(
-      circle at 10% 20%,
+  background-image: radial-gradient(circle at 10% 20%,
       rgba(167, 139, 250, 0.15),
-      transparent 40%
-    ),
-    radial-gradient(
-      circle at 90% 80%,
+      transparent 40%),
+    radial-gradient(circle at 90% 80%,
       rgba(56, 189, 248, 0.15),
-      transparent 40%
-    ),
+      transparent 40%),
     linear-gradient(to bottom, #f5f3ff 0%, #eef2ff 100%);
   background-attachment: fixed;
 }
 
 /* Cosmic Night Theme Variables */
 .theme-cosmic-night {
-  --primary: 190 100% 50%; /* Cyan */
+  --primary: 190 100% 50%;
+  /* Cyan */
   --color-accent-primary: #06b6d4;
 }
 
@@ -346,7 +339,8 @@ html.theme-cosmic-night.theme-day body {
   --secondary-foreground: 210 20% 98%;
   --muted: 265 30% 15%;
   --muted-foreground: 265 20% 60%;
-  --accent: 320 100% 60%; /* Hot Pink */
+  --accent: 320 100% 60%;
+  /* Hot Pink */
   --accent-foreground: 0 0% 100%;
   --color-bg-primary: #0c0a1f;
   --primary-foreground: 265 45% 5%;
@@ -355,40 +349,36 @@ html.theme-cosmic-night.theme-day body {
 /* Retro Sunset Specific Backgrounds */
 html.theme-retro-sunset.theme-night body {
   background-color: #0f0a08;
-  background-image: 
-    /* Keyhole Sunset Glow (Intense Orange/Gold) */ radial-gradient(
-      circle at 50% 40%,
+  background-image:
+    /* Keyhole Sunset Glow (Intense Orange/Gold) */
+    radial-gradient(circle at 50% 40%,
       rgba(249, 115, 22, 0.2) 0%,
       rgba(234, 88, 12, 0.1) 30%,
-      transparent 70%
-    ),
+      transparent 70%),
     /* Warm Horizon Haze */
-      radial-gradient(
-        ellipse at 50% 100%,
-        rgba(180, 83, 9, 0.2),
-        transparent 60%
-      ),
+    radial-gradient(ellipse at 50% 100%,
+      rgba(180, 83, 9, 0.2),
+      transparent 60%),
     /* Deep Film Grain / Noise Simulation (Subtle) */
-      linear-gradient(to bottom, rgba(15, 10, 8, 0.8), rgba(15, 10, 8, 0.95)),
+    linear-gradient(to bottom, rgba(15, 10, 8, 0.8), rgba(15, 10, 8, 0.95)),
     /* Base Dark Warm Gradient */
-      linear-gradient(to bottom, #1c1917 0%, #0f0a08 100%);
+    linear-gradient(to bottom, #1c1917 0%, #0f0a08 100%);
   background-attachment: fixed;
 }
 
 html.theme-retro-sunset.theme-day body {
   background-color: #fff7ed;
-  background-image: radial-gradient(
-      circle at 80% 10%,
+  background-image: radial-gradient(circle at 80% 10%,
       rgba(251, 146, 60, 0.1),
-      transparent 40%
-    ),
+      transparent 40%),
     linear-gradient(to bottom, #fff7ed 0%, #ffedd5 100%);
   background-attachment: fixed;
 }
 
 /* Retro Sunset Theme Variables */
 .theme-retro-sunset {
-  --primary: 25 90% 55%; /* Retro Orange */
+  --primary: 25 90% 55%;
+  /* Retro Orange */
   --color-accent-primary: #f97316;
 }
 
@@ -431,61 +421,43 @@ html.theme-retro-sunset.theme-day body {
 /* Cosmic Gold Specific Backgrounds */
 html.theme-cosmic-gold.theme-night body {
   background-color: #030100;
-  background-image: 
-    /* Subtle amber glow from top-right */ radial-gradient(
-      circle at 80% 0%,
+  background-image:
+    /* Subtle amber glow from top-right */
+    radial-gradient(circle at 80% 0%,
       rgba(251, 191, 36, 0.08),
-      transparent 40%
-    ),
+      transparent 40%),
     /* Subtle amber glow from bottom-left */
-      radial-gradient(
-        circle at 20% 100%,
-        rgba(245, 158, 11, 0.05),
-        transparent 40%
-      ),
+    radial-gradient(circle at 20% 100%,
+      rgba(245, 158, 11, 0.05),
+      transparent 40%),
     /* Stars layer 1 (small) */
-      radial-gradient(
-        1px 1px at 10% 10%,
-        rgba(255, 255, 255, 0.5) 1px,
-        transparent 0
-      ),
-    radial-gradient(
-      1px 1px at 20% 40%,
-      rgba(255, 255, 255, 0.4) 1px,
-      transparent 0
-    ),
-    radial-gradient(
-      1px 1px at 40% 70%,
+    radial-gradient(1px 1px at 10% 10%,
       rgba(255, 255, 255, 0.5) 1px,
-      transparent 0
-    ),
-    radial-gradient(
-      1px 1px at 60% 20%,
+      transparent 0),
+    radial-gradient(1px 1px at 20% 40%,
       rgba(255, 255, 255, 0.4) 1px,
-      transparent 0
-    ),
-    radial-gradient(
-      1px 1px at 80% 60%,
+      transparent 0),
+    radial-gradient(1px 1px at 40% 70%,
       rgba(255, 255, 255, 0.5) 1px,
-      transparent 0
-    ),
+      transparent 0),
+    radial-gradient(1px 1px at 60% 20%,
+      rgba(255, 255, 255, 0.4) 1px,
+      transparent 0),
+    radial-gradient(1px 1px at 80% 60%,
+      rgba(255, 255, 255, 0.5) 1px,
+      transparent 0),
     /* Stars layer 2 (tiny) */
-      radial-gradient(
-        1px 1px at 55% 5%,
-        rgba(255, 255, 255, 0.3) 1px,
-        transparent 0
-      ),
-    radial-gradient(
-      1px 1px at 25% 85%,
+    radial-gradient(1px 1px at 55% 5%,
       rgba(255, 255, 255, 0.3) 1px,
-      transparent 0
-    ),
-    radial-gradient(
-      1px 1px at 75% 35%,
+      transparent 0),
+    radial-gradient(1px 1px at 25% 85%,
       rgba(255, 255, 255, 0.3) 1px,
-      transparent 0
-    ),
-    /* Base gradient */ linear-gradient(to bottom, #080400 0%, #030100 100%);
+      transparent 0),
+    radial-gradient(1px 1px at 75% 35%,
+      rgba(255, 255, 255, 0.3) 1px,
+      transparent 0),
+    /* Base gradient */
+    linear-gradient(to bottom, #080400 0%, #030100 100%);
   background-size: 100% 100%, 100% 100%, 550px 550px, 550px 550px, 550px 550px,
     550px 550px, 550px 550px, 350px 350px, 350px 350px, 350px 350px, 100% 100%;
   background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
@@ -496,17 +468,16 @@ html.theme-cosmic-gold.theme-night body {
 
 html.theme-cosmic-gold.theme-day body {
   background-color: #fffbf5;
-  background-image: radial-gradient(
-      circle at 50% 0%,
+  background-image: radial-gradient(circle at 50% 0%,
       rgba(251, 191, 36, 0.1),
-      transparent 60%
-    ),
+      transparent 60%),
     linear-gradient(to bottom, #fffbf5 0%, #fff8ec 100%);
   background-attachment: fixed;
 }
 
 .theme-cosmic-gold {
-  --primary: 43 96% 56%; /* Amber 500 */
+  --primary: 43 96% 56%;
+  /* Amber 500 */
   --color-accent-primary: #f59e0b;
 }
 
@@ -531,19 +502,25 @@ html.theme-cosmic-gold.theme-day body {
 .theme-cosmic-gold.theme-night {
   /* HSL values for components to fallback on */
   --background: 25 25% 5%;
-  --foreground: 43 96% 90%; /* Light Amber/Gold */
-  --card: 25 30% 6%; /* Deep dark */
+  --foreground: 43 96% 90%;
+  /* Light Amber/Gold */
+  --card: 25 30% 6%;
+  /* Deep dark */
   --card-foreground: 43 96% 90%;
-  --popover: 25 30% 6%; /* Deep dark */
+  --popover: 25 30% 6%;
+  /* Deep dark */
   --popover-foreground: 43 96% 90%;
-  --border: 43 60% 20%; /* Dark Gold Border */
-  --primary: 43 96% 56%; /* Amber 500 */
+  --border: 43 60% 20%;
+  /* Dark Gold Border */
+  --primary: 43 96% 56%;
+  /* Amber 500 */
   --primary-foreground: 25 45% 12%;
   --secondary: 25 30% 10%;
   --secondary-foreground: 43 96% 90%;
   --muted: 25 20% 12%;
   --muted-foreground: 43 60% 60%;
-  --accent: 43 96% 56%; /* Amber for accents */
+  --accent: 43 96% 56%;
+  /* Amber for accents */
   --accent-foreground: 25 45% 12%;
   --color-bg-primary: #050201;
 }
@@ -551,40 +528,30 @@ html.theme-cosmic-gold.theme-day body {
 /* Starry Christmas Specific Backgrounds */
 html.theme-starry-christmas.theme-night body {
   background-color: #0d1f12;
-  background-image: 
-    /* Snow/Stars layer */ radial-gradient(
-      2px 2px at 20% 30%,
+  background-image:
+    /* Snow/Stars layer */
+    radial-gradient(2px 2px at 20% 30%,
       rgba(255, 255, 255, 0.9) 50%,
-      transparent 100%
-    ),
-    radial-gradient(
-      2px 2px at 40% 70%,
+      transparent 100%),
+    radial-gradient(2px 2px at 40% 70%,
       rgba(255, 255, 255, 0.9) 50%,
-      transparent 100%
-    ),
-    radial-gradient(
-      2px 2px at 60% 20%,
+      transparent 100%),
+    radial-gradient(2px 2px at 60% 20%,
       rgba(255, 255, 255, 0.9) 50%,
-      transparent 100%
-    ),
-    radial-gradient(
-      1px 1px at 80% 40%,
+      transparent 100%),
+    radial-gradient(1px 1px at 80% 40%,
       rgba(255, 255, 255, 0.8) 50%,
-      transparent 100%
-    ),
-    radial-gradient(
-      2px 2px at 10% 80%,
+      transparent 100%),
+    radial-gradient(2px 2px at 10% 80%,
       rgba(255, 255, 255, 0.9) 50%,
-      transparent 100%
-    ),
+      transparent 100%),
     /* Festive lights glow */
-      radial-gradient(
-        circle at 10% 10%,
-        rgba(220, 38, 38, 0.15),
-        transparent 40%
-      ),
+    radial-gradient(circle at 10% 10%,
+      rgba(220, 38, 38, 0.15),
+      transparent 40%),
     radial-gradient(circle at 90% 90%, rgba(234, 179, 8, 0.1), transparent 40%),
-    /* Base gradient */ linear-gradient(to bottom, #051009 0%, #0d1f12 100%);
+    /* Base gradient */
+    linear-gradient(to bottom, #051009 0%, #0d1f12 100%);
   background-size: 50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%, 100% 100%,
     100% 100%, 100% 100%;
   background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
@@ -595,26 +562,24 @@ html.theme-starry-christmas.theme-night body {
 
 html.theme-starry-christmas.theme-day body {
   background-color: #f8fafc;
-  background-image: 
-    /* Snowflakes */ radial-gradient(
-      3px 3px at 50% 50%,
+  background-image:
+    /* Snowflakes */
+    radial-gradient(3px 3px at 50% 50%,
       rgba(203, 213, 225, 0.4) 50%,
-      transparent 100%
-    ),
-    radial-gradient(
-      2px 2px at 20% 30%,
+      transparent 100%),
+    radial-gradient(2px 2px at 20% 30%,
       rgba(203, 213, 225, 0.4) 50%,
-      transparent 100%
-    ),
+      transparent 100%),
     /* Festive subtle gradient */
-      linear-gradient(to bottom, #f0fdf4 0%, #fef2f2 100%);
+    linear-gradient(to bottom, #f0fdf4 0%, #fef2f2 100%);
   background-size: 200px 200px, 150px 150px, 100% 100%;
   background-attachment: fixed;
 }
 
 /* Starry Christmas Theme Variables */
 .theme-starry-christmas {
-  --primary: 142 70% 45%; /* Pine Green */
+  --primary: 142 70% 45%;
+  /* Pine Green */
   --color-accent-primary: #16a34a;
 }
 
@@ -658,56 +623,44 @@ html.theme-starry-christmas.theme-day body {
 /* Ocean Sunset Specific Backgrounds */
 html.theme-ocean-sunset.theme-day body {
   background-color: #fffaf5;
-  background-image: 
-    /* Sunset glow horizon */ radial-gradient(
-      ellipse at 50% 100%,
+  background-image:
+    /* Sunset glow horizon */
+    radial-gradient(ellipse at 50% 100%,
       rgba(255, 140, 0, 0.15),
-      transparent 70%
-    ),
+      transparent 70%),
     /* Soft coral sky from top */
-      radial-gradient(
-        circle at 30% 0%,
-        rgba(255, 105, 180, 0.1),
-        transparent 50%
-      ),
+    radial-gradient(circle at 30% 0%,
+      rgba(255, 105, 180, 0.1),
+      transparent 50%),
     /* Sand reflection */
-      radial-gradient(
-        ellipse at 50% 80%,
-        rgba(255, 222, 173, 0.2),
-        transparent 40%
-      ),
+    radial-gradient(ellipse at 50% 80%,
+      rgba(255, 222, 173, 0.2),
+      transparent 40%),
     /* Base atmosphere gradient */
-      linear-gradient(to bottom, #fffaf5 0%, #fff0e0 100%);
+    linear-gradient(to bottom, #fffaf5 0%, #fff0e0 100%);
   background-attachment: fixed;
 }
 
 html.theme-ocean-sunset.theme-night body {
   background-color: #030712;
-  background-image: 
-    /* Horizon afterglow */ radial-gradient(
-      ellipse at 50% 110%,
+  background-image:
+    /* Horizon afterglow */
+    radial-gradient(ellipse at 50% 110%,
       rgba(255, 69, 0, 0.15),
-      transparent 60%
-    ),
+      transparent 60%),
     /* Deep indigo sky glow */
-      radial-gradient(
-        circle at 50% -10%,
-        rgba(30, 58, 138, 0.2),
-        transparent 50%
-      ),
+    radial-gradient(circle at 50% -10%,
+      rgba(30, 58, 138, 0.2),
+      transparent 50%),
     /* Subtle star field */
-      radial-gradient(
-        1px 1px at 20% 30%,
-        rgba(255, 255, 255, 0.2) 100%,
-        transparent 0
-      ),
-    radial-gradient(
-      1px 1px at 80% 60%,
+    radial-gradient(1px 1px at 20% 30%,
+      rgba(255, 255, 255, 0.2) 100%,
+      transparent 0),
+    radial-gradient(1px 1px at 80% 60%,
       rgba(255, 255, 255, 0.1) 100%,
-      transparent 0
-    ),
+      transparent 0),
     /* Base midnight gradient */
-      linear-gradient(to bottom, #030712 0%, #020617 100%);
+    linear-gradient(to bottom, #030712 0%, #020617 100%);
   background-size: 100% 100%, 100% 100%, 400px 400px, 300px 300px, 100% 100%;
   background-position: 0 0, 0 0, 0 0, 0 0, 0 0;
   background-repeat: no-repeat, no-repeat, repeat, repeat, no-repeat;
@@ -716,7 +669,8 @@ html.theme-ocean-sunset.theme-night body {
 
 /* Ocean Sunset Theme Variables */
 .theme-ocean-sunset {
-  --primary: 14 91% 60%; /* Coral */
+  --primary: 14 91% 60%;
+  /* Coral */
   --color-accent-primary: #fb7185;
 }
 
@@ -792,6 +746,7 @@ html.theme-ocean-sunset.theme-night body {
 }
 
 @layer base {
+
   /* Smooth theme transitions */
   :root {
     transition: background-color 0.3s ease, color 0.3s ease;
@@ -810,10 +765,25 @@ html.theme-ocean-sunset.theme-night body {
   }
 
   .mica-blur-vibrant {
-    background-color: hsl(var(--card) / 0.5) !important;
-    backdrop-filter: blur(30px) saturate(210%) brightness(1.2) !important;
-    -webkit-backdrop-filter: blur(30px) saturate(210%) brightness(1.2) !important;
-    border: 1px solid hsla(var(--border) / 0.4) !important;
+    background-color: hsl(var(--card) / 0.8) !important;
+    backdrop-filter: blur(20px) saturate(150%) brightness(1) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(150%) brightness(1) !important;
+    border: 1px solid hsla(var(--border) / 0.3) !important;
+    box-shadow: var(--macos-shadow) !important;
+    border-radius: 1rem;
+  }
+
+  .premium-card {
+    @apply relative overflow-hidden transition-all duration-300;
+    background-color: hsl(var(--card) / 0.6);
+    border: 1px solid hsla(var(--border) / 0.3);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .premium-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border-color: rgba(59, 130, 246, 0.8);
+    transform: translateY(-1px);
   }
 
   body {
@@ -911,6 +881,7 @@ html.theme-ocean-sunset.theme-night body {
     transform: translateY(-20px) rotate(0deg);
     opacity: 1;
   }
+
   100% {
     transform: translateY(500px) rotate(720deg);
     opacity: 0;
