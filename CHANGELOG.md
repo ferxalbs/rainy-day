@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.5.11] - 2026-01-13
+
+#### Added
+
+- **Clear Plan Button**: Added "Clear Plan & Start Fresh" button to completely reset your daily plan
+  - Deletes plan from backend database
+  - Clears local cache and completed task checkmarks
+  - Allows generating a completely fresh plan
+
+#### Improvements
+
+- **Reduced API Load**: Notification polling reduced from 30 seconds to 2 minutes (75% fewer API calls)
+- **Optimized Inngest Jobs**: Task reminder job frequency reduced from every 30 minutes to hourly
+
+#### Fixes
+
+- **Update Modal**: Fixed release notes not displaying when version header includes emojis
+- **TypeScript Errors**: Fixed `rowsAffected` undefined errors in notifications and session services
+- **Security**: Fixed incomplete regex escaping in version pattern matching (CWE-20)
+
+---
+
 ### [v0.5.10] - 2026-01-13
 
 #### Fixes

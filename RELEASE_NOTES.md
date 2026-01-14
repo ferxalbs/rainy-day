@@ -2,6 +2,18 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
+## Rainy Day 0.5.11 🧹⚡
+
+_January 13, 2026_
+
+**Performance & Plan Reset**
+
+- **Clear Your Plan**: Not happy with today's AI plan? Use the new "Clear Plan & Start Fresh" button at the bottom to completely reset and generate a new one
+- **Faster App**: Reduced background API calls by 75% for better battery life and less data usage
+- **Bug Fixes**: Fixed update modal not showing release notes, and various stability improvements
+
+---
+
 ## Rainy Day 0.5.10 🔒
 
 _January 13, 2026_
