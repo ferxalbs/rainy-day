@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.5.13] - 2026-01-14
+
+#### Fixes
+
+- **Robust System Reset**: Fixed the "Clear Plan" button for Tauri apps by replacing `window.confirm` with a custom `AlertDialog`
+- **Deep Cache Purge**: Enhanced the reset logic to clear ALL local caches (Emails, Events, Tasks)
+- **State Reset**: Now wipes all task completion records from LocalStorage during reset
+- **UX Improvement**: Added a "Resetting System..." loading state for better user feedback
+
+---
+
 ### [v0.5.12] - 2026-01-14
 
 #### Added

@@ -2,6 +2,20 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
+## Rainy Day 0.5.13 🧹✨
+
+_January 14, 2026_
+
+**Robust Clear Plan & Deep Reset**
+
+We've fixed the "Clear Plan" issue and made it much more powerful:
+
+- **Works everywhere**: The "Reset Plan" button now uses a reliable native-style dialog that works perfectly on macOS
+- **System-wide cleanup**: Resetting now clears all cached emails and events, ensuring the AI gets the absolute latest data for your new plan
+- **Fresh generation**: All task checkmarks are reset when you clear the plan, giving you a truly fresh start
+
+---
+
 ## Rainy Day 0.5.12
 
 _January 14, 2026_
