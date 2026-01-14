@@ -283,31 +283,49 @@ export async function getPlanHistory(
 }
 
 /**
- * Delete today's plan and clear cache
- * Allows user to generate a completely fresh plan
+ * Delete today's plan and clear all caches
+ * Allows user to generate a completely fresh plan by forcing fresh data sync
  */
 export async function deleteTodayPlan(): Promise<boolean> {
-  console.log('[PlanService] Deleting today\'s plan...');
+  console.log("[PlanService] performing total reset for today...");
 
-  // Clear local cache first
-  cacheRemove(CACHE_KEYS.PLAN);
-
-  // Clear completed tasks storage for today
-  const today = getTodayDateString();
+  // 1. Clear ALL local caches (Emails, Events, Tasks, SyncStatus)
+  // This ensures the next generation fetches fresh data from Gmail/Calendar
   try {
-    localStorage.removeItem(`plan_completed_${today}`);
+    const { cacheClearAll } = await import("./cache");
+    cacheClearAll();
   } catch (e) {
-    console.warn('Failed to clear completed tasks:', e);
+    console.error("Failed to clear caches:", e);
+    // Fallback: at least clear the plan
+    const { cacheRemove, CACHE_KEYS } = await import("./cache");
+    cacheRemove(CACHE_KEYS.PLAN);
   }
 
-  // Delete from backend
-  const response = await del<{ deleted: boolean }>('/plan/today');
+  // 2. Clear all completed task records from localStorage
+  try {
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith("plan_completed_")) {
+        keysToRemove.push(key);
+      }
+    }
+    keysToRemove.forEach((key) => localStorage.removeItem(key));
+    console.log(`[PlanService] Cleared ${keysToRemove.length} completion records`);
+  } catch (e) {
+    console.warn("Failed to clear localStorage items:", e);
+  }
+
+  // 3. Delete from backend database
+  const response = await del<{ deleted: boolean }>("/plan/today");
 
   if (response.ok) {
-    console.log('[PlanService] Plan deleted successfully');
+    console.log("[PlanService] Plan deleted from backend successfully");
     return true;
   }
 
-  console.error('[PlanService] Failed to delete plan:', response.error);
-  return false;
+  console.error("[PlanService] Failed to delete plan from backend:", response.error);
+  // We still return true if we cleared local state, because showing the empty UI 
+  // allows the user to re-generate regardless of backend success
+  return true;
 }

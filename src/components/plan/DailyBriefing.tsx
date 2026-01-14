@@ -26,6 +26,17 @@ import { deleteTodayPlan } from "../../services/backend/plan";
 import { Checkbox } from "../ui/checkbox";
 import { PlanQuickStats } from "./PlanQuickStats";
 import { PlanProgressBar } from "./PlanProgressBar";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 // =============================================================================
 // Icons (Clean SVG, no emojis)
@@ -561,27 +572,27 @@ export function DailyBriefing({
   const handleClearPlan = useCallback(async () => {
     if (isClearing) return;
 
-    // Simple confirm - Tauri may not support window.confirm, so we use a simpler approach
-    // The button text already warns the user
     setIsClearing(true);
     try {
-      console.log('[DailyBriefing] Clearing plan...');
+      console.log("[DailyBriefing] Performing total reset...");
       const success = await deleteTodayPlan();
-      console.log('[DailyBriefing] Delete result:', success);
+
       if (success) {
-        showNotification('success', 'Plan cleared. Generate a new one!');
+        showNotification("success", "System reset successful. Getting fresh data...");
         // Clear local completed tasks state
         setCompletedTaskIds(new Set());
-        // Reload to show empty state
+
+        // Force a page reload after a short delay to ensure all caches are purged 
+        // and app re-initializes with fresh state
         setTimeout(() => {
           window.location.reload();
-        }, 500);
+        }, 1000);
       } else {
-        showNotification('error', 'Failed to clear plan');
+        showNotification("error", "Failed to clear plan. Please try again.");
       }
     } catch (err) {
-      console.error('[DailyBriefing] Failed to clear plan:', err);
-      showNotification('error', 'Failed to clear plan');
+      console.error("[DailyBriefing] Reset error:", err);
+      showNotification("error", "An unexpected error occurred during reset.");
     } finally {
       setIsClearing(false);
     }
@@ -1069,15 +1080,51 @@ export function DailyBriefing({
             </div>
           )}
 
-          {/* Clear Plan Button */}
-          <div className="pt-4 border-t border-border/30">
-            <button
-              onClick={handleClearPlan}
-              disabled={isClearing}
-              className="w-full py-2 text-sm text-muted-foreground hover:text-destructive transition-colors disabled:opacity-50"
-            >
-              {isClearing ? "Clearing..." : "Clear Plan & Start Fresh"}
-            </button>
+          {/* Clear Plan Button with AlertDialog */}
+          <div className="pt-6 border-t border-border/30 mt-4">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button
+                  disabled={isClearing}
+                  className="w-full py-3 px-4 rounded-xl text-sm font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/5 border border-transparent hover:border-destructive/20 transition-all disabled:opacity-50"
+                >
+                  {isClearing ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <div className="w-3 h-3 border-2 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin" />
+                      Resetting System...
+                    </span>
+                  ) : (
+                    "Reset Plan & Clear All Cache"
+                  )}
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="bg-background/95 backdrop-blur-xl border-2">
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="text-xl">Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription className="text-base">
+                    This will perform a **total system reset** for today:
+                    <ul className="list-disc pl-5 mt-2 space-y-1 text-sm text-foreground/80">
+                      <li>Delete your current AI plan</li>
+                      <li>Clear all cached emails and calendar events</li>
+                      <li>Reset all task completion checkmarks</li>
+                      <li>Force a fresh data sync from Gmail & Calendar</li>
+                    </ul>
+                    <p className="mt-4 font-medium text-destructive/80">
+                      You will need to generate a completely new plan after the reset.
+                    </p>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter className="mt-6">
+                  <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleClearPlan}
+                    className="bg-destructive hover:bg-destructive/90 text-destructive-foreground rounded-xl"
+                  >
+                    Yes, Reset Everything
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </>
       )}
