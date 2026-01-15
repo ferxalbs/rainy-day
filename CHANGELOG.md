@@ -32,6 +32,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Progress bar now correctly reaches 100% when all visible items are completed
   - Resolves discrepancy between local and production builds
 
+#### Patches
+
+- **Security**: Bumped `lru` crate from 0.12 to 0.16.3 to fix Stacked Borrows violation (CVE in `IterMut`)
+
 ---
 
 ### [v0.5.14] - 2026-01-14
