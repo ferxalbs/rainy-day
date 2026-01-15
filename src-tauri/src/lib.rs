@@ -5,6 +5,7 @@
 
 mod auth;
 mod cache;
+mod data_pipeline;
 mod google;
 mod notifications;
 mod processing;
@@ -157,6 +158,11 @@ pub fn run() {
             // Search commands (v0.5.13 performance layer)
             search::search_tasks,
             search::search_emails,
+            // Data Pipeline commands (v0.5.20 - Note AI)
+            data_pipeline::prepare_note_context,
+            data_pipeline::validate_note_schema,
+            data_pipeline::normalize_response,
+            data_pipeline::prepare_batch_requests,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -403,3 +403,209 @@ export async function withCache<T>(
 
     return data;
 }
+
+// ============================================================================
+// Data Pipeline (v0.5.20 - Note AI)
+// ============================================================================
+
+/** Email summary for Note AI context */
+export interface EmailSummary {
+    id: string;
+    subject: string;
+    from_name: string;
+    from_email: string;
+    snippet: string;
+    timestamp_ms: number;
+    is_unread: boolean;
+    priority_score?: number;
+}
+
+/** Task summary for Note AI context */
+export interface TaskSummary {
+    id: string;
+    title: string;
+    due_ms: number | null;
+    completed: boolean;
+    list_name?: string;
+}
+
+/** Event summary for Note AI context */
+export interface EventSummary {
+    id: string;
+    title: string;
+    start_ms: number;
+    end_ms: number;
+    is_all_day: boolean;
+    has_meeting_link: boolean;
+    attendee_count: number;
+}
+
+/** Processed email for AI context (minimal token footprint) */
+export interface ProcessedEmailContext {
+    subject: string;
+    from: string;
+    priority: string;
+    age: string;
+    needs_reply: boolean;
+}
+
+/** Processed task for AI context */
+export interface ProcessedTaskContext {
+    title: string;
+    due: string | null;
+    priority: string;
+    list: string | null;
+}
+
+/** Processed event for AI context */
+export interface ProcessedEventContext {
+    title: string;
+    time: string;
+    is_meeting: boolean;
+    attendees: number | null;
+}
+
+/** Processed context for Note AI generation */
+export interface NoteGenerationContext {
+    priority_emails: ProcessedEmailContext[];
+    total_emails: number;
+    unread_count: number;
+    outstanding_tasks: ProcessedTaskContext[];
+    completed_tasks: number;
+    total_tasks: number;
+    overdue_count: number;
+    todays_events: ProcessedEventContext[];
+    meeting_count: number;
+    total_event_hours: number;
+    processed_at_ms: number;
+    context_tokens_estimate: number;
+}
+
+/**
+ * Prepare context for Note AI generation (parallelized in Rust)
+ * Transforms raw data into optimized AI context with minimal token footprint
+ * @since v0.5.20
+ */
+export async function prepareNoteContext(
+    emails: EmailSummary[],
+    tasks: TaskSummary[],
+    events: EventSummary[]
+): Promise<NoteGenerationContext> {
+    try {
+        return await invoke<NoteGenerationContext>("prepare_note_context", {
+            emails,
+            tasks,
+            events,
+        });
+    } catch (e) {
+        console.error("[DataPipeline] Failed to prepare note context:", e);
+        // Return empty context as fallback
+        return {
+            priority_emails: [],
+            total_emails: emails.length,
+            unread_count: emails.filter((e) => e.is_unread).length,
+            outstanding_tasks: [],
+            completed_tasks: tasks.filter((t) => t.completed).length,
+            total_tasks: tasks.length,
+            overdue_count: 0,
+            todays_events: [],
+            meeting_count: 0,
+            total_event_hours: 0,
+            processed_at_ms: Date.now(),
+            context_tokens_estimate: 0,
+        };
+    }
+}
+
+/** Validated note section */
+export interface ValidatedSection {
+    id: string;
+    section_type: string;
+    title: string;
+    content: string;
+}
+
+/** Validated note structure */
+export interface ValidatedNote {
+    id: string;
+    date: string;
+    sections: ValidatedSection[];
+}
+
+/**
+ * Validate note schema using Rust
+ * @since v0.5.20
+ */
+export async function validateNoteSchema(
+    note: unknown
+): Promise<ValidatedNote> {
+    return await invoke<ValidatedNote>("validate_note_schema", { note });
+}
+
+/** Response metadata */
+export interface ResponseMetadata {
+    processed_at_ms: number;
+    item_count: number;
+    source: string;
+}
+
+/** Normalized API response wrapper */
+export interface NormalizedResponse<T> {
+    data: T;
+    metadata: ResponseMetadata;
+}
+
+/**
+ * Normalize an API response with metadata
+ * @since v0.5.20
+ */
+export async function normalizeResponse<T>(
+    data: T,
+    source: string
+): Promise<NormalizedResponse<T>> {
+    try {
+        return await invoke<NormalizedResponse<T>>("normalize_response", {
+            data,
+            source,
+        });
+    } catch {
+        // Fallback: build metadata locally
+        const itemCount = Array.isArray(data) ? data.length : 1;
+        return {
+            data,
+            metadata: {
+                processed_at_ms: Date.now(),
+                item_count: itemCount,
+                source,
+            },
+        };
+    }
+}
+
+/** Single batch request */
+export interface SingleRequest {
+    id: string;
+    endpoint: string;
+    method: string;
+    body?: unknown;
+}
+
+/** Batch request container */
+export interface BatchRequest {
+    requests: SingleRequest[];
+}
+
+/**
+ * Prepare batch API requests
+ * @since v0.5.20
+ */
+export async function prepareBatchRequests(
+    requests: SingleRequest[]
+): Promise<BatchRequest> {
+    try {
+        return await invoke<BatchRequest>("prepare_batch_requests", { requests });
+    } catch {
+        return { requests };
+    }
+}
+
