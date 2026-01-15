@@ -4,8 +4,7 @@
  * Export all plan-related components for easy importing.
  */
 
-export { DailyPlan } from "./DailyPlan";
-export { SmartDailyPlan } from "./SmartDailyPlan";
+// Note: DailyPlan was a legacy component, now using DailyBriefing
 export { DailyBriefing } from "./DailyBriefing";
 export { TaskActionButton } from "./TaskActionButton";
 export { QuickTaskInput } from "./QuickTaskInput";

@@ -2,17 +2,18 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
-## Rainy Day 0.5.15 ✅
+## Rainy Day 0.5.15 ✅🏗️
 
 _January 14, 2026_
 
-**Progress Bar Fix**
+**Progress Bar Fix & Code Improvements**
 
-We fixed an issue where you couldn't mark all items as complete:
+We fixed the progress bar issue and improved the codebase:
 
 - **All tasks now have checkboxes**: Focus blocks, meetings, emails, and all other items can now be marked as done
 - **Accurate progress tracking**: Your daily progress bar will now correctly reach 100% when you complete everything
 - **Consistent behavior**: The app now works the same in development and production builds
+- **Modular Code Structure**: Reorganized the daily plan view for better maintainability and stability
 
 ---
 

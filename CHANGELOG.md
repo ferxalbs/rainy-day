@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### [v0.5.15] - 2026-01-14
 
+#### Improvements
+
+- **DailyBriefing Modularization**: Refactored 1400+ line component into modular architecture
+  - Created `DailyBriefing/` folder with 9 sub-components:
+    - `types.ts` - Shared TypeScript interfaces
+    - `icons.tsx` - 14 clean SVG icons
+    - `BriefingItem.tsx` - Individual task row with actions
+    - `SkeletonLoader.tsx` - Loading state skeleton UI
+    - `NotificationToast.tsx` - Toast notification system
+    - `EnergyTip.tsx` - AI energy/productivity tip
+    - `DeferSuggestions.tsx` - Tasks to defer/postpone
+    - `ResetDialog.tsx` - System reset confirmation dialog
+    - `EmptyState.tsx` - Empty plan state with generate button
+  - Main `DailyBriefing.tsx` reduced from ~1400 to ~450 lines
+  - Added comprehensive architecture documentation
+
 #### Fixes
 
 - **Progress Bar Task Completion**: Fixed issue where checkboxes only appeared for tasks with `source_type === "task"`
