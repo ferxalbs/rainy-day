@@ -3,11 +3,13 @@
  *
  * React hook for Note AI page state management.
  * Handles note generation, expansion, and usage tracking.
+ * Respects app language settings for localized AI responses.
  *
  * @since v0.5.20
  */
 
 import { useState, useCallback, useEffect } from "react";
+import { useLanguage } from "../contexts/LanguageContext";
 import {
     getTodaysNote,
     regenerateNote,
@@ -55,6 +57,8 @@ export interface UseNoteAIResult {
 // ============================================================================
 
 export function useNoteAI(): UseNoteAIResult {
+    const { language } = useLanguage();
+
     // State
     const [note, setNote] = useState<DailyNote | null>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -69,7 +73,7 @@ export function useNoteAI(): UseNoteAIResult {
         setError(null);
 
         try {
-            const todaysNote = await getTodaysNote();
+            const todaysNote = await getTodaysNote(language);
             if (todaysNote) {
                 setNote(todaysNote);
             }
@@ -82,7 +86,7 @@ export function useNoteAI(): UseNoteAIResult {
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [language]);
 
     // Generate new note
     const generate = useCallback(async () => {
@@ -90,7 +94,7 @@ export function useNoteAI(): UseNoteAIResult {
         setError(null);
 
         try {
-            const newNote = await regenerateNote();
+            const newNote = await regenerateNote(language);
             if (newNote) {
                 setNote(newNote);
             }
@@ -107,7 +111,7 @@ export function useNoteAI(): UseNoteAIResult {
         } finally {
             setIsGenerating(false);
         }
-    }, []);
+    }, [language]);
 
     // Expand a paragraph
     const expand = useCallback(

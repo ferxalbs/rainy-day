@@ -55,9 +55,14 @@ export interface UsageStats {
 
 /**
  * Get today's note (auto-generates if none exists)
+ * @param language - Language for AI response ('en' or 'es')
  */
-export async function getTodaysNote(): Promise<DailyNote | null> {
-    const response = await get<{ note: DailyNote }>("/notes/today");
+export async function getTodaysNote(
+    language: 'en' | 'es' = 'en'
+): Promise<DailyNote | null> {
+    const response = await get<{ note: DailyNote }>(
+        `/notes/today?language=${language}`
+    );
 
     if (!response.ok || !response.data) {
         if (response.status === 429) {
@@ -75,10 +80,14 @@ export async function getTodaysNote(): Promise<DailyNote | null> {
 
 /**
  * Force regenerate today's note
+ * @param language - Language for AI response ('en' or 'es')
  */
-export async function regenerateNote(): Promise<DailyNote | null> {
+export async function regenerateNote(
+    language: 'en' | 'es' = 'en'
+): Promise<DailyNote | null> {
     const response = await post<{ note: DailyNote; message: string }>(
-        "/notes/generate"
+        "/notes/generate",
+        { language }
     );
 
     if (!response.ok || !response.data) {
