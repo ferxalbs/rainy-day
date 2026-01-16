@@ -15,10 +15,12 @@ import { InboxPage } from "../pages/InboxPage";
 import { AgendaPage } from "../pages/AgendaPage";
 import { TaskPage } from "../pages/TaskPage";
 import { ConfigPage } from "../pages/ConfigPage";
+import { NotesPage } from "../pages/NotesPage";
 import { DailyBriefing } from "../plan/DailyBriefing";
 
 const PAGE_TITLES: Record<DockPage, string> = {
   plan: "AI Daily Plan",
+  notes: "Note AI",
   inbox: "Priority Inbox",
   agenda: "Today's Agenda",
   task: "Tasks",
@@ -139,6 +141,7 @@ export function MainLayout() {
               error={error}
             />
           )}
+          {activePage === "notes" && <NotesPage />}
           {activePage === "inbox" && (
             <InboxPage
               threads={threads}
