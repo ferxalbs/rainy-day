@@ -7,6 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.5.20] - 2026-01-16 — "The Intelligence Layer"
+
+#### Added
+
+- **Note AI Page**: AI-powered daily note generation for focused "deep work"
+  - Separate page accessible from dock navigation
+  - Three sections: Email Summary, Task Recap, Meeting Notes
+  - Paragraph expansion with AI assistance
+  - Fair Usage Policy: Free (5/day), Plus (50/day), Pro (100/day)
+  - Usage indicator showing daily limits
+
+- **Rust Data Pipeline**: High-performance parallel data transformation
+  - `data_pipeline.rs` with Rayon parallel processing
+  - Commands: `prepare_note_context`, `validate_note_schema`, `normalize_response`, `prepare_batch_requests`
+  - TypeScript bindings in `rust.ts`
+
+- **Agent Kit Integration**: Durable background job processing
+  - `@inngest/agent-kit` v0.9.0 for memory operations
+  - Background jobs: `memoryCreateJob`, `memoryUpdateEmbeddingJob`, `memoryPruneExpiredJob`
+  - New event types: `memory/create`, `memory/update-embedding`, `note/generate`, `note/expand`
+
+- **Unified Service Layer**: Single abstraction for all data operations
+  - `services/unified/index.ts` routing between Rust and API
+  - Consistent interface for Notes, Plans, Sync, and Cache operations
+
+#### Improvements
+
+- **Database Schema**: Added Note AI tables
+  - `daily_notes`: Core note storage with sections JSON
+  - `note_comments`: Paragraph annotations with AI expansions
+  - `note_usage`: Fair Usage tracking per day
+
+- **Navigation**: Added Note AI to PremiumDock with FileText icon
+
+---
+
 ### [v0.5.15] - 2026-01-14
 
 #### Improvements

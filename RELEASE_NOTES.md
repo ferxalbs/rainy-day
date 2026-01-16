@@ -2,6 +2,30 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
+## Rainy Day 0.5.20 📝🧠 — "The Intelligence Layer"
+
+_January 16, 2026_
+
+**Note AI - Your AI-Powered Daily Briefing**
+
+A brand new way to start your day! Note AI generates a concise daily summary from your emails, tasks, and calendar:
+
+- **📧 Email Summary**: Key emails at a glance with who needs a reply
+- **✅ Task Recap**: Your outstanding tasks organized by priority
+- **📅 Meeting Notes**: Today's schedule with key details
+
+**Fair Usage:**
+- Free: 5 notes per day
+- Plus: 50 notes per day
+- Pro: 100 notes per day (soft cap)
+
+**Also in this update:**
+- **⚡ Performance**: New Rust-powered data pipeline for faster processing
+- **🔄 Background Jobs**: Smarter memory operations that run reliably in the background
+- **🎯 Unified Backend**: Cleaner, faster data loading across the app
+
+---
+
 ## Rainy Day 0.5.15 ✅🏗️
 
 _January 14, 2026_
