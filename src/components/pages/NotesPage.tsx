@@ -36,42 +36,6 @@ interface NotesPageProps {
 // Sub-components
 // ============================================================================
 
-function UsageIndicator({
-    used,
-    limit,
-    label,
-}: {
-    used: number;
-    limit: number;
-    label: string;
-}) {
-    const percentage = Math.min((used / limit) * 100, 100);
-    const isNearLimit = percentage >= 80;
-    const isAtLimit = used >= limit;
-
-    return (
-        <div className="flex items-center gap-2 text-xs">
-            <span className="text-muted-foreground">{label}:</span>
-            <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
-                <div
-                    className={`h-full rounded-full transition-all ${isAtLimit
-                        ? "bg-destructive"
-                        : isNearLimit
-                            ? "bg-yellow-500"
-                            : "bg-primary"
-                        }`}
-                    style={{ width: `${percentage}%` }}
-                />
-            </div>
-            <span
-                className={`font-medium ${isAtLimit ? "text-destructive" : "text-foreground"}`}
-            >
-                {used}/{limit}
-            </span>
-        </div>
-    );
-}
-
 function SectionIcon({ type }: { type: NoteSection["type"] }) {
     switch (type) {
         case "email_summary":
@@ -265,31 +229,6 @@ export function NotesPage({ className = "" }: NotesPageProps) {
 
     return (
         <div className={`space-y-6 ${className}`}>
-            {/* Header with Usage Stats */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                        <FileText className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                        <h2 className="text-xl font-bold text-foreground">Note AI</h2>
-                        <p className="text-xs text-muted-foreground">
-                            AI-powered daily summary
-                        </p>
-                    </div>
-                </div>
-
-                {/* Usage indicator */}
-                {usage && (
-                    <div className="flex items-center gap-4">
-                        <UsageIndicator
-                            used={usage.daily.generations.used}
-                            limit={usage.daily.generations.limit}
-                            label="Notes"
-                        />
-                    </div>
-                )}
-            </div>
 
             {/* Error State */}
             {error && (

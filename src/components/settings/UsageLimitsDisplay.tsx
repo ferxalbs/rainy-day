@@ -4,9 +4,11 @@
  * Displays the user's daily AI usage limits and monthly model usage with progress bars.
  */
 
+import { useEffect, useState } from "react";
 import { useSubscription } from "../../hooks/useSubscription";
+import { getUsageStats, type UsageStats } from "../../services/backend/notes";
 import { Button } from "../ui/button";
-import { Sparkles } from "lucide-react";
+import { Sparkles, FileText } from "lucide-react";
 
 interface UsageLimitsDisplayProps {
   onUpgradeClick?: () => void;
@@ -16,6 +18,14 @@ export function UsageLimitsDisplay({
   onUpgradeClick,
 }: UsageLimitsDisplayProps) {
   const { limits, isLoading, selectedModel } = useSubscription();
+  const [noteUsage, setNoteUsage] = useState<UsageStats | null>(null);
+
+  // Fetch Note AI usage
+  useEffect(() => {
+    getUsageStats().then(stats => {
+      if (stats) setNoteUsage(stats);
+    });
+  }, []);
 
   if (isLoading) {
     return (
@@ -44,6 +54,11 @@ export function UsageLimitsDisplay({
       ? 100
       : Math.min(100, Math.max(0, (used / limit) * 100));
 
+  // Note AI usage calculation
+  const noteLimit = noteUsage?.daily.generations.limit ?? 0;
+  const noteUsed = noteUsage?.daily.generations.used ?? 0;
+  const notePercent = noteLimit > 0 ? Math.min(100, (noteUsed / noteLimit) * 100) : 0;
+
   // Model usage calculation
   const modelHasLimit = modelUsage && modelUsage.limit > 0;
   const modelPercentUsed = modelHasLimit
@@ -66,16 +81,42 @@ export function UsageLimitsDisplay({
           <div className="w-full bg-muted/30 rounded-full h-2 overflow-hidden">
             <div
               className={`h-2 rounded-full transition-all duration-300 ${percentConsumed > 80
-                  ? "bg-red-500"
-                  : percentConsumed > 50
-                    ? "bg-orange-500"
-                    : "bg-primary"
+                ? "bg-red-500"
+                : percentConsumed > 50
+                  ? "bg-orange-500"
+                  : "bg-primary"
                 }`}
               style={{ width: `${percentConsumed}%` }}
             />
           </div>
         )}
       </div>
+
+      {/* Note AI Usage */}
+      {noteUsage && (
+        <div className="space-y-2">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-2">
+              <FileText className="w-3 h-3 text-primary" />
+              <span className="text-sm text-foreground">Daily Note AI</span>
+            </div>
+            <span className="text-sm text-muted-foreground">
+              {noteUsed}/{noteLimit} used
+            </span>
+          </div>
+          <div className="w-full bg-muted/30 rounded-full h-2 overflow-hidden">
+            <div
+              className={`h-2 rounded-full transition-all duration-300 ${notePercent > 80
+                ? "bg-red-500"
+                : notePercent > 50
+                  ? "bg-orange-500"
+                  : "bg-primary"
+                }`}
+              style={{ width: `${notePercent}%` }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Selected Model Usage (only show for premium models with limits) */}
       {modelUsage && modelUsage.isPremium && (
@@ -94,10 +135,10 @@ export function UsageLimitsDisplay({
           <div className="w-full bg-muted/30 rounded-full h-2 overflow-hidden">
             <div
               className={`h-2 rounded-full transition-all duration-300 ${modelPercentUsed > 80
-                  ? "bg-red-500"
-                  : modelPercentUsed > 50
-                    ? "bg-amber-500"
-                    : "bg-amber-400"
+                ? "bg-red-500"
+                : modelPercentUsed > 50
+                  ? "bg-amber-500"
+                  : "bg-amber-400"
                 }`}
               style={{ width: `${modelPercentUsed}%` }}
             />
