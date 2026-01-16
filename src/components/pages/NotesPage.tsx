@@ -311,7 +311,7 @@ export function NotesPage({ className = "" }: NotesPageProps) {
                         <div className="flex items-center justify-between mb-6 pb-4 border-b border-border/50">
                             <div className="text-sm text-muted-foreground">
                                 <span className="font-medium text-foreground">
-                                    {new Date(note.generatedAt).toLocaleDateString("en-US", {
+                                    {new Date(note.date + 'T00:00:00').toLocaleDateString("en-US", {
                                         weekday: "long",
                                         month: "short",
                                         day: "numeric",
