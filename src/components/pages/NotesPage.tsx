@@ -7,7 +7,7 @@
  * @since v0.5.20
  */
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNoteAI, type NoteSection } from "../../hooks/useNoteAI";
 import { motion, AnimatePresence } from "motion/react";
 import {
@@ -55,10 +55,10 @@ function UsageIndicator({
             <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
                 <div
                     className={`h-full rounded-full transition-all ${isAtLimit
-                            ? "bg-destructive"
-                            : isNearLimit
-                                ? "bg-yellow-500"
-                                : "bg-primary"
+                        ? "bg-destructive"
+                        : isNearLimit
+                            ? "bg-yellow-500"
+                            : "bg-primary"
                         }`}
                     style={{ width: `${percentage}%` }}
                 />
@@ -83,6 +83,55 @@ function SectionIcon({ type }: { type: NoteSection["type"] }) {
         default:
             return <FileText className="w-4 h-4 text-muted-foreground" />;
     }
+}
+
+/**
+ * Render simple markdown (bold, italic, bullet points)
+ */
+function renderMarkdown(content: string): React.ReactNode {
+    // Split by lines to handle bullet points
+    const lines = content.split('\n');
+
+    return lines.map((line, lineIndex) => {
+        // Parse inline formatting (bold)
+        const parts: React.ReactNode[] = [];
+        let keyIndex = 0;
+
+        // Match **bold** patterns
+        const boldRegex = /\*\*([^*]+)\*\*/g;
+        let lastIndex = 0;
+        let match;
+
+        while ((match = boldRegex.exec(line)) !== null) {
+            // Add text before the match
+            if (match.index > lastIndex) {
+                parts.push(line.slice(lastIndex, match.index));
+            }
+            // Add the bold text
+            parts.push(
+                <strong key={`bold-${lineIndex}-${keyIndex++}`} className="text-foreground font-semibold">
+                    {match[1]}
+                </strong>
+            );
+            lastIndex = match.index + match[0].length;
+        }
+
+        // Add remaining text
+        if (lastIndex < line.length) {
+            parts.push(line.slice(lastIndex));
+        }
+
+        // If no bold found, just use the line
+        if (parts.length === 0) {
+            parts.push(line);
+        }
+
+        return (
+            <div key={lineIndex} className={line.startsWith('- ') || line.startsWith('• ') ? '' : ''}>
+                {parts}
+            </div>
+        );
+    });
 }
 
 function NoteSection({
@@ -147,8 +196,8 @@ function NoteSection({
                         transition={{ duration: 0.2 }}
                         className="overflow-hidden"
                     >
-                        <div className="pl-10 pt-2 text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
-                            {section.content}
+                        <div className="pl-10 pt-2 text-sm text-muted-foreground leading-relaxed space-y-1">
+                            {renderMarkdown(section.content)}
                         </div>
                     </motion.div>
                 )}
@@ -281,8 +330,8 @@ export function NotesPage({ className = "" }: NotesPageProps) {
                                 onClick={generate}
                                 disabled={isGenerating || !canGenerate}
                                 className={`flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg transition-all ${canGenerate
-                                        ? "bg-muted hover:bg-muted/80 text-foreground"
-                                        : "bg-muted/50 text-muted-foreground cursor-not-allowed"
+                                    ? "bg-muted hover:bg-muted/80 text-foreground"
+                                    : "bg-muted/50 text-muted-foreground cursor-not-allowed"
                                     }`}
                                 title={canGenerate ? "Regenerate note" : "Daily limit reached"}
                             >
