@@ -56,12 +56,17 @@ export interface UsageStats {
 /**
  * Get today's note (auto-generates if none exists)
  * @param language - Language for AI response ('en' or 'es')
+ * @param modelId - Optional AI model ID from user settings
  */
 export async function getTodaysNote(
-    language: 'en' | 'es' = 'en'
+    language: 'en' | 'es' = 'en',
+    modelId?: string
 ): Promise<DailyNote | null> {
+    const params = new URLSearchParams({ language });
+    if (modelId) params.append('modelId', modelId);
+
     const response = await get<{ note: DailyNote }>(
-        `/notes/today?language=${language}`
+        `/notes/today?${params.toString()}`
     );
 
     if (!response.ok || !response.data) {
@@ -81,13 +86,15 @@ export async function getTodaysNote(
 /**
  * Force regenerate today's note
  * @param language - Language for AI response ('en' or 'es')
+ * @param modelId - Optional AI model ID from user settings
  */
 export async function regenerateNote(
-    language: 'en' | 'es' = 'en'
+    language: 'en' | 'es' = 'en',
+    modelId?: string
 ): Promise<DailyNote | null> {
     const response = await post<{ note: DailyNote; message: string }>(
         "/notes/generate",
-        { language }
+        { language, modelId }
     );
 
     if (!response.ok || !response.data) {

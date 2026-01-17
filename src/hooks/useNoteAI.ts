@@ -3,13 +3,14 @@
  *
  * React hook for Note AI page state management.
  * Handles note generation, expansion, and usage tracking.
- * Respects app language settings for localized AI responses.
+ * Respects app language settings and selected AI model.
  *
  * @since v0.5.20
  */
 
 import { useState, useCallback, useEffect } from "react";
 import { useLanguage } from "../contexts/LanguageContext";
+import { useSubscription } from "./useSubscription";
 import {
     getTodaysNote,
     regenerateNote,
@@ -58,6 +59,7 @@ export interface UseNoteAIResult {
 
 export function useNoteAI(): UseNoteAIResult {
     const { language } = useLanguage();
+    const { selectedModel } = useSubscription();
 
     // State
     const [note, setNote] = useState<DailyNote | null>(null);
@@ -73,7 +75,7 @@ export function useNoteAI(): UseNoteAIResult {
         setError(null);
 
         try {
-            const todaysNote = await getTodaysNote(language);
+            const todaysNote = await getTodaysNote(language, selectedModel);
             if (todaysNote) {
                 setNote(todaysNote);
             }
@@ -86,7 +88,7 @@ export function useNoteAI(): UseNoteAIResult {
         } finally {
             setIsLoading(false);
         }
-    }, [language]);
+    }, [language, selectedModel]);
 
     // Generate new note
     const generate = useCallback(async () => {
@@ -94,7 +96,7 @@ export function useNoteAI(): UseNoteAIResult {
         setError(null);
 
         try {
-            const newNote = await regenerateNote(language);
+            const newNote = await regenerateNote(language, selectedModel);
             if (newNote) {
                 setNote(newNote);
             }
@@ -111,7 +113,7 @@ export function useNoteAI(): UseNoteAIResult {
         } finally {
             setIsGenerating(false);
         }
-    }, [language]);
+    }, [language, selectedModel]);
 
     // Expand a paragraph
     const expand = useCallback(
