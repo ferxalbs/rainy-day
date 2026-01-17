@@ -7,7 +7,7 @@
  * @since v0.5.20
  */
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNoteAI, type NoteSection } from "../../hooks/useNoteAI";
 import { motion, AnimatePresence } from "motion/react";
 import {
@@ -49,54 +49,8 @@ function SectionIcon({ type }: { type: NoteSection["type"] }) {
     }
 }
 
-/**
- * Render simple markdown (bold, italic, bullet points)
- */
-function renderMarkdown(content: string): React.ReactNode {
-    // Split by lines to handle bullet points
-    const lines = content.split('\n');
-
-    return lines.map((line, lineIndex) => {
-        // Parse inline formatting (bold)
-        const parts: React.ReactNode[] = [];
-        let keyIndex = 0;
-
-        // Match **bold** patterns
-        const boldRegex = /\*\*([^*]+)\*\*/g;
-        let lastIndex = 0;
-        let match;
-
-        while ((match = boldRegex.exec(line)) !== null) {
-            // Add text before the match
-            if (match.index > lastIndex) {
-                parts.push(line.slice(lastIndex, match.index));
-            }
-            // Add the bold text
-            parts.push(
-                <strong key={`bold-${lineIndex}-${keyIndex++}`} className="text-foreground font-semibold">
-                    {match[1]}
-                </strong>
-            );
-            lastIndex = match.index + match[0].length;
-        }
-
-        // Add remaining text
-        if (lastIndex < line.length) {
-            parts.push(line.slice(lastIndex));
-        }
-
-        // If no bold found, just use the line
-        if (parts.length === 0) {
-            parts.push(line);
-        }
-
-        return (
-            <div key={lineIndex} className={line.startsWith('- ') || line.startsWith('• ') ? '' : ''}>
-                {parts}
-            </div>
-        );
-    });
-}
+// Import shared MarkdownContent component
+import { MarkdownContent } from "../ui/MarkdownContent";
 
 function NoteSection({
     section,
@@ -160,8 +114,8 @@ function NoteSection({
                         transition={{ duration: 0.2 }}
                         className="overflow-hidden"
                     >
-                        <div className="pl-10 pt-2 text-sm text-muted-foreground leading-relaxed space-y-1">
-                            {renderMarkdown(section.content)}
+                        <div className="pl-10 pt-3 text-sm text-muted-foreground">
+                            <MarkdownContent content={section.content} />
                         </div>
                     </motion.div>
                 )}
