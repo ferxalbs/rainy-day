@@ -2,6 +2,20 @@
 
 User-friendly release notes for Rainy Day. For detailed technical changes, see [CHANGELOG.md](./CHANGELOG.md).
 
+## Rainy Day 0.5.21 🎯
+
+_January 16, 2026_
+
+**Note AI Now Uses Your Settings**
+
+Note AI is now smarter and respects your preferences:
+
+- **Uses Your AI Model**: Note AI now uses the same AI model you've selected in Settings > AI Configuration
+- **Language Support**: Notes are generated in your app's language (English or Spanish)
+- **Better Formatting**: Modern markdown rendering with styled bullet points and text formatting
+
+---
+
 ## Rainy Day 0.5.20 📝🧠 — "The Intelligence Layer"
 
 _January 16, 2026_

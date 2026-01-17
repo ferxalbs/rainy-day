@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [v0.5.21] - 2026-01-16
+
+#### Improvements
+
+- **Note AI Model and Language Integration**
+  - Note AI now uses the AI model selected in Settings > AI Configuration
+  - Response language matches app language setting (English/Spanish)
+  - Modern markdown rendering with bold, italic, inline code, and styled bullets
+
+- **MarkdownContent Component**: New reusable component (`src/components/ui/MarkdownContent.tsx`)
+  - Supports **bold**, *italic*, `inline code` formatting
+  - Styled bullet points and numbered lists with hover effects
+  - `React.memo` for performance optimization
+  - `compact` prop for tighter spacing
+
+---
+
 ### [v0.5.20] - 2026-01-16 — "The Intelligence Layer"
 
 #### Added
